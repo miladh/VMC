@@ -4,11 +4,11 @@ CONFIG -= qt
 
 LIBS += -llapack -larmadillo
 
-SOURCES += main.cpp \
-    vmcsolver.cpp \
-    lib.cpp
+SOURCES += src/main.cpp \
+    src/vmcsolver.cpp \
+    src/includes/lib.cpp
 
 HEADERS += \
-    vmcsolver.h \
-    lib.h
+    src/vmcsolver.h \
+    src/includes/lib.h
 

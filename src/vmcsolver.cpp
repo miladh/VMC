@@ -1,5 +1,5 @@
 #include "vmcsolver.h"
-#include "lib.h"
+#include "includes/lib.h"
 
 #include <armadillo>
 #include <iostream>
