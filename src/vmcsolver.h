@@ -27,6 +27,7 @@ private:
     long idum;
 
     double alpha;
+    double beta;
 
     int nCycles;
 

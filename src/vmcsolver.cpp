@@ -15,7 +15,8 @@ VMCSolver::VMCSolver() :
     h(0.001),
     h2(1000000),
     idum(-1),
-    alpha(0.5*charge),
+    alpha(1.85),
+    beta(0.25),
     nCycles(1000000)
 {
 }
@@ -133,13 +134,48 @@ double VMCSolver::localEnergy(const mat &r)
 
 double VMCSolver::waveFunction(const mat &r)
 {
-    double argument = 0;
-    for(int i = 0; i < nParticles; i++) {
-        double rSingleParticle = 0;
-        for(int j = 0; j < nDimensions; j++) {
-            rSingleParticle += r(i,j) * r(i,j);
+    double rParticle;
+    double correlation, argument;
+    double r12;
+
+    correlation=argument=0.0;
+
+
+    // The correlation factor
+    for (int i=0; i<nParticles-1; i++) {
+        for (int j=i+1; j<nParticles; j++) {
+            r12= 0.0;
+
+            for (int k=0; k <nDimensions ; k++ ){
+
+                r12 += (r(i,k)-r(j,k))*(r(i,k)-r(j,k));
+            }
+
+            correlation+=sqrt(r12)/(2+2*beta*sqrt(r12));
         }
-        argument += sqrt(rSingleParticle);
     }
-    return exp(-argument * alpha);
+
+    for (int i=0; i<nParticles; i++) {
+        rParticle=0;
+
+        for (int j=0; j<nDimensions; j++) {
+            rParticle += r(i,j)*r(i,j);
+        }
+        argument += sqrt(rParticle);
+    }
+
+    //Trial wave function
+    double Trial_func = exp(-alpha* argument)*exp(correlation);
+
+    return Trial_func;
+
+//    double argument = 0;
+//    for(int i = 0; i < nParticles; i++) {
+//        double rSingleParticle = 0;
+//        for(int j = 0; j < nDimensions; j++) {
+//            rSingleParticle += r(i,j) * r(i,j);
+//        }
+//        argument += sqrt(rSingleParticle);
+//    }
+//    return exp(-argument * alpha);
 }
