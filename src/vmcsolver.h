@@ -3,9 +3,11 @@
 
 #include <armadillo>
 #include "../src/Wavefunction/wavefunction.h"
+#include "../src/Potential/potential.h"
+#include "../src/Kinetic/kinetic.h"
 
 using namespace arma;
-
+using namespace std;
 class VMCSolver
 {
 public:
@@ -15,6 +17,8 @@ public:
 
 private:
     Wavefunction *TrialWaveFunction;
+    Potential *PotentialEnergy;
+    Kinetic *KineticEnergy;
 
     double localEnergy(const mat &r);
 

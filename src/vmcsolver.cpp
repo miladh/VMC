@@ -2,9 +2,14 @@
 #include "includes/lib.h"
 #include "src/Wavefunction/jastrowwavefunction.h"
 #include "src/Wavefunction/basicwavefunction.h"
-
+#include "src/Potential/coulomb_potential.h"
+#include "src/Kinetic/numericalkinetic.h"
+#include "src/Kinetic/closedformkinetic.h"
 #include <armadillo>
 #include <iostream>
+
+
+#include <typeinfo>
 
 using namespace arma;
 using namespace std;
@@ -21,9 +26,18 @@ VMCSolver::VMCSolver() :
     beta(0.25),
     nCycles(1000000)
 {
-    TrialWaveFunction = new BasicWaveFunction();
+    TrialWaveFunction = new JastrowWaveFunction();
+//    TrialWaveFunction = new BasicWaveFunction();
     TrialWaveFunction->alpha=alpha;
     TrialWaveFunction->beta=beta;
+
+    PotentialEnergy = new CoulombPotential();
+
+    KineticEnergy = new ClosedFormKinetic();
+    KineticEnergy->wf = TrialWaveFunction;
+    KineticEnergy->alpha=alpha;
+    KineticEnergy->beta=beta;
+
 }
 
 void VMCSolver::runMonteCarloIntegration()
@@ -84,57 +98,10 @@ void VMCSolver::runMonteCarloIntegration()
     cout << "Energy: " << energy << " Energy (squared sum): " << energySquared << endl;
 }
 
+
 double VMCSolver::localEnergy(const mat &r)
 {
-    mat rPlus = zeros<mat>(nParticles, nDimensions);
-    mat rMinus = zeros<mat>(nParticles, nDimensions);
-
-    rPlus = rMinus = r;
-
-    double waveFunctionMinus = 0;
-    double waveFunctionPlus = 0;
-
-    double waveFunctionCurrent = TrialWaveFunction->waveFunction(nDimensions,nParticles,r);
-
-    // Kinetic energy
-
-    double kineticEnergy = 0;
-    for(int i = 0; i < nParticles; i++) {
-        for(int j = 0; j < nDimensions; j++) {
-            rPlus(i,j) += h;
-            rMinus(i,j) -= h;
-            waveFunctionMinus = TrialWaveFunction->waveFunction(nDimensions,nParticles,rMinus);
-            waveFunctionPlus = TrialWaveFunction->waveFunction(nDimensions,nParticles,rPlus);
-            kineticEnergy -= (waveFunctionMinus + waveFunctionPlus - 2 * waveFunctionCurrent);
-            rPlus(i,j) = r(i,j);
-            rMinus(i,j) = r(i,j);
-        }
-    }
-    kineticEnergy = 0.5 * h2 * kineticEnergy / waveFunctionCurrent;
-
-    // Potential energy
-    double potentialEnergy = 0;
-    double rSingleParticle = 0;
-    for(int i = 0; i < nParticles; i++) {
-        rSingleParticle = 0;
-        for(int j = 0; j < nDimensions; j++) {
-            rSingleParticle += r(i,j)*r(i,j);
-        }
-        potentialEnergy -= charge / sqrt(rSingleParticle);
-    }
-    // Contribution from electron-electron potential
-    double r12 = 0;
-    for(int i = 0; i < nParticles; i++) {
-        for(int j = i + 1; j < nParticles; j++) {
-            r12 = 0;
-            for(int k = 0; k < nDimensions; k++) {
-                r12 += (r(i,k) - r(j,k)) * (r(i,k) - r(j,k));
-            }
-            potentialEnergy += 1 / sqrt(r12);
-        }
-    }
-
-    return kineticEnergy + potentialEnergy;
+    return KineticEnergy->evaluate(nDimensions,nParticles,r);// + PotentialEnergy->evaluate(nDimensions,nParticles,r);
 }
 
 

@@ -15,6 +15,7 @@ public:
     Wavefunction();
     virtual double waveFunction(int nDimensions, int nParticles,const mat &r) = 0;
     double alpha,beta;
+
 protected:
     double rSingleParticle;
     double correlation, argument;
