@@ -1,5 +1,7 @@
 #include "vmcsolver.h"
 #include "includes/lib.h"
+#include "src/Wavefunction/jastrowwavefunction.h"
+#include "src/Wavefunction/basicwavefunction.h"
 
 #include <armadillo>
 #include <iostream>
@@ -19,6 +21,9 @@ VMCSolver::VMCSolver() :
     beta(0.25),
     nCycles(1000000)
 {
+    TrialWaveFunction = new BasicWaveFunction();
+    TrialWaveFunction->alpha=alpha;
+    TrialWaveFunction->beta=beta;
 }
 
 void VMCSolver::runMonteCarloIntegration()
@@ -46,7 +51,7 @@ void VMCSolver::runMonteCarloIntegration()
     for(int cycle = 0; cycle < nCycles; cycle++) {
 
         // Store the current value of the wave function
-        waveFunctionOld = TrialWaveFunction.waveFunction(nDimensions,nParticles,rOld,alpha,beta);
+        waveFunctionOld = TrialWaveFunction->waveFunction(nDimensions,nParticles,rOld);
 
         // New position to test
         for(int i = 0; i < nParticles; i++) {
@@ -55,7 +60,7 @@ void VMCSolver::runMonteCarloIntegration()
             }
 
             // Recalculate the value of the wave function
-            waveFunctionNew = TrialWaveFunction.waveFunction(nDimensions,nParticles,rNew,alpha,beta);
+            waveFunctionNew = TrialWaveFunction->waveFunction(nDimensions,nParticles,rNew);
 
             // Check for step acceptance (if yes, update position, if no, reset position)
             if(ran2(&idum) <= (waveFunctionNew*waveFunctionNew) / (waveFunctionOld*waveFunctionOld)) {
@@ -89,7 +94,7 @@ double VMCSolver::localEnergy(const mat &r)
     double waveFunctionMinus = 0;
     double waveFunctionPlus = 0;
 
-    double waveFunctionCurrent = TrialWaveFunction.waveFunction(nDimensions,nParticles,r,alpha,beta);
+    double waveFunctionCurrent = TrialWaveFunction->waveFunction(nDimensions,nParticles,r);
 
     // Kinetic energy
 
@@ -98,8 +103,8 @@ double VMCSolver::localEnergy(const mat &r)
         for(int j = 0; j < nDimensions; j++) {
             rPlus(i,j) += h;
             rMinus(i,j) -= h;
-            waveFunctionMinus = TrialWaveFunction.waveFunction(nDimensions,nParticles,rMinus,alpha,beta);
-            waveFunctionPlus = TrialWaveFunction.waveFunction(nDimensions,nParticles,rPlus,alpha,beta);
+            waveFunctionMinus = TrialWaveFunction->waveFunction(nDimensions,nParticles,rMinus);
+            waveFunctionPlus = TrialWaveFunction->waveFunction(nDimensions,nParticles,rPlus);
             kineticEnergy -= (waveFunctionMinus + waveFunctionPlus - 2 * waveFunctionCurrent);
             rPlus(i,j) = r(i,j);
             rMinus(i,j) = r(i,j);
@@ -132,50 +137,4 @@ double VMCSolver::localEnergy(const mat &r)
     return kineticEnergy + potentialEnergy;
 }
 
-//double VMCSolver::waveFunction(const mat &r)
-//{
-//    double rParticle;
-//    double correlation, argument;
-//    double r12;
 
-//    correlation=argument=0.0;
-
-
-//    // The correlation factor
-//    for (int i=0; i<nParticles-1; i++) {
-//        for (int j=i+1; j<nParticles; j++) {
-//            r12= 0.0;
-
-//            for (int k=0; k <nDimensions ; k++ ){
-
-//                r12 += (r(i,k)-r(j,k))*(r(i,k)-r(j,k));
-//            }
-
-//            correlation+=sqrt(r12)/(2+2*beta*sqrt(r12));
-//        }
-//    }
-
-//    for (int i=0; i<nParticles; i++) {
-//        rParticle=0;
-
-//        for (int j=0; j<nDimensions; j++) {
-//            rParticle += r(i,j)*r(i,j);
-//        }
-//        argument += sqrt(rParticle);
-//    }
-
-//    //Trial wave function
-//    double Trial_func = exp(-alpha* argument)*exp(correlation);
-
-//    return Trial_func;
-
-////    double argument = 0;
-////    for(int i = 0; i < nParticles; i++) {
-////        double rSingleParticle = 0;
-////        for(int j = 0; j < nDimensions; j++) {
-////            rSingleParticle += r(i,j) * r(i,j);
-////        }
-////        argument += sqrt(rSingleParticle);
-////    }
-////    return exp(-argument * alpha);
-//}

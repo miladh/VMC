@@ -14,7 +14,7 @@ public:
     void runMonteCarloIntegration();
 
 private:
-    Wavefunction TrialWaveFunction;
+    Wavefunction *TrialWaveFunction;
 
     double localEnergy(const mat &r);
 
