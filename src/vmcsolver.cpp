@@ -46,7 +46,7 @@ void VMCSolver::runMonteCarloIntegration()
     for(int cycle = 0; cycle < nCycles; cycle++) {
 
         // Store the current value of the wave function
-        waveFunctionOld = waveFunction(rOld);
+        waveFunctionOld = TrialWaveFunction.waveFunction(nDimensions,nParticles,rOld,alpha,beta);
 
         // New position to test
         for(int i = 0; i < nParticles; i++) {
@@ -55,7 +55,7 @@ void VMCSolver::runMonteCarloIntegration()
             }
 
             // Recalculate the value of the wave function
-            waveFunctionNew = waveFunction(rNew);
+            waveFunctionNew = TrialWaveFunction.waveFunction(nDimensions,nParticles,rNew,alpha,beta);
 
             // Check for step acceptance (if yes, update position, if no, reset position)
             if(ran2(&idum) <= (waveFunctionNew*waveFunctionNew) / (waveFunctionOld*waveFunctionOld)) {
@@ -89,7 +89,7 @@ double VMCSolver::localEnergy(const mat &r)
     double waveFunctionMinus = 0;
     double waveFunctionPlus = 0;
 
-    double waveFunctionCurrent = waveFunction(r);
+    double waveFunctionCurrent = TrialWaveFunction.waveFunction(nDimensions,nParticles,r,alpha,beta);
 
     // Kinetic energy
 
@@ -98,8 +98,8 @@ double VMCSolver::localEnergy(const mat &r)
         for(int j = 0; j < nDimensions; j++) {
             rPlus(i,j) += h;
             rMinus(i,j) -= h;
-            waveFunctionMinus = waveFunction(rMinus);
-            waveFunctionPlus = waveFunction(rPlus);
+            waveFunctionMinus = TrialWaveFunction.waveFunction(nDimensions,nParticles,rMinus,alpha,beta);
+            waveFunctionPlus = TrialWaveFunction.waveFunction(nDimensions,nParticles,rPlus,alpha,beta);
             kineticEnergy -= (waveFunctionMinus + waveFunctionPlus - 2 * waveFunctionCurrent);
             rPlus(i,j) = r(i,j);
             rMinus(i,j) = r(i,j);
@@ -132,50 +132,50 @@ double VMCSolver::localEnergy(const mat &r)
     return kineticEnergy + potentialEnergy;
 }
 
-double VMCSolver::waveFunction(const mat &r)
-{
-    double rParticle;
-    double correlation, argument;
-    double r12;
+//double VMCSolver::waveFunction(const mat &r)
+//{
+//    double rParticle;
+//    double correlation, argument;
+//    double r12;
 
-    correlation=argument=0.0;
+//    correlation=argument=0.0;
 
 
-    // The correlation factor
-    for (int i=0; i<nParticles-1; i++) {
-        for (int j=i+1; j<nParticles; j++) {
-            r12= 0.0;
+//    // The correlation factor
+//    for (int i=0; i<nParticles-1; i++) {
+//        for (int j=i+1; j<nParticles; j++) {
+//            r12= 0.0;
 
-            for (int k=0; k <nDimensions ; k++ ){
+//            for (int k=0; k <nDimensions ; k++ ){
 
-                r12 += (r(i,k)-r(j,k))*(r(i,k)-r(j,k));
-            }
+//                r12 += (r(i,k)-r(j,k))*(r(i,k)-r(j,k));
+//            }
 
-            correlation+=sqrt(r12)/(2+2*beta*sqrt(r12));
-        }
-    }
-
-    for (int i=0; i<nParticles; i++) {
-        rParticle=0;
-
-        for (int j=0; j<nDimensions; j++) {
-            rParticle += r(i,j)*r(i,j);
-        }
-        argument += sqrt(rParticle);
-    }
-
-    //Trial wave function
-    double Trial_func = exp(-alpha* argument)*exp(correlation);
-
-    return Trial_func;
-
-//    double argument = 0;
-//    for(int i = 0; i < nParticles; i++) {
-//        double rSingleParticle = 0;
-//        for(int j = 0; j < nDimensions; j++) {
-//            rSingleParticle += r(i,j) * r(i,j);
+//            correlation+=sqrt(r12)/(2+2*beta*sqrt(r12));
 //        }
-//        argument += sqrt(rSingleParticle);
 //    }
-//    return exp(-argument * alpha);
-}
+
+//    for (int i=0; i<nParticles; i++) {
+//        rParticle=0;
+
+//        for (int j=0; j<nDimensions; j++) {
+//            rParticle += r(i,j)*r(i,j);
+//        }
+//        argument += sqrt(rParticle);
+//    }
+
+//    //Trial wave function
+//    double Trial_func = exp(-alpha* argument)*exp(correlation);
+
+//    return Trial_func;
+
+////    double argument = 0;
+////    for(int i = 0; i < nParticles; i++) {
+////        double rSingleParticle = 0;
+////        for(int j = 0; j < nDimensions; j++) {
+////            rSingleParticle += r(i,j) * r(i,j);
+////        }
+////        argument += sqrt(rSingleParticle);
+////    }
+////    return exp(-argument * alpha);
+//}

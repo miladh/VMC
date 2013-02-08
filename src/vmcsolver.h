@@ -2,6 +2,7 @@
 #define VMCSOLVER_H
 
 #include <armadillo>
+#include "../src/Wavefunction/wavefunction.h"
 
 using namespace arma;
 
@@ -13,7 +14,8 @@ public:
     void runMonteCarloIntegration();
 
 private:
-    double waveFunction(const mat &r);
+    Wavefunction TrialWaveFunction;
+
     double localEnergy(const mat &r);
 
     int nDimensions;
