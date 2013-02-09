@@ -12,8 +12,8 @@ public:
 
 private:
     mat rPlus ,rMinus;
-    double waveFunctionMinus, waveFunctionPlus, waveFunctionCurrent,KineticEnergy;
-    double h,h2;
+    double waveFunctionMinus, waveFunctionPlus, waveFunctionCurrent;
+    double KineticEnergy,h,h2;
 };
 
 #endif // NUMERICALKINETIC_H

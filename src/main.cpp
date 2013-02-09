@@ -1,13 +1,12 @@
-#include "vmcsolver.h"
-
+#include "src/VMCApp/vmcapp.h"
 #include <iostream>
 
 using namespace std;
 
 int main()
 {
-    VMCSolver *solver = new VMCSolver();
-    solver->runMonteCarloIntegration();
+    VMCApp vmcapp;
+    vmcapp.run();
     return 0;
 }
 
