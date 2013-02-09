@@ -14,8 +14,8 @@ SOURCES += src/main.cpp \
     src/Kinetic/kinetic.cpp \
     src/Kinetic/numericalkinetic.cpp \
     src/Kinetic/closedformkinetic.cpp \
-    src/VMCSolver/vmcsolver.cpp \
-    src/VMCSolver/mcbf.cpp \
+    src/Solver/solver.cpp \
+    src/Solver/mcbf.cpp \
     src/Hamiltonian/hamiltonian.cpp \
     src/VMCApp/vmcapp.cpp
 
@@ -29,8 +29,8 @@ HEADERS += \
     src/Kinetic/kinetic.h \
     src/Kinetic/numericalkinetic.h \
     src/Kinetic/closedformkinetic.h \
-    src/VMCSolver/vmcsolver.h \
-    src/VMCSolver/mcbf.h \
+    src/Solver/solver.h \
+    src/Solver/mcbf.h \
     src/Hamiltonian/hamiltonian.h \
     src/VMCApp/vmcapp.h
 

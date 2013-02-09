@@ -1,10 +1,10 @@
 #ifndef MCBF_H
 #define MCBF_H
 
-#include "src/VMCSolver/vmcsolver.h"
+#include "src/Solver/solver.h"
 
 
-class MCBF : public VMCSolver
+class MCBF : public Solver
 {
 public:
     MCBF();

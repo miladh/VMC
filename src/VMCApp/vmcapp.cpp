@@ -1,5 +1,5 @@
 #include "vmcapp.h"
-#include "src/VMCSolver/mcbf.h"
+#include "src/Solver/mcbf.h"
 #include "src/includes/lib.h"
 #include "src/Wavefunction/jastrowwavefunction.h"
 #include "src/Wavefunction/basicwavefunction.h"
@@ -43,10 +43,10 @@ VMCApp::VMCApp():
 
 void VMCApp::run()
 {
-    vmcsolver = new MCBF();
-    vmcsolver->solve(nDimensions,nParticles,hamiltonian,TrialWaveFunction,nCycles,idum);
-    double energySquared= vmcsolver->energySquared;
-    double energy =vmcsolver->energy;
+    solver = new MCBF();
+    solver->solve(nDimensions,nParticles,hamiltonian,TrialWaveFunction,nCycles,idum);
+    double energySquared= solver->energySquared;
+    double energy =solver->energy;
     cout << "Energy: " << energy << " Energy (squared sum): " << energySquared << endl;
 }
 

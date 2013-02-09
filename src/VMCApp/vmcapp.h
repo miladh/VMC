@@ -5,7 +5,7 @@
 #include <armadillo>
 #include <iostream>
 #include <libconfig.h++>
-#include "src/VMCSolver/vmcsolver.h"
+#include "src/Solver/solver.h"
 #include "src/Wavefunction/wavefunction.h"
 #include "src/Hamiltonian/hamiltonian.h"
 
@@ -18,7 +18,7 @@ class VMCApp
 public:
     VMCApp();
 
-    VMCSolver* vmcsolver;
+    Solver* solver;
     Wavefunction *TrialWaveFunction;
     Potential *potential;
     Kinetic *kinetic;

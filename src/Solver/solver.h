@@ -18,10 +18,10 @@ using namespace libconfig;
 
 
 
-class VMCSolver
+class Solver
 {
 public:
-    VMCSolver();
+    Solver();
      virtual void solve(int nDimensions,int nParticles, Hamiltonian* hamiltonian, Wavefunction* TrialWaveFunction, int nCycles, long idum) = 0;
     double energySquared;
     double energy;
