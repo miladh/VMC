@@ -24,16 +24,17 @@ public:
     Kinetic *kinetic;
     Hamiltonian *hamiltonian;
 
-    int nDimensions,nParticles,nCycles,charge;
-    double stepLength,h,h2;
+    int nDimensions,nParticles,nCycles;
     double alpha, beta;
     long idum;
 
+    double energySquared;
+    double energy;
 
     mat rOld;
     mat rNew;
 
-    void run();
+    void runVMCApp();
 };
 
 #endif // VMCAPP_H

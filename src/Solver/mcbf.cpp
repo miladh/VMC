@@ -14,7 +14,6 @@ MCBF::MCBF():
 {
 }
 
-
 void MCBF::solve(int nDimensions,int nParticles, Hamiltonian *hamiltonian, Wavefunction* TrialWaveFunction, int nCycles, long idum)
 {
     rOld = zeros<mat>(nParticles, nDimensions);

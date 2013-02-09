@@ -11,12 +11,9 @@ public:
     void solve(int nDimensions,int nParticles, Hamiltonian* hamiltonian, Wavefunction* TrialWaveFunction, int nCycles, long idum);
 
 private:
-
-
     double stepLength;
     mat rOld;
     mat rNew;
-
 
 };
 

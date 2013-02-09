@@ -1,12 +1,15 @@
-#include "src/VMCApp/vmcapp.h"
 #include <iostream>
+#include <libconfig.h++>
+#include "src/Minimizer/minimizer.h"
 
 using namespace std;
-
+using namespace libconfig;
 int main()
 {
-    VMCApp vmcapp;
-    vmcapp.run();
+
+    Minimizer min;
+    min.runMinimizaer();
+
     return 0;
 }
 

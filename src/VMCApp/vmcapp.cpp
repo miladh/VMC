@@ -12,17 +12,13 @@ VMCApp::VMCApp():
     nDimensions(3),
     nParticles(2),
     nCycles(1000000),
-    charge(2),
-    stepLength(1.0),
-    h(0.001),
-    h2(1000000),
-    alpha(1.85),
-    beta(0.25),
     idum(-1)
 
-
 {
+}
 
+void VMCApp::runVMCApp()
+{
     TrialWaveFunction = new JastrowWaveFunction();
     TrialWaveFunction->alpha=alpha;
     TrialWaveFunction->beta=beta;
@@ -38,16 +34,10 @@ VMCApp::VMCApp():
     hamiltonian->potential=potential;
     hamiltonian->kinetic=kinetic;
 
-
-}
-
-void VMCApp::run()
-{
     solver = new MCBF();
     solver->solve(nDimensions,nParticles,hamiltonian,TrialWaveFunction,nCycles,idum);
-    double energySquared= solver->energySquared;
-    double energy =solver->energy;
-    cout << "Energy: " << energy << " Energy (squared sum): " << energySquared << endl;
+    energySquared= solver->energySquared;
+    energy =solver->energy;
 }
 
 

@@ -17,7 +17,8 @@ SOURCES += src/main.cpp \
     src/Solver/solver.cpp \
     src/Solver/mcbf.cpp \
     src/Hamiltonian/hamiltonian.cpp \
-    src/VMCApp/vmcapp.cpp
+    src/VMCApp/vmcapp.cpp \
+    src/Minimizer/minimizer.cpp
 
 HEADERS += \
     src/includes/lib.h \
@@ -32,5 +33,6 @@ HEADERS += \
     src/Solver/solver.h \
     src/Solver/mcbf.h \
     src/Hamiltonian/hamiltonian.h \
-    src/VMCApp/vmcapp.h
+    src/VMCApp/vmcapp.h \
+    src/Minimizer/minimizer.h
 
