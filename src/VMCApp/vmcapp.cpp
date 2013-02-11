@@ -9,10 +9,18 @@
 #include "src/Kinetic/closedformkinetic.h"
 //#include <mpi.h>
 
-VMCApp::VMCApp()
+VMCApp::VMCApp(Config *cfg)
 {
+    this->cfg=cfg;
 }
 
+
+
+
+/************************************************************
+Name:               runVMCApp
+Description:        starts VMC calculations
+*/
 void VMCApp::runVMCApp()
 {
 
@@ -28,13 +36,13 @@ void VMCApp::runVMCApp()
 //    nCycles /= numproc;
 //    double tot_energy,tot_energy_sq;
 
-    TrialWaveFunction = new JastrowWavefunction();
+    TrialWaveFunction = new JastrowWavefunction;
     TrialWaveFunction->alpha=alpha;
     TrialWaveFunction->beta=beta;
 
-    potential = new CoulombPotential();
+    potential = new CoulombPotential(cfg);
 
-    kinetic= new ClosedFormKinetic();
+    kinetic= new NumericalKinetic(cfg);
     kinetic->wf = TrialWaveFunction;
     kinetic->alpha=alpha;
     kinetic->beta=beta;
@@ -44,6 +52,7 @@ void VMCApp::runVMCApp()
     hamiltonian->kinetic=kinetic;
 
     solver = new MCBF(hamiltonian,TrialWaveFunction);
+    solver->loadConfiguration(cfg);
     solver->solve();
 
 
@@ -66,8 +75,6 @@ void VMCApp::runVMCApp()
 //    }
     energy= solver->energy;
     energySquared =solver->energySquared;
-
-
 }
 
 

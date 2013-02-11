@@ -1,12 +1,16 @@
 #include "basicwavefunction.h"
 
-BasicWaveFunction::BasicWaveFunction()
+BasicWavefunction::BasicWavefunction()
 {
 }
 
 
+/************************************************************
+Name:               BasicWaveFunction
+Description:        simple wavefunction
+*/
 
-double BasicWaveFunction::waveFunction( int nParticles, const mat &r)
+double BasicWavefunction::waveFunction( int nParticles, const mat &r)
 {
     argument=0.0;
 

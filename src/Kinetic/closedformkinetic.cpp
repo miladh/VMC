@@ -1,10 +1,17 @@
 #include "closedformkinetic.h"
 
-ClosedFormKinetic::ClosedFormKinetic():
-    charge(2)
+ClosedFormKinetic::ClosedFormKinetic(Config* cfg):
+    charge(cfg->lookup("PotentialSettings.charge"))
 {
+    this->cfg=cfg;
 }
 
+
+
+/************************************************************
+Name:               evaluate
+Description:        Computes the kinetic energy in closedfom
+*/
 double ClosedFormKinetic::evaluate(int nParticles,const mat &r){
 
 

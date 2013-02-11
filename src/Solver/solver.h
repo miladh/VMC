@@ -22,7 +22,9 @@ class Solver
 {
 public:
     Solver();
-     virtual void solve() = 0;
+    virtual void solve() = 0;
+    virtual void loadConfiguration(Config *cfg)=0;
+
     double energySquared;
     double energy;
 

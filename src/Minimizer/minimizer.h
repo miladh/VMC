@@ -16,11 +16,14 @@ class Minimizer
 {
 public:
     Minimizer();
+
     void runMinimizaer();
+    void loadConfiguration(Config *cfg);
+    Config *cfg;
+    VMCApp* vmcapp;
+
 
 private:
-    VMCApp vmcapp;
-
     double alpha,beta;
     double minAlpha,maxAlpha,minBeta,maxBeta;
     int nVarAlpha,nVarBeta;

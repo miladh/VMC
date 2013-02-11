@@ -15,6 +15,7 @@ class Potential
 public:
     Potential();
     virtual double evaluate(int nParticles,const mat &r) = 0;
+    Config *cfg;
 };
 
 #endif // POTENTIAL_H

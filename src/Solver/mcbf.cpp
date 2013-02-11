@@ -11,16 +11,20 @@
 #include <math.h>
 
 
-MCBF::MCBF(Hamiltonian *hamiltonian, Wavefunction* TrialWaveFunction):
-    nDimensions(3),
-    nParticles(2),
-    nCycles(1000000),
-    idum(-1)
+MCBF::MCBF(Hamiltonian *hamiltonian, Wavefunction* TrialWaveFunction)
 {
     this->hamiltonian=hamiltonian;
     this->TrialWaveFunction=TrialWaveFunction;
 
 }
+
+
+
+
+/************************************************************
+Name:               solve
+Description:        starts a MC-sample
+*/
 
 void MCBF::solve()
 
@@ -98,13 +102,14 @@ void MCBF::MetropolisAlgo(int nCycles, double stepLength){
 
 
 
+/************************************************************
+Name:               optimalStepLength
+Description:        Computes the kinetic energy in closedfom
+*/
+
 double MCBF::optimalStepLength() {
-    nPreCycles=10000;
-    double minStepLength, maxStepLength, tolerance;
     double stepMinMax,stepMin;
-    minStepLength = -3;
-    maxStepLength = 3;
-    tolerance = 0.01;
+
 
     while ((maxStepLength - minStepLength) > tolerance) {
         MetropolisAlgo(nPreCycles,minStepLength);
@@ -155,4 +160,22 @@ double MCBF::optimalStepLength() {
 
 //}
 
+
+
+/************************************************************
+Name:               loadConfiguration
+Description:        loads different variables
+*/
+void MCBF::loadConfiguration(Config *cfg){
+    nDimensions=cfg->lookup("SolverSettings.dim");
+    nParticles=cfg->lookup("SolverSettings.N");
+    nCycles=cfg->lookup("SolverSettings.cycles");
+    idum=cfg->lookup("SolverSettings.idum");
+
+    nPreCycles=cfg->lookup("OptimalStepSettings.preCycles");
+    minStepLength = cfg->lookup("OptimalStepSettings.minstep");
+    maxStepLength = cfg->lookup("OptimalStepSettings.maxstep");
+    tolerance = cfg->lookup("OptimalStepSettings.tolerance");
+
+}
 

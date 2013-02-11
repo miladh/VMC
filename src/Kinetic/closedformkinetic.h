@@ -6,7 +6,7 @@
 class ClosedFormKinetic : public Kinetic
 {
 public:
-    ClosedFormKinetic();
+    ClosedFormKinetic(Config *cfg);
     double evaluate(int nParticles, const mat &r);
     double localEnergy;
 

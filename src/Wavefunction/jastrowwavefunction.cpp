@@ -4,6 +4,13 @@ JastrowWavefunction::JastrowWavefunction()
 {
 }
 
+
+
+/************************************************************
+Name:               JastrowWavefunction
+Description:        jastrow wavefunction wavefunction
+*/
+
 double JastrowWavefunction::waveFunction(int nParticles, const mat &r)
 {
     argument=0.0;
@@ -20,6 +27,11 @@ double JastrowWavefunction::waveFunction(int nParticles, const mat &r)
 
 }
 
+
+/************************************************************
+Name:               JastrowFactor
+Description:        computes jastrowfactor
+*/
 double JastrowWavefunction::jastrowFactor(int nParticles, const mat &r){
     correlation=0;
 

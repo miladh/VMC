@@ -9,9 +9,9 @@ class Hamiltonian
 public:
     Hamiltonian();
 
-    double getEnergy(int nParticles, const mat &r);
     Potential* potential;
     Kinetic* kinetic;
+    double getEnergy(int nParticles, const mat &r);
 
 
 protected:

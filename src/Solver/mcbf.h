@@ -9,33 +9,26 @@ class MCBF : public Solver
 public:
     MCBF(Hamiltonian *hamiltonian, Wavefunction *TrialWaveFunction);
     void solve();
+    void loadConfiguration(Config *cfg);
 
 private:
-    int nDimensions;
-    int nParticles;
-    Hamiltonian *hamiltonian;
-    Wavefunction* TrialWaveFunction;
+    int nDimensions,nParticles;
     int nCycles,nPreCycles;
     long idum;
-
-
     double stepLength,acceptedSteps;
+
+    Hamiltonian *hamiltonian;
+    Wavefunction* TrialWaveFunction;
+
     mat rOld;
     mat rNew;
 
-    double waveFunctionOld ;
-    double waveFunctionNew;
-
-    double energySum ;
-    double energySquaredSum;
-
-    double deltaE;
-
+    double waveFunctionOld,waveFunctionNew;
+    double energySum,energySquaredSum, deltaE;
+    double minStepLength, maxStepLength, tolerance;
 
     void MetropolisAlgo(int nCycles, double stepLength);
     double optimalStepLength();
-    double difference(double stepLength);
-
 };
 
 #endif // MCBF_H

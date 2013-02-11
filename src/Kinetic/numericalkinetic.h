@@ -7,7 +7,7 @@
 class NumericalKinetic : public Kinetic
 {
 public:
-    NumericalKinetic();
+    NumericalKinetic(Config *cfg);
     double evaluate(int nParticles, const mat &r);
 
 private:

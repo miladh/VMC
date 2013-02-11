@@ -16,8 +16,11 @@ using namespace libconfig;
 class VMCApp
 {
 public:
-    VMCApp();
+    VMCApp(Config *cfg);
+    void runVMCApp();
+    void loadConfiguration(Config *cfg);
 
+    Config *cfg;
     Solver* solver;
     Wavefunction *TrialWaveFunction;
     Potential *potential;
@@ -26,15 +29,13 @@ public:
 
     int nDimensions,nParticles;
     double alpha, beta;
+    double energy,energySquared;
 
 
-    double energySquared;
-    double energy;
-
+private:
     mat rOld;
     mat rNew;
 
-    void runVMCApp();
 };
 
 #endif // VMCAPP_H

@@ -15,10 +15,12 @@ class Kinetic
 {
 public:
     Kinetic();
-     virtual double evaluate(int nParticles,const mat &r) = 0;
+    virtual double evaluate(int nParticles,const mat &r) = 0;
 
     Wavefunction* wf;
+    Config *cfg;
     double alpha,beta;
+
 };
 
 #endif // KINETIC_H

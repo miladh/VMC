@@ -3,10 +3,10 @@
 
 #include "src/Wavefunction/wavefunction.h"
 
-class BasicWaveFunction : public Wavefunction
+class BasicWavefunction : public Wavefunction
 {
 public:
-    BasicWaveFunction();
+    BasicWavefunction();
     double waveFunction(int nParticles, const mat &r);
 
 protected:

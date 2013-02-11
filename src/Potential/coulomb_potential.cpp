@@ -1,9 +1,15 @@
 #include "coulomb_potential.h"
 
-CoulombPotential::CoulombPotential():
-    charge(2)
+CoulombPotential::CoulombPotential(Config *cfg):
+    charge(cfg->lookup("PotentialSettings.charge"))
 {
+    this->cfg=cfg;
 }
+
+/******************************************************************************
+Name:               evaluate
+Description:        Computes the total potential energy
+*/
 
 double CoulombPotential::evaluate(int nParticles,const mat &r){
 
@@ -13,6 +19,13 @@ double CoulombPotential::evaluate(int nParticles,const mat &r){
     return en_energy+ee_energy;
 
 }
+
+/********************************************************************************
+Name:               electron_nucleus_pot
+Description:        Computes potential energy due to electron-nucleus interactions
+*/
+
+
 double CoulombPotential::electron_nucleus_pot(int nParticles, const mat &r){
 
     en_potentialEnergy = 0;
@@ -26,6 +39,11 @@ double CoulombPotential::electron_nucleus_pot(int nParticles, const mat &r){
     return en_potentialEnergy;
 }
 
+
+/*********************************************************************************
+Name:               electron_electron_pot
+Description:        Computes potential energy due to electron-electron interactions
+*/
 
 double CoulombPotential::electron_electron_pot(int nParticles, const mat &r){
 

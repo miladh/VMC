@@ -2,12 +2,18 @@
 #include "src/Wavefunction/jastrowwavefunction.h"
 #include "src/Wavefunction/basicwavefunction.h"
 
-NumericalKinetic::NumericalKinetic():
-    h(0.001),
-    h2(1000000)
+NumericalKinetic::NumericalKinetic(Config *cfg):
+    h(cfg->lookup("NumericalKineticSettings.h")),
+    h2(cfg->lookup("NumericalKineticSettings.h2"))
 {
+    this->cfg=cfg;
 }
 
+
+/************************************************************
+Name:               evaluate
+Description:        Computes the kinetic energy numerically
+*/
 double NumericalKinetic::evaluate(int nParticles,const mat &r){
 
     hVec=h*ones<rowvec>(r.n_cols);
