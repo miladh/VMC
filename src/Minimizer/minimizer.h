@@ -27,7 +27,7 @@ private:
     double stepAlpha,stepBeta;
 
     mat Energy,EnergySquared;
-
+    ofstream myfile;
 };
 
 #endif // MINIMIZER_H

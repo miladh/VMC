@@ -4,6 +4,8 @@ CONFIG -= qt
 
 LIBS += -llapack -larmadillo -lconfig++
 
+TARGET = vmc
+
 SOURCES += src/main.cpp \
     src/includes/lib.cpp \
     src/Wavefunction/wavefunction.cpp \
@@ -18,7 +20,8 @@ SOURCES += src/main.cpp \
     src/Solver/mcbf.cpp \
     src/Hamiltonian/hamiltonian.cpp \
     src/VMCApp/vmcapp.cpp \
-    src/Minimizer/minimizer.cpp
+    src/Minimizer/minimizer.cpp \
+    src/Wavefunction/hydrogenicwavefunction.cpp
 
 HEADERS += \
     src/includes/lib.h \
@@ -34,5 +37,18 @@ HEADERS += \
     src/Solver/mcbf.h \
     src/Hamiltonian/hamiltonian.h \
     src/VMCApp/vmcapp.h \
-    src/Minimizer/minimizer.h
+    src/Minimizer/minimizer.h \
+    src/Wavefunction/hydrogenicwavefunction.h
 
+
+# MPI Settings
+QMAKE_CXX = mpicxx
+QMAKE_CXX_RELEASE = $$QMAKE_CXX
+QMAKE_CXX_DEBUG = $$QMAKE_CXX
+QMAKE_LINK = $$QMAKE_CXX
+QMAKE_CC = mpicc
+
+QMAKE_CFLAGS = $$system(mpicc --showme:compile)
+QMAKE_LFLAGS = $$system(mpicxx --showme:link)
+QMAKE_CXXFLAGS = $$system(mpicxx --showme:compile) -DMPICH_IGNORE_CXX_SEEK
+QMAKE_CXXFLAGS_RELEASE = $$QMAKE_CXXFLAGS

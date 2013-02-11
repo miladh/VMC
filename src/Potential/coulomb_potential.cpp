@@ -5,42 +5,38 @@ CoulombPotential::CoulombPotential():
 {
 }
 
-double CoulombPotential::evaluate(int nDimensions, int nParticles,const mat &r){
+double CoulombPotential::evaluate(int nParticles,const mat &r){
 
-    double en_energy=electron_nucleus_pot(nDimensions,nParticles,r);
-    double ee_energy=electron_electron_pot(nDimensions,nParticles,r);
+    double en_energy=electron_nucleus_pot(nParticles,r);
+    double ee_energy=electron_electron_pot(nParticles,r);
 
     return en_energy+ee_energy;
 
 }
-double CoulombPotential::electron_nucleus_pot(int nDimensions, int nParticles,const mat &r){
+double CoulombPotential::electron_nucleus_pot(int nParticles, const mat &r){
 
-    double en_potentialEnergy = 0;
-    double rSingleParticle = 0;
+    en_potentialEnergy = 0;
+    rSingleParticle = 0;
 
     for(int i = 0; i < nParticles; i++) {
-        rSingleParticle = 0;
-        for(int j = 0; j < nDimensions; j++) {
-            rSingleParticle += r(i,j)*r(i,j);
-        }
-        en_potentialEnergy -= charge / sqrt(rSingleParticle);
+        rSingleParticle = norm(r.row(i),2);
+        en_potentialEnergy -= charge / rSingleParticle;
     }
 
     return en_potentialEnergy;
 }
 
 
-double CoulombPotential::electron_electron_pot(int nDimensions, int nParticles,const mat &r){
+double CoulombPotential::electron_electron_pot(int nParticles, const mat &r){
 
-    double r12 = 0;
-    double ee_potentialEnergy = 0;
+    rij = 0;
+    ee_potentialEnergy = 0;
+
     for(int i = 0; i < nParticles; i++) {
         for(int j = i + 1; j < nParticles; j++) {
-            r12 = 0;
-            for(int k = 0; k < nDimensions; k++) {
-                r12 += (r(i,k) - r(j,k)) * (r(i,k) - r(j,k));
-            }
-            ee_potentialEnergy += 1 / sqrt(r12);
+
+            rij= norm( r.row(i)-r.row(j) ,2);
+            ee_potentialEnergy += 1 / rij;
         }
     }
     return ee_potentialEnergy;

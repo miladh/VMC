@@ -15,7 +15,7 @@ class Kinetic
 {
 public:
     Kinetic();
-     virtual double evaluate(int nDimensions, int nParticles,const mat &r) = 0;
+     virtual double evaluate(int nParticles,const mat &r) = 0;
 
     Wavefunction* wf;
     double alpha,beta;

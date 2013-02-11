@@ -13,14 +13,9 @@ class Wavefunction
 {
 public:
     Wavefunction();
-    virtual double waveFunction(int nDimensions, int nParticles,const mat &r) = 0;
+    virtual double waveFunction(int nParticles,const mat &r) = 0;
     double alpha,beta;
-
-protected:
-    double rSingleParticle;
-    double correlation, argument;
-    double rij;
-
+    double TrialWaveFunction;
 };
 
 #endif // WAVEFUNCTION_H

@@ -7,7 +7,12 @@ class BasicWaveFunction : public Wavefunction
 {
 public:
     BasicWaveFunction();
-    double waveFunction(int nDimensions, int nParticles,const mat &r);
+    double waveFunction(int nParticles, const mat &r);
+
+protected:
+    double rSingleParticle;
+    double correlation, argument;
+    double rij;
 };
 
 #endif // BASICWAVEFUNCTION_H

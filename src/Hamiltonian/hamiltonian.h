@@ -9,7 +9,7 @@ class Hamiltonian
 public:
     Hamiltonian();
 
-    double getEnergy(int nDimension, int nParticles, const mat &r);
+    double getEnergy(int nParticles, const mat &r);
     Potential* potential;
     Kinetic* kinetic;
 

@@ -3,14 +3,19 @@
 
 #include "src/Wavefunction/wavefunction.h"
 
-class JastrowWaveFunction : public Wavefunction
+class JastrowWavefunction : public Wavefunction
 {
 public:
-    JastrowWaveFunction();
+    JastrowWavefunction();
 
 
-    double jastrowFactor(int nDimensions, int nParticles,const mat &r);
-    double waveFunction(int nDimensions, int nParticles,const mat &r);
+    double jastrowFactor(int nParticles, const mat &r);
+    double waveFunction(int nParticles, const mat &r);
+
+protected:
+    double rSingleParticle;
+    double correlation, argument;
+    double rij;
 };
 
 #endif // JASTROWWAVEFUNCTION_H

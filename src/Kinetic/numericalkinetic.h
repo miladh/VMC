@@ -8,10 +8,11 @@ class NumericalKinetic : public Kinetic
 {
 public:
     NumericalKinetic();
-    double evaluate(int nDimensions, int nParticles,const mat &r);
+    double evaluate(int nParticles, const mat &r);
 
 private:
     mat rPlus ,rMinus;
+    rowvec hVec;
     double waveFunctionMinus, waveFunctionPlus, waveFunctionCurrent;
     double KineticEnergy,h,h2;
 };

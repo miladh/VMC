@@ -24,9 +24,9 @@ public:
     Kinetic *kinetic;
     Hamiltonian *hamiltonian;
 
-    int nDimensions,nParticles,nCycles;
+    int nDimensions,nParticles;
     double alpha, beta;
-    long idum;
+
 
     double energySquared;
     double energy;

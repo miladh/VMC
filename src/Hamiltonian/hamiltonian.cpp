@@ -4,12 +4,11 @@ Hamiltonian::Hamiltonian()
 {
 }
 
-double Hamiltonian::getEnergy(int nDimension,int nParticles, const mat &r) {
+double Hamiltonian::getEnergy(int nParticles, const mat &r) {
 
-    potentialEnergy = potential->evaluate(nDimension,nParticles,r);
-    kineticEnergy = kinetic->evaluate(nDimension,nParticles,r);
-    Energy = kineticEnergy;
-//    Energy = kineticEnergy+potentialEnergy;
+    potentialEnergy = potential->evaluate(nParticles,r);
+    kineticEnergy = kinetic->evaluate(nParticles,r);
+    Energy = kineticEnergy+potentialEnergy;
 
     return Energy;
 

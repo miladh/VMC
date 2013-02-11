@@ -3,27 +3,36 @@
 #include "src/includes/lib.h"
 #include "src/Wavefunction/jastrowwavefunction.h"
 #include "src/Wavefunction/basicwavefunction.h"
+#include "src/Wavefunction/hydrogenicwavefunction.h"
 #include "src/Potential/coulomb_potential.h"
 #include "src/Kinetic/numericalkinetic.h"
 #include "src/Kinetic/closedformkinetic.h"
+//#include <mpi.h>
 
-
-VMCApp::VMCApp():
-    nDimensions(3),
-    nParticles(2),
-    nCycles(1000000),
-    idum(-1)
-
+VMCApp::VMCApp()
 {
 }
 
 void VMCApp::runVMCApp()
 {
-    TrialWaveFunction = new JastrowWaveFunction();
+
+
+
+//    // MPI init
+//    int numproc, my_rank;
+//    MPI_Init(NULL, NULL);
+//    MPI_Comm_size(MPI_COMM_WORLD, &numproc);
+//    MPI_Comm_rank(MPI_COMM_WORLD, &my_rank);
+
+//    idum = idum - my_rank - time(NULL);
+//    nCycles /= numproc;
+//    double tot_energy,tot_energy_sq;
+
+    TrialWaveFunction = new JastrowWavefunction();
     TrialWaveFunction->alpha=alpha;
     TrialWaveFunction->beta=beta;
 
-    potential = new CoulombPotential(); //This should be dropped if Close-form is used
+    potential = new CoulombPotential();
 
     kinetic= new ClosedFormKinetic();
     kinetic->wf = TrialWaveFunction;
@@ -34,10 +43,31 @@ void VMCApp::runVMCApp()
     hamiltonian->potential=potential;
     hamiltonian->kinetic=kinetic;
 
-    solver = new MCBF();
-    solver->solve(nDimensions,nParticles,hamiltonian,TrialWaveFunction,nCycles,idum);
-    energySquared= solver->energySquared;
-    energy =solver->energy;
+    solver = new MCBF(hamiltonian,TrialWaveFunction);
+    solver->solve();
+
+
+//    energy =solver->energy;
+//    MPI_Allreduce(&energy, &tot_energy, 1, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD);
+//    tot_energy /= numproc;
+
+//    energySquared= solver->energySquared;
+//    MPI_Allreduce(&energySquared, &tot_energy_sq, 1, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD);
+//    tot_energy_sq /= numproc;
+
+
+//    // Printing progress.
+//    if (my_rank == 0) {
+//        cout << alpha << ", " << beta << " Energy = " << tot_energy
+//                << ", Variance = " << tot_energy_sq - tot_energy * tot_energy
+//                << ", Sigma = " << sqrt(tot_energy_sq - tot_energy * tot_energy)
+//                << ", MC cycles = " << nCycles * numproc
+//                << "\n";
+//    }
+    energy= solver->energy;
+    energySquared =solver->energySquared;
+
+
 }
 
 

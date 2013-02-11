@@ -6,19 +6,16 @@ BasicWaveFunction::BasicWaveFunction()
 
 
 
-double BasicWaveFunction::waveFunction(int nDimensions, int nParticles, const mat &r)
+double BasicWaveFunction::waveFunction( int nParticles, const mat &r)
 {
     argument=0.0;
 
     for (int i=0; i<nParticles; i++) {
-        rSingleParticle=0;
-        for (int j=0; j<nDimensions; j++) {
-            rSingleParticle += r(i,j)*r(i,j);
-        }
-        argument += sqrt(rSingleParticle);
+        rSingleParticle = norm(r.row(i),2);
+        argument += rSingleParticle;
     }
 
-    double TrialWaveFunction = exp(-alpha* argument);
+    TrialWaveFunction = exp(-alpha* argument);
     return TrialWaveFunction;
 
 }

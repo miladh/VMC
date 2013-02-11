@@ -7,7 +7,7 @@ class ClosedFormKinetic : public Kinetic
 {
 public:
     ClosedFormKinetic();
-    double evaluate(int nDimensions, int nParticles,const mat &r);
+    double evaluate(int nParticles, const mat &r);
     double localEnergy;
 
 

@@ -22,7 +22,7 @@ class Solver
 {
 public:
     Solver();
-     virtual void solve(int nDimensions,int nParticles, Hamiltonian* hamiltonian, Wavefunction* TrialWaveFunction, int nCycles, long idum) = 0;
+     virtual void solve() = 0;
     double energySquared;
     double energy;
 
