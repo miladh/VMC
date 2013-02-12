@@ -1,12 +1,10 @@
 #include "minimizer.h"
-//#include <mpi.h>
+
+
 
 Minimizer::Minimizer()
 {
 }
-
-
-
 
 /*****************************************************************************
 Name:               runMinimizer
@@ -23,7 +21,7 @@ void Minimizer::runMinimizaer(){
     stepBeta=(maxBeta-minBeta)/nVarBeta;
 
     myfile.open ("../vmc/src/results");
-   //myfile << "Alpha   " << "Beta    " << "Energy    " << endl;
+    //myfile << "Alpha   " << "Beta    " << "Energy    " << endl;
 
     for(int i=0; i<nVarAlpha;i++){
         vmcapp->alpha=alpha;
@@ -32,12 +30,12 @@ void Minimizer::runMinimizaer(){
         for(int j=0; j<nVarBeta;j++){
 
             vmcapp->beta=beta;
-            vmcapp->runVMCApp();
+            vmcapp->runVMCApp(nCycles,idum);
 
             Energy(i,j)=vmcapp->energy;
             EnergySquared(i,j)=vmcapp->energySquared;
 
-            cout << "alpha: " <<alpha << "  beta:    "<< beta << "  Energy: "<< Energy(i,j) <<endl;
+            //cout << "alpha: " <<alpha << "  beta:    "<< beta << "  Energy: "<< Energy(i,j) <<endl;
 
             myfile <<alpha <<"     "<<  beta <<"     "<<Energy(i,j) <<endl;
 
@@ -52,7 +50,7 @@ void Minimizer::runMinimizaer(){
 
 
 /************************************************************
-Name:               eloadConfigurations
+Name:               loadConfigurations
 Description:        loads different variabels
 */
 void Minimizer::loadConfiguration(Config *cfg){
@@ -62,5 +60,7 @@ void Minimizer::loadConfiguration(Config *cfg){
     maxBeta=cfg->lookup("MinimizerSettings.maxbeta");
     nVarAlpha=cfg->lookup("MinimizerSettings.nVarAlpha");
     nVarBeta=cfg->lookup("MinimizerSettings.nVarBeta");
+    nCycles=cfg->lookup("AppSettings.cycles");
+    idum=cfg->lookup("AppSettings.idum");
     vmcapp= new VMCApp(cfg);
 }

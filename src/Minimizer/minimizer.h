@@ -29,6 +29,9 @@ private:
     int nVarAlpha,nVarBeta;
     double stepAlpha,stepBeta;
 
+    int nCycles;
+    long idum;
+
     mat Energy,EnergySquared;
     ofstream myfile;
 };

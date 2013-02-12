@@ -9,7 +9,7 @@
 #include <armadillo>
 #include <iostream>
 #include <math.h>
-
+#include <iomanip>
 
 MCBF::MCBF(Hamiltonian *hamiltonian, Wavefunction* TrialWaveFunction)
 {
@@ -19,23 +19,22 @@ MCBF::MCBF(Hamiltonian *hamiltonian, Wavefunction* TrialWaveFunction)
 }
 
 
-
-
 /************************************************************
 Name:               solve
 Description:        starts a MC-sample
 */
 
-void MCBF::solve()
+void MCBF::solve(int nCycles, long idum)
 
 {
-    stepLength=optimalStepLength();
-    //cout << "step"<<stepLength<<endl;
-    MetropolisAlgo(nCycles,stepLength);
+    this->idum=idum;
+    stepLength=optimalStepLength(idum);
+    MetropolisAlgo(nCycles,stepLength,idum);
+
 
 }
 
-void MCBF::MetropolisAlgo(int nCycles, double stepLength){
+void MCBF::MetropolisAlgo(int nCycles, double stepLength,long idum){
     acceptedSteps=0;
     rOld = zeros<mat>(nParticles, nDimensions);
     rNew = zeros<mat>(nParticles, nDimensions);
@@ -96,7 +95,6 @@ void MCBF::MetropolisAlgo(int nCycles, double stepLength){
     energy = energySum/(nCycles * nParticles);
     energySquared = energySquaredSum/(nCycles * nParticles);
     acceptedSteps= acceptedSteps/nParticles;
-    cout << "accepted "<< acceptedSteps/(nCycles)<<endl;
 
 }
 
@@ -107,15 +105,15 @@ Name:               optimalStepLength
 Description:        Computes the kinetic energy in closedfom
 */
 
-double MCBF::optimalStepLength() {
+double MCBF::optimalStepLength(long idum) {
     double stepMinMax,stepMin;
 
 
     while ((maxStepLength - minStepLength) > tolerance) {
-        MetropolisAlgo(nPreCycles,minStepLength);
+        MetropolisAlgo(nPreCycles,minStepLength,idum);
         stepMin=acceptedSteps/nPreCycles-0.5;
 
-        MetropolisAlgo(nPreCycles,(minStepLength + maxStepLength)/2);
+        MetropolisAlgo(nPreCycles,(minStepLength + maxStepLength)/2,idum);
         stepMinMax=acceptedSteps/nPreCycles-0.5;
 
 
@@ -128,6 +126,24 @@ double MCBF::optimalStepLength() {
 
     return (minStepLength + maxStepLength) / 2;
 }
+
+
+/************************************************************
+Name:               loadConfiguration
+Description:        loads different variables
+*/
+void MCBF::loadConfiguration(Config *cfg){
+    nDimensions=cfg->lookup("SolverSettings.dim");
+    nParticles=cfg->lookup("SolverSettings.N");
+
+    nPreCycles=cfg->lookup("OptimalStepSettings.preCycles");
+    minStepLength = cfg->lookup("OptimalStepSettings.minstep");
+    maxStepLength = cfg->lookup("OptimalStepSettings.maxstep");
+    tolerance = cfg->lookup("OptimalStepSettings.tolerance");
+
+}
+
+
 
 
 
@@ -159,23 +175,3 @@ double MCBF::optimalStepLength() {
 //    return xNew;
 
 //}
-
-
-
-/************************************************************
-Name:               loadConfiguration
-Description:        loads different variables
-*/
-void MCBF::loadConfiguration(Config *cfg){
-    nDimensions=cfg->lookup("SolverSettings.dim");
-    nParticles=cfg->lookup("SolverSettings.N");
-    nCycles=cfg->lookup("SolverSettings.cycles");
-    idum=cfg->lookup("SolverSettings.idum");
-
-    nPreCycles=cfg->lookup("OptimalStepSettings.preCycles");
-    minStepLength = cfg->lookup("OptimalStepSettings.minstep");
-    maxStepLength = cfg->lookup("OptimalStepSettings.maxstep");
-    tolerance = cfg->lookup("OptimalStepSettings.tolerance");
-
-}
-

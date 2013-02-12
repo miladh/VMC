@@ -16,9 +16,8 @@ using namespace libconfig;
 class VMCApp
 {
 public:
-    VMCApp(Config *cfg);
-    void runVMCApp();
-    void loadConfiguration(Config *cfg);
+    VMCApp(Config* cfg);
+    void runVMCApp(int nCycles, long idum);
 
     Config *cfg;
     Solver* solver;
@@ -27,9 +26,13 @@ public:
     Kinetic *kinetic;
     Hamiltonian *hamiltonian;
 
-    int nDimensions,nParticles;
+
+    int nDimensions,nParticles,nCycles;
+    int nProcess, myRank;
+    long idum;
     double alpha, beta;
-    double energy,energySquared;
+    double energy,energySquared,totEnergy,totEnergySquared;
+    double tmp;
 
 
 private:

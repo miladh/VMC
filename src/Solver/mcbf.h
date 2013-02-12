@@ -8,14 +8,14 @@ class MCBF : public Solver
 {
 public:
     MCBF(Hamiltonian *hamiltonian, Wavefunction *TrialWaveFunction);
-    void solve();
+    void solve(int nCycles, long idum);
     void loadConfiguration(Config *cfg);
 
 private:
     int nDimensions,nParticles;
     int nCycles,nPreCycles;
     long idum;
-    double stepLength,acceptedSteps;
+    double stepLength;
 
     Hamiltonian *hamiltonian;
     Wavefunction* TrialWaveFunction;
@@ -27,8 +27,8 @@ private:
     double energySum,energySquaredSum, deltaE;
     double minStepLength, maxStepLength, tolerance;
 
-    void MetropolisAlgo(int nCycles, double stepLength);
-    double optimalStepLength();
+    void MetropolisAlgo(int nCycles, double stepLength, long idum);
+    double optimalStepLength(long idum);
 };
 
 #endif // MCBF_H
