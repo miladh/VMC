@@ -6,6 +6,9 @@ LIBS += -llapack -larmadillo -lconfig++
 
 TARGET = vmc
 
+QMAKE_CXXFLAGS += -std=c++0x
+QMAKE_CXXFLAGS_RELEASE += -std=c++0x
+
 SOURCES += src/main.cpp \
     src/includes/lib.cpp \
     src/Wavefunction/wavefunction.cpp \
@@ -21,7 +24,8 @@ SOURCES += src/main.cpp \
     src/Hamiltonian/hamiltonian.cpp \
     src/VMCApp/vmcapp.cpp \
     src/Minimizer/minimizer.cpp \
-    src/Wavefunction/hydrogenicwavefunction.cpp
+    src/Wavefunction/hydrogenicwavefunction.cpp \
+    src/Solver/mcis.cpp
 
 HEADERS += \
     src/includes/lib.h \
@@ -38,7 +42,23 @@ HEADERS += \
     src/Hamiltonian/hamiltonian.h \
     src/VMCApp/vmcapp.h \
     src/Minimizer/minimizer.h \
-    src/Wavefunction/hydrogenicwavefunction.h
+    src/Wavefunction/hydrogenicwavefunction.h \
+    src/Solver/mcis.h
+
+
+release {
+    DEFINES += ARMA_NO_DEBUG
+    QMAKE_LFLAGS -= -O1
+    QMAKE_LFLAGS += -O3
+    QMAKE_LFLAGS_RELEASE -= -O1
+    QMAKE_LFLAGS_RELEASE += -O3
+    QMAKE_CXXFLAGS -= -O2
+    QMAKE_CXXFLAGS += -O3
+    QMAKE_CXXFLAGS_RELEASE -= -O2
+    QMAKE_CXXFLAGS_RELEASE += -O3
+}
+
+
 
 
 # MPI Settings

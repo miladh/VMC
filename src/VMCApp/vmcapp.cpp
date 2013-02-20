@@ -1,5 +1,6 @@
 #include "vmcapp.h"
 #include "src/Solver/mcbf.h"
+#include "src/Solver/mcis.h"
 #include "src/includes/lib.h"
 #include "src/Wavefunction/jastrowwavefunction.h"
 #include "src/Wavefunction/basicwavefunction.h"
@@ -44,7 +45,7 @@ void VMCApp::runVMCApp(int nCycles, long idum)
     hamiltonian->potential=potential;
     hamiltonian->kinetic=kinetic;
 
-    solver = new MCBF(hamiltonian,TrialWaveFunction);
+    solver = new MCIS(hamiltonian,TrialWaveFunction);
     solver->loadConfiguration(cfg);
     solver->solve(nCycles,idum);
 
@@ -60,11 +61,14 @@ void VMCApp::runVMCApp(int nCycles, long idum)
 
     energy= totEnergy;
     energySquared =totEnergySquared;
+    Variance = totEnergySquared - totEnergy * totEnergy;
+    Sigma = sqrt(Variance);
+    Acceptance = solver->acceptedSteps/nCycles;
 
 
     if (myRank == 0) {
         cout << alpha << ", " << beta << " Energy = " << totEnergy
-             << ", Variance = " << totEnergySquared - totEnergy * totEnergy
+             << ", Variance = " << Variance
              //<< ", Sigma = " << sqrt(totEnergySquared - totEnergy * totEnergy)
              << ", Accepted = " << solver->acceptedSteps / nCycles
              //<< ", MC cycles = " << nCycles * nProcess
@@ -73,7 +77,16 @@ void VMCApp::runVMCApp(int nCycles, long idum)
 
 }
 
+//void VMCApp::writeToFile(ofstream myfile){
+//    this->myfile=myfile;
 
+//    if (myRank == 0) {
+//        myfile <<alpha <<"     "<<  beta <<"     "<<energy
+//               <<"     "<<Variance <<"     "<<Sigma
+//               <<"     "<<Acceptance<< endl;
+//    }
+
+//}
 
 
 

@@ -14,14 +14,17 @@ void Minimizer::runMinimizaer(){
 
     Energy=zeros<mat>(nVarAlpha,nVarBeta);
     EnergySquared=zeros<mat>(nVarAlpha,nVarBeta);
+    Variance=zeros<mat>(nVarAlpha,nVarBeta);
+    Acceptance=zeros<mat>(nVarAlpha,nVarBeta);
+    Sigma=zeros<mat>(nVarAlpha,nVarBeta);
 
     alpha=minAlpha;
     beta=minBeta;
     stepAlpha=(maxAlpha-minAlpha)/nVarAlpha;
     stepBeta=(maxBeta-minBeta)/nVarBeta;
 
-    myfile.open ("../vmc/src/results");
-    //myfile << "Alpha   " << "Beta    " << "Energy    " << endl;
+    myfile.open ("../vmc/results/results");
+   // myfile << "Alpha   " << "Beta    " << "Energy       " << "Variance    "<< "Sigma       "<< "Acceptance    "<< endl;
 
     for(int i=0; i<nVarAlpha;i++){
         vmcapp->alpha=alpha;
@@ -34,10 +37,12 @@ void Minimizer::runMinimizaer(){
 
             Energy(i,j)=vmcapp->energy;
             EnergySquared(i,j)=vmcapp->energySquared;
+//            Variance(i,j)=vmcapp->Variance;
+//            Sigma(i,j)=vmcapp->Sigma;
+//            Acceptance(i,j)= vmcapp->Acceptance;
 
-            //cout << "alpha: " <<alpha << "  beta:    "<< beta << "  Energy: "<< Energy(i,j) <<endl;
 
-            myfile <<alpha <<"     "<<  beta <<"     "<<Energy(i,j) <<endl;
+            myfile <<alpha <<"     "<<  beta <<"     "<<Energy(i,j)<<endl;
 
             beta+=stepBeta;
 
@@ -64,3 +69,6 @@ void Minimizer::loadConfiguration(Config *cfg){
     idum=cfg->lookup("AppSettings.idum");
     vmcapp= new VMCApp(cfg);
 }
+
+
+

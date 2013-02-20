@@ -13,7 +13,7 @@ public:
 
 private:
     int nDimensions,nParticles;
-    int nCycles,nPreCycles;
+    int nCycles,nPreCycles,thermalization;
     long idum;
     double stepLength;
 
@@ -27,7 +27,7 @@ private:
     double energySum,energySquaredSum, deltaE;
     double minStepLength, maxStepLength, tolerance;
 
-    void MetropolisAlgo(int nCycles, double stepLength, long idum);
+    void MetropolisAlgoBF(int nCycles, double stepLength, long idum);
     double optimalStepLength(long idum);
 };
 

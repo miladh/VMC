@@ -16,6 +16,7 @@ MCBF::MCBF(Hamiltonian *hamiltonian, Wavefunction* TrialWaveFunction)
     this->hamiltonian=hamiltonian;
     this->TrialWaveFunction=TrialWaveFunction;
 
+
 }
 
 
@@ -29,12 +30,12 @@ void MCBF::solve(int nCycles, long idum)
 {
     this->idum=idum;
     stepLength=optimalStepLength(idum);
-    MetropolisAlgo(nCycles,stepLength,idum);
-
+    //stepLength=1;
+    MetropolisAlgoBF(nCycles,stepLength,idum);
 
 }
 
-void MCBF::MetropolisAlgo(int nCycles, double stepLength,long idum){
+void MCBF::MetropolisAlgoBF(int nCycles, double stepLength,long idum){
     acceptedSteps=0;
     rOld = zeros<mat>(nParticles, nDimensions);
     rNew = zeros<mat>(nParticles, nDimensions);
@@ -55,7 +56,7 @@ void MCBF::MetropolisAlgo(int nCycles, double stepLength,long idum){
     rNew = rOld;
 
     // loop over Monte Carlo cycles
-    for(int cycle = 0; cycle < nCycles; cycle++) {
+    for(int cycle = 0; cycle < nCycles+thermalization; cycle++) {
 
         // Store the current value of the wave function
         waveFunctionOld = TrialWaveFunction->waveFunction(nParticles,rOld);
@@ -64,32 +65,32 @@ void MCBF::MetropolisAlgo(int nCycles, double stepLength,long idum){
         for(int i = 0; i < nParticles; i++) {
             for(int j = 0; j < nDimensions; j++) {
                 rNew(i,j) = rOld(i,j) + stepLength*(ran2(&idum) - 0.5);
-                //rNew(i,j) = rOld(i,j) + sqrt(stepLength)*as_scalar(randn(1));
             }
-            //rNew.row(i) += sqrt(stepLength)*randn<rowvec>(nDimensions);
+           // rNew.row(i) =rOld.row(i)+sqrt(stepLength)*randn<rowvec>(nDimensions);
 
             // Recalculate the value of the wave function
             waveFunctionNew = TrialWaveFunction->waveFunction(nParticles,rNew);
 
             // Check for step acceptance (if yes, update position, if no, reset position)
             if(ran2(&idum) <= (waveFunctionNew*waveFunctionNew) / (waveFunctionOld*waveFunctionOld)) {
-                for(int j = 0; j < nDimensions; j++) {
-                    rOld(i,j) = rNew(i,j);
+                    rOld.row(i) = rNew.row(i);
                     waveFunctionOld = waveFunctionNew;
-                }
 
-            acceptedSteps++;
+                if(cycle > thermalization){
+                    acceptedSteps++;
+                }
 
             } else {
-                for(int j = 0; j < nDimensions; j++) {
-                    rNew(i,j) = rOld(i,j);
-                }
-            }
-            // update energies
-            deltaE =hamiltonian->getEnergy(nParticles,rNew);
+                    rNew.row(i) = rOld.row(i);
 
+            }
+
+            // update energies
+            if(cycle > thermalization){
+            deltaE =hamiltonian->getEnergy(nParticles,rNew);
             energySum += deltaE;
             energySquaredSum += deltaE*deltaE;
+            }
         }
     }
     energy = energySum/(nCycles * nParticles);
@@ -102,7 +103,7 @@ void MCBF::MetropolisAlgo(int nCycles, double stepLength,long idum){
 
 /************************************************************
 Name:               optimalStepLength
-Description:        Computes the kinetic energy in closedfom
+Description:        Finds the optimal steplength using intersection method
 */
 
 double MCBF::optimalStepLength(long idum) {
@@ -110,10 +111,10 @@ double MCBF::optimalStepLength(long idum) {
 
 
     while ((maxStepLength - minStepLength) > tolerance) {
-        MetropolisAlgo(nPreCycles,minStepLength,idum);
+        MetropolisAlgoBF(nPreCycles,minStepLength,idum);
         stepMin=acceptedSteps/nPreCycles-0.5;
 
-        MetropolisAlgo(nPreCycles,(minStepLength + maxStepLength)/2,idum);
+        MetropolisAlgoBF(nPreCycles,(minStepLength + maxStepLength)/2,idum);
         stepMinMax=acceptedSteps/nPreCycles-0.5;
 
 
@@ -136,6 +137,7 @@ void MCBF::loadConfiguration(Config *cfg){
     nDimensions=cfg->lookup("SolverSettings.dim");
     nParticles=cfg->lookup("SolverSettings.N");
 
+    thermalization=cfg->lookup("AppSettings.thermalization");
     nPreCycles=cfg->lookup("OptimalStepSettings.preCycles");
     minStepLength = cfg->lookup("OptimalStepSettings.minstep");
     maxStepLength = cfg->lookup("OptimalStepSettings.maxstep");
@@ -145,33 +147,3 @@ void MCBF::loadConfiguration(Config *cfg){
 
 
 
-
-
-//    nPreCycles=1000;
-//    double h=0.01;
-//    double xOld=0;
-//    double xNew=3;
-//    double plus,minus;
-//    double f,fminus,fplus,ff;
-
-
-//    while(abs(xNew-xOld)>=0.01){
-//        xOld=xNew;
-//        minus=xOld-h;
-//        plus=xOld+h;
-
-//        MetropolisAlgo(nPreCycles,xOld);
-//        f= acceptedSteps/nPreCycles-0.5;
-
-//        MetropolisAlgo(nPreCycles,minus);
-//        fminus= acceptedSteps/nPreCycles-0.5;
-
-//        MetropolisAlgo(nPreCycles,plus);
-//        fplus= acceptedSteps/nPreCycles-0.5;
-
-//        ff= (fplus-fminus)/(2*h);
-//        xNew= xOld -f/ff;
-//    }
-//    return xNew;
-
-//}

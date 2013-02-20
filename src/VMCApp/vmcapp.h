@@ -18,6 +18,7 @@ class VMCApp
 public:
     VMCApp(Config* cfg);
     void runVMCApp(int nCycles, long idum);
+    void writeToFile(ofstream myfile);
 
     Config *cfg;
     Solver* solver;
@@ -32,8 +33,10 @@ public:
     long idum;
     double alpha, beta;
     double energy,energySquared,totEnergy,totEnergySquared;
+    double Variance, Acceptance,Sigma;
     double tmp;
 
+    ofstream myfile;
 
 private:
     mat rOld;

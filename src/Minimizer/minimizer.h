@@ -21,6 +21,7 @@ public:
     void loadConfiguration(Config *cfg);
     Config *cfg;
     VMCApp* vmcapp;
+    ofstream myfile;
 
 
 private:
@@ -32,8 +33,8 @@ private:
     int nCycles;
     long idum;
 
-    mat Energy,EnergySquared;
-    ofstream myfile;
+    mat Energy,EnergySquared,Variance, Acceptance,Sigma;
+
 };
 
 #endif // MINIMIZER_H
