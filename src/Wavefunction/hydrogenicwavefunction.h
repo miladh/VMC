@@ -8,6 +8,7 @@ class HydrogenicWavefunction : public Wavefunction
 public:
     HydrogenicWavefunction(Config *cfg);
     double waveFunction(int nParticles, const mat &r);
+    double laplace(int nParticles, const mat &r, Config *cfg);
     Config* cfg;
 
 private:
@@ -15,6 +16,7 @@ private:
     double nFactor;
     double rSingleParticle;
     double argument;
+    double r1, r2, rij;
 
 
 };

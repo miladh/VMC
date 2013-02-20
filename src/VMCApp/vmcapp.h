@@ -16,9 +16,18 @@ using namespace libconfig;
 class VMCApp
 {
 public:
-    VMCApp(Config* cfg);
+    VMCApp(Config* cfg, const int &myRank, const int &nProcess);
     void runVMCApp(int nCycles, long idum);
     void writeToFile(ofstream myfile);
+    double getEnergy();
+    double getEnergySquared();
+    double getVariance();
+    double getSigma();
+    double getAcceptanceRate();
+
+    Wavefunction* setWaveFunction();
+    Solver* setSolverMethod();
+
 
     Config *cfg;
     Solver* solver;
@@ -26,21 +35,18 @@ public:
     Potential *potential;
     Kinetic *kinetic;
     Hamiltonian *hamiltonian;
+    double alpha, beta;
 
-
+private:
     int nDimensions,nParticles,nCycles;
     int nProcess, myRank;
     long idum;
-    double alpha, beta;
-    double energy,energySquared,totEnergy,totEnergySquared;
+
+    double totEnergy,totEnergySquared;
     double Variance, Acceptance,Sigma;
     double tmp;
 
     ofstream myfile;
-
-private:
-    mat rOld;
-    mat rNew;
 
 };
 

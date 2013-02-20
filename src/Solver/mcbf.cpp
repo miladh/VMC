@@ -4,8 +4,7 @@
 #include "src/Wavefunction/basicwavefunction.h"
 #include "src/Hamiltonian/hamiltonian.h"
 #include "src/Potential/coulomb_potential.h"
-#include "src/Kinetic/numericalkinetic.h"
-#include "src/Kinetic/closedformkinetic.h"
+#include "src/Kinetic/kinetic.h"
 #include <armadillo>
 #include <iostream>
 #include <math.h>
@@ -30,7 +29,6 @@ void MCBF::solve(int nCycles, long idum)
 {
     this->idum=idum;
     stepLength=optimalStepLength(idum);
-    //stepLength=1;
     MetropolisAlgoBF(nCycles,stepLength,idum);
 
 }

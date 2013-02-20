@@ -8,11 +8,14 @@ class BasicWavefunction : public Wavefunction
 public:
     BasicWavefunction();
     double waveFunction(int nParticles, const mat &r);
+    double laplace(int nParticles, const mat &r, Config *cfg);
+    double KineticEnergy(int nParticles, const mat &r);
 
-protected:
+private:
     double rSingleParticle;
     double correlation, argument;
-    double rij;
+    int charge;
+    double r1, r2, rij;
 };
 
 #endif // BASICWAVEFUNCTION_H

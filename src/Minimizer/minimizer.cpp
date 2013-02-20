@@ -2,8 +2,10 @@
 
 
 
-Minimizer::Minimizer()
+Minimizer::Minimizer(const int &myRank, const int &nProcess)
 {
+    this->myRank=myRank;
+    this->nProcess=nProcess;
 }
 
 /*****************************************************************************
@@ -12,19 +14,13 @@ Description:        Starts MC-calculation for different variational parameters
 */
 void Minimizer::runMinimizaer(){
 
-    Energy=zeros<mat>(nVarAlpha,nVarBeta);
-    EnergySquared=zeros<mat>(nVarAlpha,nVarBeta);
-    Variance=zeros<mat>(nVarAlpha,nVarBeta);
-    Acceptance=zeros<mat>(nVarAlpha,nVarBeta);
-    Sigma=zeros<mat>(nVarAlpha,nVarBeta);
-
     alpha=minAlpha;
     beta=minBeta;
     stepAlpha=(maxAlpha-minAlpha)/nVarAlpha;
     stepBeta=(maxBeta-minBeta)/nVarBeta;
 
     myfile.open ("../vmc/results/results");
-   // myfile << "Alpha   " << "Beta    " << "Energy       " << "Variance    "<< "Sigma       "<< "Acceptance    "<< endl;
+    myfile << "Alpha   " << "Beta    " << "Energy       " << "Variance    "<< "Sigma       "<< "Acceptance    "<< endl;
 
     for(int i=0; i<nVarAlpha;i++){
         vmcapp->alpha=alpha;
@@ -35,23 +31,43 @@ void Minimizer::runMinimizaer(){
             vmcapp->beta=beta;
             vmcapp->runVMCApp(nCycles,idum);
 
-            Energy(i,j)=vmcapp->energy;
-            EnergySquared(i,j)=vmcapp->energySquared;
-//            Variance(i,j)=vmcapp->Variance;
-//            Sigma(i,j)=vmcapp->Sigma;
-//            Acceptance(i,j)= vmcapp->Acceptance;
+            Energy=vmcapp->getEnergy();
+            EnergySquared=vmcapp->getEnergySquared();
+            Variance=vmcapp->getVariance();
+            Sigma=vmcapp->getSigma();
+            Acceptance= vmcapp->getAcceptanceRate();
 
-
-            myfile <<alpha <<"     "<<  beta <<"     "<<Energy(i,j)<<endl;
-
+            if (myRank == 0) {
+                writeToFile();
+            }
             beta+=stepBeta;
-
         }
         alpha+=stepAlpha;
     }
+
     myfile.close();
 }
 
+
+/************************************************************
+Name:               loadConfigurations
+Description:        loads different variabels
+*/
+void Minimizer::writeToFile(){
+    myfile <<alpha <<"     "<<  beta <<"     "<<Energy
+          <<"     "<<Variance<<"     "<<Sigma
+         <<"     "<<Acceptance<< endl;
+
+    cout << alpha << ", " << beta << " Energy = " << Energy
+         << ", Variance = " << Variance
+            //<< ", Sigma = " << sqrt(totEnergySquared - totEnergy * totEnergy)
+         << ", Accepted = " << Acceptance
+            //<< ", MC cycles = " << nCycles * nProcess
+         << "\n";
+
+
+
+}
 
 
 /************************************************************
@@ -67,8 +83,7 @@ void Minimizer::loadConfiguration(Config *cfg){
     nVarBeta=cfg->lookup("MinimizerSettings.nVarBeta");
     nCycles=cfg->lookup("AppSettings.cycles");
     idum=cfg->lookup("AppSettings.idum");
-    vmcapp= new VMCApp(cfg);
+    vmcapp= new VMCApp(cfg,myRank,nProcess);
 }
-
 
 

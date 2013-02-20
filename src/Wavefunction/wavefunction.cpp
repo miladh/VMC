@@ -5,7 +5,10 @@ Wavefunction::Wavefunction()
 }
 
 
-double Wavefunction::laplaceNumerical(int nParticles,const mat &r){
+double Wavefunction::laplaceNumerical(int nParticles, const mat &r, Config *cfg){
+    h=cfg->lookup("NumericalKineticSettings.h");
+    h2=cfg->lookup("NumericalKineticSettings.h2");
+
     hVec=h*ones<rowvec>(r.n_cols);
     rPlus = zeros<mat>(nParticles, r.n_cols);
     rMinus = zeros<mat>(nParticles, r.n_cols);
@@ -15,14 +18,14 @@ double Wavefunction::laplaceNumerical(int nParticles,const mat &r){
     waveFunctionMinus = 0;
     waveFunctionPlus = 0;
 
-    waveFunctionCurrent = wf->waveFunction(nParticles,r);
+    waveFunctionCurrent = waveFunction(nParticles,r);
 
     ddwaveFunction = 0;
     for(int i = 0; i < nParticles; i++) {
             rPlus.row(i) += hVec;
             rMinus.row(i) -= hVec;
-            waveFunctionMinus = wf->waveFunction(nParticles,rMinus);
-            waveFunctionPlus = wf->waveFunction(nParticles,rPlus);
+            waveFunctionMinus = waveFunction(nParticles,rMinus);
+            waveFunctionPlus = waveFunction(nParticles,rPlus);
             ddwaveFunction += (waveFunctionMinus + waveFunctionPlus - 2 * waveFunctionCurrent);
             rPlus.row(i) = r.row(i);
             rMinus.row(i)= r.row(i);

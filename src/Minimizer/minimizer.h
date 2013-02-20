@@ -15,13 +15,15 @@ using namespace libconfig;
 class Minimizer
 {
 public:
-    Minimizer();
+    Minimizer(const int &myRank, const int &nProcess);
 
     void runMinimizaer();
     void loadConfiguration(Config *cfg);
+    void writeToFile();
     Config *cfg;
     VMCApp* vmcapp;
     ofstream myfile;
+
 
 
 private:
@@ -32,8 +34,8 @@ private:
 
     int nCycles;
     long idum;
-
-    mat Energy,EnergySquared,Variance, Acceptance,Sigma;
+    int nProcess, myRank;
+    double Energy,EnergySquared,Variance, Acceptance,Sigma;
 
 };
 
