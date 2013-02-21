@@ -23,7 +23,10 @@ SOURCES += src/main.cpp \
     src/VMCApp/vmcapp.cpp \
     src/Minimizer/minimizer.cpp \
     src/Wavefunction/hydrogenicwavefunction.cpp \
-    src/Solver/mcis.cpp
+    src/Solver/mcis.cpp \
+    src/Orbitals/orbitals.cpp \
+    src/Orbitals/hydrogenic.cpp \
+    src/Jastrow/jastrow.cpp
 
 HEADERS += \
     src/includes/lib.h \
@@ -40,7 +43,10 @@ HEADERS += \
     src/Minimizer/minimizer.h \
     src/Wavefunction/hydrogenicwavefunction.h \
     src/Solver/mcis.h \
-    src/includes/Defines.h
+    src/includes/Defines.h \
+    src/Orbitals/orbitals.h \
+    src/Orbitals/hydrogenic.h \
+    src/Jastrow/jastrow.h
 
 
 release {

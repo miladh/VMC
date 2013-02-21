@@ -11,11 +11,6 @@ public:
     double laplace(int nParticles, const mat &r, Config *cfg);
     double KineticEnergy(int nParticles, const mat &r);
 
-private:
-    double rSingleParticle;
-    double correlation, argument;
-    int charge;
-    double r1, r2, rij;
 };
 
 #endif // BASICWAVEFUNCTION_H

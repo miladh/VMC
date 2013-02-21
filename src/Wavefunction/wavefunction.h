@@ -4,6 +4,8 @@
 #include <armadillo>
 #include <iostream>
 #include <libconfig.h++>
+#include"src/Orbitals/hydrogenic.h"
+#include "src/Jastrow/jastrow.h"
 
 using namespace arma;
 using namespace std;
@@ -27,18 +29,20 @@ public:
     //virtual double gradientNumerical(int nParticles,const mat &r);
 
     double ddwaveFunction;
-    double alpha,beta;
     double TrialWaveFunction;
     double kineticEnergy;
     bool analytic;
     Config* cfg;
-
+    Orbitals* orbitals;
+    Jastrow jas;
 
 private:
     mat rPlus ,rMinus;
     rowvec hVec;
     double waveFunctionMinus, waveFunctionPlus, waveFunctionCurrent;
     double h,h2;
+
+
 
 };
 

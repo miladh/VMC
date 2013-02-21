@@ -14,9 +14,7 @@ public:
 private:
     int charge;
     double nFactor;
-    double rSingleParticle;
-    double argument;
-    double r1, r2, rij;
+
 
 
 };

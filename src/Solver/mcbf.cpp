@@ -28,7 +28,7 @@ void MCBF::solve(int nCycles, long idum)
 
 {
     this->idum=idum;
-    stepLength=optimalStepLength(idum);
+    stepLength=1;
     MetropolisAlgoBF(nCycles,stepLength,idum);
 
 }

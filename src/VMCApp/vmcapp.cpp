@@ -31,8 +31,10 @@ void VMCApp::runVMCApp(int nCycles, long idum)
     nCycles /= nProcess;
 
     TrialWaveFunction = setWaveFunction();
-    TrialWaveFunction->alpha=alpha;
-    TrialWaveFunction->beta=beta;
+    TrialWaveFunction->jas.alpha=alpha;
+    TrialWaveFunction->jas.beta=beta;
+    TrialWaveFunction->orbitals->k=alpha;
+
 
     potential = new CoulombPotential(cfg);
 
@@ -65,7 +67,7 @@ void VMCApp::runVMCApp(int nCycles, long idum)
 
 
 /************************************************************
-Name:               setWaveFunction
+Name:               setSolverMethod
 Description:
 */
 Solver* VMCApp::setSolverMethod(){

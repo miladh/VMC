@@ -2,6 +2,7 @@
 
 Wavefunction::Wavefunction()
 {
+ orbitals = new Hydrogenic;
 }
 
 

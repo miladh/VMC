@@ -2,6 +2,7 @@
 #define JASTROWWAVEFUNCTION_H
 
 #include "src/Wavefunction/wavefunction.h"
+#include "src/Jastrow/jastrow.h"
 
 class JastrowWavefunction : public Wavefunction
 {
@@ -14,11 +15,10 @@ public:
     double laplace(int nParticles, const mat &r, Config *cfg);
 
 private:
-    int charge;
-    double r1, r2, rij,r1r2;
-    double E_L1,eIntEnergy,eContributor;
-    double rSingleParticle;
-    double correlation, argument;
+    double ddHydrogenic;
+
+
+
 
 
 };
