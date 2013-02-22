@@ -1,26 +1,43 @@
 #include "hydrogenicwavefunction.h"
 
-HydrogenicWavefunction::HydrogenicWavefunction(Config* cfg):
-    charge(cfg->lookup("PotentialSettings.charge")),
-    nFactor(4*pow((charge/sqrt(4*acos(-1))),3))
+HydrogenicWavefunction::HydrogenicWavefunction()
 {
-    this->cfg=cfg;
 }
-
-
 
 /************************************************************
 Name:               HydrogenicWavefunction
 Description:        hydrogen like wavefunction
 */
 
-double HydrogenicWavefunction::waveFunction(int nParticles, const mat &r)
+double HydrogenicWavefunction::wavefunction(const mat &r)
 {
     orbitals->k=charge;
-    TrialWaveFunction = orbitals->orbitalEvaluate(r,0,0)*orbitals->orbitalEvaluate(r,0,1);
+    nFactor=4*pow((charge/sqrt(4*acos(-1))),3);
+    TrialWavefunction = orbitals->orbitalEvaluate(r,0,0)*orbitals->orbitalEvaluate(r,0,1);
 
-    return nFactor*TrialWaveFunction;
+    return nFactor*TrialWavefunction;
 
+}
+
+
+
+/************************************************************
+Name:          Gradient
+Description:
+*/
+mat HydrogenicWavefunction::gradient(const mat &r){
+    orbitals->k=charge;
+    nFactor=4*pow((charge/sqrt(4*acos(-1))),3);
+
+    if(useAnalyticGradient){
+     for (uint i = 0; i < r.n_rows; i++){
+            dwavefunction.row(i)=orbitals->GradientOrbitalEvaluate(r,0,i);
+        }
+        return dwavefunction;
+    }
+    else{
+        return gradientNumerical(r);
+    }
 }
 
 
@@ -28,27 +45,25 @@ double HydrogenicWavefunction::waveFunction(int nParticles, const mat &r)
 Name:          laplace
 Description:
 */
-double HydrogenicWavefunction::laplace(int nParticles, const mat &r, Config* cfg){
-    analytic= cfg->lookup("AppSettings.useAnalyticLaplace");
+double HydrogenicWavefunction::laplace(const mat &r){
     orbitals->k=charge;
+    nFactor=4*pow((charge/sqrt(4*acos(-1))),3);
 
-    if(analytic){
-
-        ddwaveFunction = 0;
-        for (int i = 0; i < nParticles; i++){
-            for (int qNum = 0; qNum < nParticles/2; qNum++){
-                ddwaveFunction += orbitals->LaplaceOrbitalEvaluate(r,qNum,i); //*SlaterInv(j, i)
+    if(useAnalyticLaplace){
+        ddwavefunction = 0;
+        for (uint i = 0; i < r.n_rows; i++){
+            for (uint qNum = 0; qNum < r.n_rows/2; qNum++){
+                ddwavefunction += orbitals->LaplaceOrbitalEvaluate(r,qNum,i); //*SlaterInv(j, i)
             }
         }
-
-        return ddwaveFunction;
+        return ddwavefunction;
     }
-
     else{
-        return laplaceNumerical(nParticles,r,cfg);
+        return laplaceNumerical(r);
     }
 
 }
+
 
 
 

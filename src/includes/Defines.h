@@ -1,8 +1,8 @@
 #ifndef DEFINES_H
 #define DEFINES_H
 
-enum TrialWaveFunction {
-   JastrowWaveFunction, BasicWaveFunction, HydrogenicWaveFunction
+enum TrialWavefunction {
+   Jastrow, Basic, Hydrogenic
 };
 
 

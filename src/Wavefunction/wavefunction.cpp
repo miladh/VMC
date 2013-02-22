@@ -2,37 +2,94 @@
 
 Wavefunction::Wavefunction()
 {
- orbitals = new Hydrogenic;
+    orbitals = new Hydrogenic;
+    hGrad= 1e-5;
+    h =0.001;
+    h2 =1000000.0;
 }
 
 
-double Wavefunction::laplaceNumerical(int nParticles, const mat &r, Config *cfg){
-    h=cfg->lookup("NumericalKineticSettings.h");
-    h2=cfg->lookup("NumericalKineticSettings.h2");
+/************************************************************
+Name:               laplaceNumerical
+Description:
+*/
+double Wavefunction::laplaceNumerical(const mat &r){
 
     hVec=h*ones<rowvec>(r.n_cols);
-    rPlus = zeros<mat>(nParticles, r.n_cols);
-    rMinus = zeros<mat>(nParticles, r.n_cols);
+    rPlus = zeros<mat>(r.n_rows, r.n_cols);
+    rMinus = zeros<mat>(r.n_rows, r.n_cols);
 
     rPlus = rMinus = r;
 
-    waveFunctionMinus = 0;
-    waveFunctionPlus = 0;
+    wavefunctionMinus = 0;
+    wavefunctionPlus = 0;
 
-    waveFunctionCurrent = waveFunction(nParticles,r);
+    wavefunctionCurrent = wavefunction(r);
 
-    ddwaveFunction = 0;
-    for(int i = 0; i < nParticles; i++) {
-            rPlus.row(i) += hVec;
-            rMinus.row(i) -= hVec;
-            waveFunctionMinus = waveFunction(nParticles,rMinus);
-            waveFunctionPlus = waveFunction(nParticles,rPlus);
-            ddwaveFunction += (waveFunctionMinus + waveFunctionPlus - 2 * waveFunctionCurrent);
-            rPlus.row(i) = r.row(i);
-            rMinus.row(i)= r.row(i);
-        }
+    ddwavefunction = 0;
+    for(uint i = 0; i <r.n_rows; i++) {
+        rPlus.row(i) += hVec;
+        rMinus.row(i) -= hVec;
+        wavefunctionMinus = wavefunction(rMinus);
+        wavefunctionPlus = wavefunction(rPlus);
+        ddwavefunction += (wavefunctionMinus + wavefunctionPlus - 2 * wavefunctionCurrent);
+        rPlus.row(i) = r.row(i);
+        rMinus.row(i)= r.row(i);
+    }
 
-    ddwaveFunction =h2 * ddwaveFunction / waveFunctionCurrent;
+    ddwavefunction =h2 * ddwavefunction / wavefunctionCurrent;
 
-    return ddwaveFunction;
+    return ddwavefunction;
 }
+
+
+
+/************************************************************
+Name:               gradientNumerical
+Description:
+*/
+mat Wavefunction::gradientNumerical(const mat &r){
+
+
+    hVec=h*ones<rowvec>(r.n_cols);
+    rPlus = zeros<mat>( r.n_cols);
+    rMinus = zeros<mat>(r.n_cols);
+
+    rPlus = rMinus = r;
+
+    wavefunctionMinus = 0;
+    wavefunctionPlus = 0;
+
+    wavefunctionCurrent = wavefunction(r);
+
+
+    for(uint i = 0; i < r.n_rows; i++) {
+        rPlus.row(i) += hVec;
+        rMinus.row(i) -= hVec;
+        wavefunctionMinus = wavefunction(rMinus);
+        wavefunctionPlus = wavefunction(rPlus);
+        dwavefunction.row(i)= ones<rowvec>(r.n_cols)*(wavefunctionPlus-wavefunctionMinus)/(wavefunctionCurrent*hGrad);
+        rPlus.row(i) = r.row(i);
+        rMinus.row(i)= r.row(i);
+    }
+
+    return dwavefunction;
+
+}
+
+
+/************************************************************
+Name:               loadConfigurations
+Description:        loads different variabels
+*/
+void Wavefunction::loadConfiguration(Config *cfg){
+    charge=cfg->lookup("PotentialSettings.charge");
+    useAnalyticLaplace=cfg->lookup("AppSettings.useAnalyticLaplace");
+    useAnalyticGradient=cfg->lookup("AppSettings.useAnalyticGradient");
+
+}
+
+
+
+
+

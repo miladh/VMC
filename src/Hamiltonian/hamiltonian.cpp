@@ -9,10 +9,10 @@ Name:                   getEnergy
 Description:            Computes the energy
 */
 
-double Hamiltonian::getEnergy(int nParticles, const mat &r) {
+double Hamiltonian::getEnergy(const mat &r) {
 
-    potentialEnergy = potential->evaluate(nParticles,r);
-    kineticEnergy = kinetic->evaluate(nParticles,r);
+    potentialEnergy = potential->evaluate(r);
+    kineticEnergy = kinetic->evaluate(r);
     Energy = kineticEnergy+potentialEnergy;
 
     return Energy;

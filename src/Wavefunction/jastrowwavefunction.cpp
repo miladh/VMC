@@ -9,14 +9,32 @@ Name:               JastrowWavefunction
 Description:        jastrow wavefunction wavefunction
 */
 
-double JastrowWavefunction::waveFunction(int nParticles, const mat &r)
+double JastrowWavefunction::wavefunction(const mat &r)
 {
 
-    TrialWaveFunction = orbitals->orbitalEvaluate(r,0,0)*orbitals->orbitalEvaluate(r,0,1);
-    TrialWaveFunction *=jas.JastrowExponential(nParticles,r);
+    TrialWavefunction = orbitals->orbitalEvaluate(r,0,0)*orbitals->orbitalEvaluate(r,0,1);
+    TrialWavefunction *=jas.JastrowExponential(r.n_rows,r);
 
+    return TrialWavefunction;
 
-    return TrialWaveFunction;
+}
+
+/************************************************************
+Name:          Gradient
+Description:
+*/
+mat JastrowWavefunction::gradient(const mat &r){
+
+    if(useAnalyticGradient){
+        for (uint i = 0; i < r.n_rows; i++){
+            dHydrogenic.row(i)=orbitals->GradientOrbitalEvaluate(r,0,i);
+        }
+
+        return dHydrogenic;
+    }
+    else{
+        return gradientNumerical(r);
+    }
 
 }
 
@@ -25,32 +43,24 @@ double JastrowWavefunction::waveFunction(int nParticles, const mat &r)
 Name:          laplace
 Description:
 */
-double JastrowWavefunction::laplace(int nParticles, const mat &r, Config* cfg){
+double JastrowWavefunction::laplace(const mat &r){
 
-    analytic= cfg->lookup("AppSettings.useAnalyticLaplace");
-
-    if(analytic){
-
+    if(useAnalyticLaplace){
         ddHydrogenic = 0;
-        for (int i = 0; i < nParticles; i++){
-            for (int qNum = 0; qNum < nParticles/2; qNum++){
+        for (uint i = 0; i < r.n_rows; i++){
+            for (uint qNum = 0; qNum < r.n_rows/2; qNum++){
                 ddHydrogenic += orbitals->LaplaceOrbitalEvaluate(r,qNum,i); //*SlaterInv(j, i)
             }
         }
+        ddwavefunction= ddHydrogenic+jas.LaplaceJastrowEvaluate(r);
 
-        ddwaveFunction= ddHydrogenic+jas.LaplaceJastrowEvaluate(r);
-
-        return ddwaveFunction;
-
+        return ddwavefunction;
     }
-
     else{
-        return laplaceNumerical(nParticles,r,cfg);
+        return laplaceNumerical(r);
     }
 
 }
-
-
 
 
 

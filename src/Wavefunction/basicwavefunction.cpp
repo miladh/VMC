@@ -2,7 +2,6 @@
 
 BasicWavefunction::BasicWavefunction()
 {
-
 }
 
 
@@ -11,13 +10,29 @@ Name:               BasicWaveFunction
 Description:        simple wavefunction
 */
 
-double BasicWavefunction::waveFunction( int nParticles, const mat &r)
+double BasicWavefunction::wavefunction(const mat &r)
 {
+    TrialWavefunction = orbitals->orbitalEvaluate(r,0,0)*orbitals->orbitalEvaluate(r,0,1);
 
-    TrialWaveFunction = orbitals->orbitalEvaluate(r,0,0)*orbitals->orbitalEvaluate(r,0,1);
+    return TrialWavefunction;
+}
 
-    return TrialWaveFunction;
 
+/************************************************************
+Name:          Gradient
+Description:
+*/
+mat BasicWavefunction::gradient(const mat &r){
+
+    if(useAnalyticGradient){
+        for (uint i = 0; i < r.n_rows; i++){
+            dwavefunction.row(i)=orbitals->GradientOrbitalEvaluate(r,0,i);
+        }
+        return dwavefunction;
+    }
+    else{
+        return gradientNumerical(r);
+    }
 }
 
 
@@ -25,28 +40,22 @@ double BasicWavefunction::waveFunction( int nParticles, const mat &r)
 Name:          laplace
 Description:
 */
-double BasicWavefunction::laplace(int nParticles, const mat &r, Config* cfg){
+double BasicWavefunction::laplace(const mat &r){
 
-    analytic= cfg->lookup("AppSettings.useAnalyticLaplace");
-
-    if(analytic){
-
-        ddwaveFunction = 0;
-        for (int i = 0; i < nParticles; i++){
-            for (int qNum = 0; qNum < nParticles/2; qNum++){
-                ddwaveFunction += orbitals->LaplaceOrbitalEvaluate(r,qNum,i); //*SlaterInv(j, i)
+    if(useAnalyticLaplace){
+        ddwavefunction = 0;
+        for (uint i = 0; i < r.n_rows; i++){
+            for (uint qNum = 0; qNum < r.n_rows/2; qNum++){
+                ddwavefunction += orbitals->LaplaceOrbitalEvaluate(r,qNum,i); //*SlaterInv(j, i)
             }
         }
-
-        return ddwaveFunction;
-
+        return ddwavefunction;
     }
-
     else{
-        return laplaceNumerical(nParticles,r,cfg);
+        return laplaceNumerical(r);
     }
-
 
 }
+
 
 

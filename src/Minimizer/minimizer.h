@@ -6,7 +6,6 @@
 #include <libconfig.h++>
 #include "src/VMCApp/vmcapp.h"
 
-
 using namespace arma;
 using namespace std;
 using namespace libconfig;
@@ -19,24 +18,23 @@ public:
 
     void runMinimizaer();
     void loadConfiguration(Config *cfg);
-    void writeToFile();
-    Config *cfg;
-    VMCApp* vmcapp;
-    ofstream myfile;
-
-
 
 private:
+    int nProcess, myRank;
+
     double alpha,beta;
     double minAlpha,maxAlpha,minBeta,maxBeta;
     int nVarAlpha,nVarBeta;
     double stepAlpha,stepBeta;
 
-    int nCycles;
+    double nCycles;
     long idum;
-    int nProcess, myRank;
     double Energy,EnergySquared,Variance, Acceptance,Sigma;
 
+    ofstream myfile;
+
+    void writeToFile();
+    VMCApp* vmcapp;
 };
 
 #endif // MINIMIZER_H

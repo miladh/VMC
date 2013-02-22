@@ -1,10 +1,14 @@
 #include <iostream>
 #include <libconfig.h++>
 #include "src/Minimizer/minimizer.h"
+#pragma GCC diagnostic ignored "-Wunused-parameter"
 #include <mpi.h>
+// Enable warnings again
+#pragma GCC diagnostic warning "-Wunused-parameter"
 
 using namespace std;
 using namespace libconfig;
+
 int main()
 {
 

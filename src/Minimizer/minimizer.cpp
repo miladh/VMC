@@ -60,9 +60,7 @@ void Minimizer::writeToFile(){
 
     cout << alpha << ", " << beta << " Energy = " << Energy
          << ", Variance = " << Variance
-            //<< ", Sigma = " << sqrt(totEnergySquared - totEnergy * totEnergy)
          << ", Accepted = " << Acceptance
-            //<< ", MC cycles = " << nCycles * nProcess
          << "\n";
 
 

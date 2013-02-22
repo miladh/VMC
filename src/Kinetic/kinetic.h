@@ -14,14 +14,13 @@ using namespace libconfig;
 class Kinetic
 {
 public:
-    Kinetic(Config *cfg);
-    double evaluate(int nParticles,const mat &r);
-    double KineticEnergy;
+    Kinetic();
+    double evaluate(const mat &r);
     Wavefunction* wf;
 
 private:
-    double ddwaveFunction;
-    Config *cfg;
+    double KineticEnergy;
+    double ddwavefunction;
 
 };
 

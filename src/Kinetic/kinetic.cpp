@@ -1,8 +1,7 @@
 #include "kinetic.h"
 
-Kinetic::Kinetic(Config *cfg)
+Kinetic::Kinetic()
 {
-    this->cfg=cfg;
 }
 
 
@@ -10,10 +9,10 @@ Kinetic::Kinetic(Config *cfg)
 Name:               evaluate
 Description:        Computes the kinetic energy
 */
-double Kinetic::evaluate(int nParticles,const mat &r){
+double Kinetic::evaluate(const mat &r){
 
-    ddwaveFunction = wf->laplace(nParticles,r,cfg);
-    KineticEnergy = -0.5 * ddwaveFunction;
+    ddwavefunction = wf->laplace(r);
+    KineticEnergy = -0.5 * ddwavefunction;
 
     return KineticEnergy;
 }

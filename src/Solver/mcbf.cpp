@@ -14,8 +14,6 @@ MCBF::MCBF(Hamiltonian *hamiltonian, Wavefunction* TrialWaveFunction)
 {
     this->hamiltonian=hamiltonian;
     this->TrialWaveFunction=TrialWaveFunction;
-
-
 }
 
 
@@ -28,12 +26,18 @@ void MCBF::solve(int nCycles, long idum)
 
 {
     this->idum=idum;
-    stepLength=1;
-    MetropolisAlgoBF(nCycles,stepLength,idum);
+    stepLength=optimalStepLength();
+    MetropolisAlgoBF(nCycles,stepLength);
 
 }
 
-void MCBF::MetropolisAlgoBF(int nCycles, double stepLength,long idum){
+
+/************************************************************
+Name:               MetropolisAlgoBF
+Description:
+*/
+void MCBF::MetropolisAlgoBF(int nCycles, double stepLength){
+
     acceptedSteps=0;
     rOld = zeros<mat>(nParticles, nDimensions);
     rNew = zeros<mat>(nParticles, nDimensions);
@@ -57,7 +61,7 @@ void MCBF::MetropolisAlgoBF(int nCycles, double stepLength,long idum){
     for(int cycle = 0; cycle < nCycles+thermalization; cycle++) {
 
         // Store the current value of the wave function
-        waveFunctionOld = TrialWaveFunction->waveFunction(nParticles,rOld);
+        waveFunctionOld = TrialWaveFunction->wavefunction(rOld);
 
         // New position to test
         for(int i = 0; i < nParticles; i++) {
@@ -67,7 +71,7 @@ void MCBF::MetropolisAlgoBF(int nCycles, double stepLength,long idum){
            // rNew.row(i) =rOld.row(i)+sqrt(stepLength)*randn<rowvec>(nDimensions);
 
             // Recalculate the value of the wave function
-            waveFunctionNew = TrialWaveFunction->waveFunction(nParticles,rNew);
+            waveFunctionNew = TrialWaveFunction->wavefunction(rNew);
 
             // Check for step acceptance (if yes, update position, if no, reset position)
             if(ran2(&idum) <= (waveFunctionNew*waveFunctionNew) / (waveFunctionOld*waveFunctionOld)) {
@@ -85,7 +89,7 @@ void MCBF::MetropolisAlgoBF(int nCycles, double stepLength,long idum){
 
             // update energies
             if(cycle > thermalization){
-            deltaE =hamiltonian->getEnergy(nParticles,rNew);
+            deltaE =hamiltonian->getEnergy(rNew);
             energySum += deltaE;
             energySquaredSum += deltaE*deltaE;
             }
@@ -104,15 +108,13 @@ Name:               optimalStepLength
 Description:        Finds the optimal steplength using intersection method
 */
 
-double MCBF::optimalStepLength(long idum) {
-    double stepMinMax,stepMin;
-
+double MCBF::optimalStepLength() {
 
     while ((maxStepLength - minStepLength) > tolerance) {
-        MetropolisAlgoBF(nPreCycles,minStepLength,idum);
+        MetropolisAlgoBF(nPreCycles,minStepLength);
         stepMin=acceptedSteps/nPreCycles-0.5;
 
-        MetropolisAlgoBF(nPreCycles,(minStepLength + maxStepLength)/2,idum);
+        MetropolisAlgoBF(nPreCycles,(minStepLength + maxStepLength)/2);
         stepMinMax=acceptedSteps/nPreCycles-0.5;
 
 
@@ -126,22 +128,6 @@ double MCBF::optimalStepLength(long idum) {
     return (minStepLength + maxStepLength) / 2;
 }
 
-
-/************************************************************
-Name:               loadConfiguration
-Description:        loads different variables
-*/
-void MCBF::loadConfiguration(Config *cfg){
-    nDimensions=cfg->lookup("SolverSettings.dim");
-    nParticles=cfg->lookup("SolverSettings.N");
-
-    thermalization=cfg->lookup("AppSettings.thermalization");
-    nPreCycles=cfg->lookup("OptimalStepSettings.preCycles");
-    minStepLength = cfg->lookup("OptimalStepSettings.minstep");
-    maxStepLength = cfg->lookup("OptimalStepSettings.maxstep");
-    tolerance = cfg->lookup("OptimalStepSettings.tolerance");
-
-}
 
 
 

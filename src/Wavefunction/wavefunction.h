@@ -15,34 +15,37 @@ class Wavefunction
 {
 public:
     Wavefunction();
-    virtual double waveFunction(int nParticles,const mat &r) = 0;
 
-    virtual double laplace(int nParticles, const mat &r,Config* cfg){
-        return laplaceNumerical(nParticles,r,cfg);
-    }
-//    virtual double gradient(int nParticles, const mat &r){
-//        return gradienteNumerical;
-//    }
+    virtual double wavefunction(const mat &r) = 0;
+    virtual double laplaceNumerical(const mat &r);
+    virtual mat gradientNumerical(const mat &r);
 
+    virtual double laplace(const mat &r){
+        return laplaceNumerical(r);}
 
-    virtual double laplaceNumerical(int nParticles,const mat &r,Config* cfg);
-    //virtual double gradientNumerical(int nParticles,const mat &r);
+    virtual mat gradient(const mat &r){
+        return gradientNumerical(r);}
 
-    double ddwaveFunction;
-    double TrialWaveFunction;
-    double kineticEnergy;
-    bool analytic;
-    Config* cfg;
+    void loadConfiguration(Config *cfg);
+
     Orbitals* orbitals;
     Jastrow jas;
+
+
+protected:
+    bool useAnalyticGradient,useAnalyticLaplace;
+    double TrialWavefunction;
+    double kineticEnergy;
+    double ddwavefunction;
+    mat dwavefunction;
+    int charge;
+
 
 private:
     mat rPlus ,rMinus;
     rowvec hVec;
-    double waveFunctionMinus, waveFunctionPlus, waveFunctionCurrent;
-    double h,h2;
-
-
+    double wavefunctionMinus, wavefunctionPlus, wavefunctionCurrent;
+    double hGrad,h,h2;
 
 };
 

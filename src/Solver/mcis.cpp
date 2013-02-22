@@ -10,10 +10,12 @@
 #include <math.h>
 #include <iomanip>
 
-MCIS::MCIS(Hamiltonian *hamiltonian, Wavefunction* TrialWaveFunction)
+MCIS::MCIS(Hamiltonian *hamiltonian, Wavefunction* TrialWavefunction)
 {
     this->hamiltonian=hamiltonian;
-    this->TrialWaveFunction=TrialWaveFunction;
+    this->TrialWavefunction=TrialWavefunction;
+    timeStep=0.02;
+    D=0.5;
 }
 
 
@@ -26,41 +28,35 @@ void MCIS::solve(int nCycles, long idum)
 
 {
     this->idum=idum;
-    timeStep=0.02;
-    D=0.5;
-    MetropolisAlgoIS(nCycles,idum);
-
+    this->nCycles=nCycles;
+    MetropolisAlgoIS();
 }
+
+
 
 /************************************************************
 Name:               MetropolisAlgoIS
 Description:        MetropolisAlgo important sampling
 */
-void MCIS::MetropolisAlgoIS(int nCycles,long idum){
+void MCIS::MetropolisAlgoIS(){
     acceptedSteps=0;
-
     qForceOld = zeros<mat>(nParticles, nDimensions);
     qForceNew = zeros<mat>(nParticles, nDimensions);
     qForce = zeros<mat>(nParticles, nDimensions);
 
-
-    waveFunctionOld = 0;
-    waveFunctionNew = 0;
+    wavefunctionOld = 0;
+    wavefunctionNew = 0;
 
     energySum = 0;
     energySquaredSum = 0;
-
-
 
 
     rOld = randn(nParticles,nDimensions)*sqrt(timeStep);
     rNew = rOld;
 
 
-    waveFunctionOld=TrialWaveFunction->waveFunction(nParticles,rOld);
-    qForceOld=QuantumForce(rOld);
-
-
+    wavefunctionOld=TrialWavefunction->wavefunction(rOld);
+    qForceOld = getQuantumForce(rOld);
 
 
     // loop over Monte Carlo cycles
@@ -73,8 +69,8 @@ void MCIS::MetropolisAlgoIS(int nCycles,long idum){
             }
 
             // Recalculate the value of the wave function
-            waveFunctionNew = TrialWaveFunction->waveFunction(nParticles,rNew);
-            qForceNew=QuantumForce(rNew);
+            wavefunctionNew = TrialWavefunction->wavefunction(rNew);
+            qForceNew=getQuantumForce(rNew);
 
 
             GreensFunction=0;
@@ -85,10 +81,10 @@ void MCIS::MetropolisAlgoIS(int nCycles,long idum){
 
 
             // Check for step acceptance (if yes, update position, if no, reset position)
-            if(ran2(&idum) <= (GreensFunction*waveFunctionNew*waveFunctionNew) / (waveFunctionOld*waveFunctionOld)) {
+            if(ran2(&idum) <= (GreensFunction*wavefunctionNew*wavefunctionNew) / (wavefunctionOld*wavefunctionOld)) {
                 rOld.row(i) = rNew.row(i);
                 qForceOld.row(i)=qForceNew.row(i);
-                waveFunctionOld = waveFunctionNew;
+                wavefunctionOld = wavefunctionNew;
 
                 if(cycle > thermalization){
                     acceptedSteps++;
@@ -102,66 +98,26 @@ void MCIS::MetropolisAlgoIS(int nCycles,long idum){
 
             // update energies
             if(cycle > thermalization){
-                deltaE =hamiltonian->getEnergy(nParticles,rNew);
+                deltaE =hamiltonian->getEnergy(rNew);
                 energySum += deltaE;
                 energySquaredSum += deltaE*deltaE;
             }
         }
     }
+
     energy = energySum/(nCycles * nParticles);
     energySquared = energySquaredSum/(nCycles * nParticles);
     acceptedSteps= acceptedSteps/nParticles;
 
 }
 
+
 /************************************************************
 Name:               QuantumForce
 Description:
 */
-mat MCIS::QuantumForce(const mat &r){
+mat MCIS::getQuantumForce(const mat &r){
 
-    rowvec hVec=h*ones<rowvec>(r.n_cols);
-    mat rPlus = zeros<mat>(nParticles, r.n_cols);
-    mat rMinus = zeros<mat>(nParticles, r.n_cols);
-
-    rPlus = rMinus = r;
-
-    double waveFunctionMinus = 0;
-    double waveFunctionPlus = 0;
-
-    double waveFunctionCurrent = TrialWaveFunction->waveFunction(nParticles,r);
-
-    for(int i = 0; i < nParticles; i++) {
-        rPlus.row(i) += hVec;
-        rMinus.row(i) -= hVec;
-        waveFunctionMinus = TrialWaveFunction->waveFunction(nParticles,rMinus);
-        waveFunctionPlus = TrialWaveFunction->waveFunction(nParticles,rPlus);
-        qForce.row(i)= ones<rowvec>(r.n_cols)*(waveFunctionPlus-waveFunctionMinus)/(waveFunctionCurrent*h);
-        rPlus.row(i) = r.row(i);
-        rMinus.row(i)= r.row(i);
-    }
-
-    return qForce;
-
+    return TrialWavefunction->gradient(r);
 }
 
-
-/************************************************************
-Name:               loadConfiguration
-Description:        loads different variables
-*/
-void MCIS::loadConfiguration(Config *cfg){
-    nDimensions=cfg->lookup("SolverSettings.dim");
-    nParticles=cfg->lookup("SolverSettings.N");
-    thermalization=cfg->lookup("AppSettings.thermalization");
-    h = cfg->lookup("NumericalKineticSettings.h");
-
-}
-
-
-
-//            for(int k=0; k <nParticles; k++){
-//                if(k!=i){
-//                    rNew.row(k) = rOld.row(k);
-//                }
-//            }

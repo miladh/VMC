@@ -14,8 +14,12 @@ class Potential
 {
 public:
     Potential();
-    virtual double evaluate(int nParticles,const mat &r) = 0;
-    Config *cfg;
+    virtual double evaluate(const mat &r) = 0;
+    void loadConfiguration(Config *cfg);
+
+protected:
+ int charge;
+
 };
 
 #endif // POTENTIAL_H

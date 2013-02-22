@@ -9,15 +9,12 @@ class Hamiltonian
 public:
     Hamiltonian();
 
+    double getEnergy(const mat &r);
     Potential* potential;
     Kinetic* kinetic;
-    double getEnergy(int nParticles, const mat &r);
 
-
-protected:
-    int nDimension,nParticles,charge;
+private:
     double potentialEnergy, kineticEnergy, Energy;
-
 
 };
 

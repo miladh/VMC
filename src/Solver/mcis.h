@@ -6,36 +6,26 @@
 class MCIS : public Solver
 {
 public:
-    MCIS(Hamiltonian *hamiltonian, Wavefunction *TrialWaveFunction);
+    MCIS(Hamiltonian *hamiltonian, Wavefunction *TrialWavefunction);
     void solve(int nCycles, long idum);
-    void loadConfiguration(Config *cfg);
+
 
 private:
-
-
-    int nDimensions,nParticles;
-    int nCycles,thermalization;
-    long idum;
-    double timeStep;
+    void MetropolisAlgoIS();
+    mat getQuantumForce(const mat &r);
 
     Hamiltonian *hamiltonian;
-    Wavefunction* TrialWaveFunction;
+    Wavefunction* TrialWavefunction;
 
-    mat rOld;
-    mat rNew;
+    mat qForce, qForceOld, qForceNew;
+    mat rOld, rNew;
 
-    double waveFunctionOld,waveFunctionNew;
+    long idum;
+    double timeStep,nCycles;
+
+    double wavefunctionOld,wavefunctionNew;
     double energySum,energySquaredSum, deltaE;
-
-    void MetropolisAlgoIS(int nCycles, long idum);
-    mat QuantumForce(const mat &r);
-
-
-    mat qForceOld;
-    mat qForceNew;
-    mat qForce;
     double h,D,GreensFunction;
-
 };
 
 #endif // MCIP_H

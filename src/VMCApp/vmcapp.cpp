@@ -8,8 +8,10 @@
 #include "src/Wavefunction/hydrogenicwavefunction.h"
 #include "src/Potential/coulomb_potential.h"
 #include "src/Kinetic/kinetic.h"
+#pragma GCC diagnostic ignored "-Wunused-parameter"
 #include <mpi.h>
-#include <iomanip>
+#pragma GCC diagnostic warning "-Wunused-parameter"
+
 
 
 VMCApp::VMCApp(Config *cfg,const int &myRank, const int &nProcess)
@@ -26,22 +28,22 @@ Description:        starts VMC calculations
 void VMCApp::runVMCApp(int nCycles, long idum)
 {
 
-    idum = idum - myRank - time(NULL);
-
+    idum = idum - myRank;// - time(NULL);
     nCycles /= nProcess;
 
-    TrialWaveFunction = setWaveFunction();
-    TrialWaveFunction->jas.alpha=alpha;
-    TrialWaveFunction->jas.beta=beta;
-    TrialWaveFunction->orbitals->k=alpha;
+    TrialWavefunction = setWavefunction();
+    TrialWavefunction->loadConfiguration(cfg);
+    TrialWavefunction->jas.alpha=alpha;
+    TrialWavefunction->jas.beta=beta;
+    TrialWavefunction->orbitals->k=alpha;
 
+    potential = new CoulombPotential;
+    potential->loadConfiguration(cfg);
 
-    potential = new CoulombPotential(cfg);
+    kinetic= new Kinetic;
+    kinetic->wf=TrialWavefunction;
 
-    kinetic= new Kinetic(cfg);
-    kinetic->wf=TrialWaveFunction;
-
-    hamiltonian =new Hamiltonian();
+    hamiltonian =new Hamiltonian;
     hamiltonian->potential=potential;
     hamiltonian->kinetic=kinetic;
 
@@ -73,14 +75,14 @@ Description:
 Solver* VMCApp::setSolverMethod(){
 
     Solver* solver;
-    int solverType= cfg->lookup("AppSettings.solverType");
+    solverType= cfg->lookup("AppSettings.solverType");
 
     switch (solverType) {
     case BF:
-        solver = new MCBF(hamiltonian,TrialWaveFunction);
+        solver = new MCBF(hamiltonian,TrialWavefunction);
         break;
     case IS:
-        solver =new MCIS(hamiltonian,TrialWaveFunction);
+        solver =new MCIS(hamiltonian,TrialWavefunction);
         break;
     }
     return solver;
@@ -92,28 +94,25 @@ Solver* VMCApp::setSolverMethod(){
 Name:               setWaveFunction
 Description:
 */
-Wavefunction* VMCApp::setWaveFunction(){
+Wavefunction* VMCApp::setWavefunction(){
 
     Wavefunction* wf;
-    int WavefunctionType= cfg->lookup("AppSettings.wavefunction");
+    WavefunctionType= cfg->lookup("AppSettings.wavefunction");
 
     switch (WavefunctionType) {
-    case JastrowWaveFunction:
+    case Jastrow:
         wf = new JastrowWavefunction;
         break;
-    case BasicWaveFunction:
+    case Basic:
         wf =new BasicWavefunction;
         break;
-    case  HydrogenicWaveFunction:
-        wf = new HydrogenicWavefunction(cfg);
+    case  Hydrogenic:
+        wf = new HydrogenicWavefunction;
         break;
     }
 
     return wf;
-
 }
-
-
 
 
 /************************************************************
@@ -163,12 +162,3 @@ double VMCApp::getAcceptanceRate(){
 
     return Acceptance;
 }
-
-
-
-
-
-
-
-
-

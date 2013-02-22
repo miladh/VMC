@@ -1,7 +1,6 @@
 #ifndef VMCAPP_H
 #define VMCAPP_H
 
-
 #include <armadillo>
 #include <iostream>
 #include <libconfig.h++>
@@ -17,36 +16,36 @@ class VMCApp
 {
 public:
     VMCApp(Config* cfg, const int &myRank, const int &nProcess);
+
     void runVMCApp(int nCycles, long idum);
-    void writeToFile(ofstream myfile);
     double getEnergy();
     double getEnergySquared();
     double getVariance();
     double getSigma();
     double getAcceptanceRate();
 
-    Wavefunction* setWaveFunction();
-    Solver* setSolverMethod();
-
-
-    Config *cfg;
-    Solver* solver;
-    Wavefunction *TrialWaveFunction;
-    Potential *potential;
-    Kinetic *kinetic;
-    Hamiltonian *hamiltonian;
     double alpha, beta;
 
+
 private:
-    int nDimensions,nParticles,nCycles;
+    int nDimensions,nParticles;
     int nProcess, myRank;
+    int WavefunctionType,solverType;
     long idum;
 
     double totEnergy,totEnergySquared;
     double Variance, Acceptance,Sigma;
     double tmp;
 
-    ofstream myfile;
+    Config *cfg;
+    Solver* solver;
+    Wavefunction *TrialWavefunction;
+    Potential *potential;
+    Kinetic *kinetic;
+    Hamiltonian *hamiltonian;
+
+    Wavefunction* setWavefunction();
+    Solver* setSolverMethod();
 
 };
 

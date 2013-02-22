@@ -7,9 +7,10 @@ class BasicWavefunction : public Wavefunction
 {
 public:
     BasicWavefunction();
-    double waveFunction(int nParticles, const mat &r);
-    double laplace(int nParticles, const mat &r, Config *cfg);
-    double KineticEnergy(int nParticles, const mat &r);
+    double wavefunction(const mat &r);
+    double laplace(const mat &r);
+    double KineticEnergy(const mat &r);
+    mat gradient(const mat &r);
 
 };
 
