@@ -14,24 +14,25 @@ double Hydrogenic::orbitalEvaluate(const mat &r, int qNum, int Particle){
         phi = (k*rNorm - 2)*exp(-0.5*k*rNorm);
     }
     else{
-        cout << "Orbital doesn't exist!"<<endl;
+        cerr << "Orbital doesn't exist!"<<endl;
         exit(1);}
 
     return phi;
 }
 
 
-rowvec Hydrogenic::GradientOrbitalEvaluate(const mat &r, int qNum, int Particle){
+rowvec Hydrogenic::gradientOrbitalEvaluate(const mat &r, int qNum, int Particle){
     rNorm= norm(r.row(Particle),2);
+    dphi=zeros(1,r.n_cols);
 
     if(qNum==0){
         dphi= (-k/rNorm)*r.row(Particle);//*exp(-k*rNorm);
     }
     else if (qNum==1){
-        dphi = k*(k*rNorm-4)*r.row(Particle);// *exp(-0.5*k*r.row(Particle));
+        dphi = (-k/(2*rNorm))*(k*rNorm-4)*r.row(Particle);// *exp(-0.5*k*r.row(Particle));
     }
     else{
-        cout << "Orbital doesn't exist!"<<endl;
+        cerr << "Orbital doesn't exist!"<<endl;
         exit(1);
     }
 
@@ -39,7 +40,7 @@ rowvec Hydrogenic::GradientOrbitalEvaluate(const mat &r, int qNum, int Particle)
 }
 
 
-double Hydrogenic::LaplaceOrbitalEvaluate(const mat &r, int qNum, int Particle){
+double Hydrogenic::laplaceOrbitalEvaluate(const mat &r, int qNum, int Particle){
     rNorm= norm(r.row(Particle),2);
 
     if(qNum==0){
@@ -49,7 +50,7 @@ double Hydrogenic::LaplaceOrbitalEvaluate(const mat &r, int qNum, int Particle){
         ddphi = k*(k*rNorm-8)*(k*rNorm-2)/(4*rNorm);
     }
     else{
-        cout << "Orbital doesn't exist!"<<endl;
+        cerr << "Orbital doesn't exist!"<<endl;
         exit(1);
     }
 

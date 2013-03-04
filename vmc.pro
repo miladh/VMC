@@ -75,3 +75,6 @@ QMAKE_CFLAGS = $$system(mpicc --showme:compile)
 QMAKE_LFLAGS = $$system(mpicxx --showme:link)
 QMAKE_CXXFLAGS = $$system(mpicxx --showme:compile) -DMPICH_IGNORE_CXX_SEEK
 QMAKE_CXXFLAGS_RELEASE = $$QMAKE_CXXFLAGS
+
+OTHER_FILES += \
+    src/config.cfg

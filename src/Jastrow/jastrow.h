@@ -15,16 +15,21 @@ class Jastrow
 {
 public:
     Jastrow();
-    double JastrowExponential(int nParticles, const mat &r);
-    double LaplaceJastrowEvaluate(const mat &r);
+    void setaValues(const uint &nParticles);
+    double evaluateJastrow(const mat &r);
+    double laplaceJastrowEvaluate(const mat &r);
+    rowvec gradientJastrowEvaluate(const mat &r, uint i);
     double alpha,beta;
 private:
     double r1, r2, rij,r1r2;
     double eIntEnergy,eContributor;
     double correlation, argument;
     double ddJastrowFactor;
+    rowvec dJastrowFactor;
     double JastrowFactor;
 
+protected:
+    mat a;
 
 };
 

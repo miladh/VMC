@@ -29,6 +29,7 @@ void MCBF::solve(int nCycles, long idum)
     stepLength=optimalStepLength();
     MetropolisAlgoBF(nCycles,stepLength);
 
+
 }
 
 

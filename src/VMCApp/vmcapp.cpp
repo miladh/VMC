@@ -28,7 +28,7 @@ Description:        starts VMC calculations
 void VMCApp::runVMCApp(int nCycles, long idum)
 {
 
-    idum = idum - myRank;// - time(NULL);
+    idum = idum;// - myRank - time(NULL);
     nCycles /= nProcess;
 
     TrialWavefunction = setWavefunction();
@@ -103,9 +103,11 @@ Wavefunction* VMCApp::setWavefunction(){
     case Jastrow:
         wf = new JastrowWavefunction;
         break;
+
     case Basic:
         wf =new BasicWavefunction;
         break;
+
     case  Hydrogenic:
         wf = new HydrogenicWavefunction;
         break;

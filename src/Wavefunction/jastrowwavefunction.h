@@ -16,7 +16,7 @@ public:
 
 private:
     double ddHydrogenic;
-    mat dHydrogenic;
+    mat dHydrogenic,dJastrow;
 
 };
 

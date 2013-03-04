@@ -14,8 +14,8 @@ class Orbitals
 public:
     Orbitals();
     virtual double orbitalEvaluate(const mat &r, int qNum, int Particle) = 0;
-    virtual double LaplaceOrbitalEvaluate(const mat &r, int qNum, int Particle) = 0;
-    virtual rowvec GradientOrbitalEvaluate(const mat &r, int qNum, int Particle) = 0;
+    virtual double laplaceOrbitalEvaluate(const mat &r, int qNum, int Particle) = 0;
+    virtual rowvec gradientOrbitalEvaluate(const mat &r, int qNum, int Particle) = 0;
 
     double k;
 

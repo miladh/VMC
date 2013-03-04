@@ -12,9 +12,11 @@ using namespace libconfig;
 int main()
 {
 
+
+    //Fix idum!!!!
+
     Config cfg;
     cfg.readFile("../vmc/src/config.cfg");
-
 
     int nProcess, myRank;
     MPI_Init(NULL, NULL);

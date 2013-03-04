@@ -7,8 +7,8 @@ class Hydrogenic : public Orbitals
 public:
     Hydrogenic();
     double orbitalEvaluate(const mat &r, int qNum, int Particle);
-    double LaplaceOrbitalEvaluate(const mat &r, int qNum, int Particle);
-    rowvec GradientOrbitalEvaluate(const mat &r, int qNum, int Particle);
+    double laplaceOrbitalEvaluate(const mat &r, int qNum, int Particle);
+    rowvec gradientOrbitalEvaluate(const mat &r, int qNum, int Particle);
 
 private:
     double rNorm;
