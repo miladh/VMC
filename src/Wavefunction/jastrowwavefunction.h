@@ -15,7 +15,6 @@ public:
     mat gradient(const mat &r);
 
 private:
-    double ddHydrogenic;
     mat dHydrogenic,dJastrow;
 
 };

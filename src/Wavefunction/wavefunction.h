@@ -38,7 +38,7 @@ protected:
     double kineticEnergy;
     double ddwavefunction;
     mat dwavefunction;
-    int charge;
+
 
 
 private:

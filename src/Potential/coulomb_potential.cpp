@@ -21,7 +21,6 @@ Description:        Computes potential energy due to electron-nucleus interactio
 
 
 double CoulombPotential::electronNucleusPotential(const mat &r){
-
     enPotentialEnergy = 0;
     rSingleParticle = 0;
 
@@ -40,7 +39,6 @@ Description:        Computes potential energy due to electron-electron interacti
 */
 
 double CoulombPotential::electronElectronPotential(const mat &r){
-
     rij = 0;
     eePotentialEnergy = 0;
 

@@ -28,7 +28,7 @@ public:
 
 
 private:
-    int nDimensions,nParticles;
+    int nParticles,charge;
     int nProcess, myRank;
     int WavefunctionType,solverType;
     long idum;

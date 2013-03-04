@@ -14,9 +14,11 @@
 
 
 
-VMCApp::VMCApp(Config *cfg,const int &myRank, const int &nProcess)
+VMCApp::VMCApp(Config *cfg, const int &myRank, const int &nProcess)
 {
     this->cfg=cfg;
+    nParticles=cfg->lookup("SolverSettings.N");
+    charge=cfg->lookup("PotentialSettings.charge");
     this->myRank=myRank;
     this->nProcess=nProcess;
 }
@@ -28,14 +30,12 @@ Description:        starts VMC calculations
 void VMCApp::runVMCApp(int nCycles, long idum)
 {
 
-    idum = idum;// - myRank - time(NULL);
+    idum = idum- myRank - time(NULL);
     nCycles /= nProcess;
 
     TrialWavefunction = setWavefunction();
     TrialWavefunction->loadConfiguration(cfg);
-    TrialWavefunction->jas.alpha=alpha;
-    TrialWavefunction->jas.beta=beta;
-    TrialWavefunction->orbitals->k=alpha;
+
 
     potential = new CoulombPotential;
     potential->loadConfiguration(cfg);
@@ -89,7 +89,6 @@ Solver* VMCApp::setSolverMethod(){
 }
 
 
-
 /************************************************************
 Name:               setWaveFunction
 Description:
@@ -102,14 +101,21 @@ Wavefunction* VMCApp::setWavefunction(){
     switch (WavefunctionType) {
     case Jastrow:
         wf = new JastrowWavefunction;
+        wf->jas.alpha=alpha;
+        wf->jas.beta=beta;
+        wf->jas.setaValues(nParticles);
+        wf->orbitals->k=alpha;
         break;
 
     case Basic:
         wf =new BasicWavefunction;
+        wf->jas.alpha=alpha;
+        wf->orbitals->k=alpha;
         break;
 
     case  Hydrogenic:
-        wf = new HydrogenicWavefunction;
+        wf = new HydrogenicWavefunction(charge);
+        wf->orbitals->k=charge;
         break;
     }
 

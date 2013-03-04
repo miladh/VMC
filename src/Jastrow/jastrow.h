@@ -28,6 +28,7 @@ private:
     rowvec dJastrowFactor;
     double JastrowFactor;
 
+
 protected:
     mat a;
 

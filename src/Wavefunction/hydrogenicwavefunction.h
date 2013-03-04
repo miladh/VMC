@@ -6,16 +6,14 @@
 class HydrogenicWavefunction : public Wavefunction
 {
 public:
-    HydrogenicWavefunction();
+    HydrogenicWavefunction(const int &charge);
     double wavefunction(const mat &r);
     double laplace(const mat &r);
     mat gradient(const mat &r);
 
 private:
+    int charge;
     double nFactor;
-
-
-
 
 };
 

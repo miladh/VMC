@@ -12,8 +12,13 @@ Description:        simple wavefunction
 
 double BasicWavefunction::wavefunction(const mat &r)
 {
+    TrialWavefunction=1.0;
 
-    TrialWavefunction = orbitals->orbitalEvaluate(r,0,0)*orbitals->orbitalEvaluate(r,0,1);
+    for(uint i=0; i< r.n_rows; i++){  //CHECK THIS LATER!!!!
+        for (uint qNum = 0; qNum < r.n_rows/2; qNum++){
+            TrialWavefunction *= orbitals->orbitalEvaluate(r,qNum,i);
+        }
+    }
 
     return TrialWavefunction;
 }
@@ -25,9 +30,12 @@ Description:
 */
 mat BasicWavefunction::gradient(const mat &r){
     dwavefunction=zeros<mat>(r.n_rows,r.n_cols);
+
     if(useAnalyticGradient){
         for (uint i = 0; i < r.n_rows; i++){
-            dwavefunction.row(i)=orbitals->gradientOrbitalEvaluate(r,0,i);
+            for (uint qNum = 0; qNum < r.n_rows/2; qNum++){
+                dwavefunction.row(i)=orbitals->gradientOrbitalEvaluate(r,qNum,i);
+            }
         }
         return dwavefunction;
     }

@@ -11,8 +11,14 @@ Description:        jastrow wavefunction wavefunction
 
 double JastrowWavefunction::wavefunction(const mat &r)
 {
-    jas.setaValues(r.n_rows);
-    TrialWavefunction = orbitals->orbitalEvaluate(r,0,0)*orbitals->orbitalEvaluate(r,0,1);
+    TrialWavefunction=1.0;
+
+    for(uint i=0; i< r.n_rows; i++){  //CHECK THIS LATER!!!!
+        for (uint qNum = 0; qNum < r.n_rows/2; qNum++){
+            TrialWavefunction *= orbitals->orbitalEvaluate(r,qNum,i);
+        }
+    }
+
     TrialWavefunction *=jas.evaluateJastrow(r);
 
     return TrialWavefunction;
@@ -24,17 +30,20 @@ Name:          Gradient
 Description:
 */
 mat JastrowWavefunction::gradient(const mat &r){
-     dwavefunction=zeros<mat>(r.n_rows,r.n_cols);
-     dHydrogenic=zeros<mat>(r.n_rows,r.n_cols);
-     dJastrow=zeros<mat>(r.n_rows,r.n_cols);
+    dwavefunction=zeros<mat>(r.n_rows,r.n_cols);
+    dHydrogenic=zeros<mat>(r.n_rows,r.n_cols);
+    dJastrow=zeros<mat>(r.n_rows,r.n_cols);
 
     if(useAnalyticGradient){
         for (uint i = 0; i < r.n_rows; i++){
-            dHydrogenic.row(i)=orbitals->gradientOrbitalEvaluate(r,0,i);
+            for (uint qNum = 0; qNum < r.n_rows/2; qNum++){
+                dHydrogenic.row(i)=orbitals->gradientOrbitalEvaluate(r,qNum,i);
+            }
             dJastrow.row(i)=jas.gradientJastrowEvaluate(r,i);
         }
 
-        return (dHydrogenic+dJastrow);
+        dwavefunction=dHydrogenic+dJastrow;
+        return dwavefunction;
     }
     else{
         return gradientNumerical(r);
@@ -50,16 +59,15 @@ Description:
 double JastrowWavefunction::laplace(const mat &r){
 
     if(useAnalyticLaplace){
-        ddHydrogenic = 0;
+        ddwavefunction = 0;
         for (uint i = 0; i < r.n_rows; i++){
             for (uint qNum = 0; qNum < r.n_rows/2; qNum++){
-                ddHydrogenic += orbitals->laplaceOrbitalEvaluate(r,qNum,i); //*SlaterInv(j, i)
+                ddwavefunction+=orbitals->laplaceOrbitalEvaluate(r,qNum,i)+
+                2*dot(jas.gradientJastrowEvaluate(r,i),orbitals->gradientOrbitalEvaluate(r,qNum,i));
             }
         }
-        ddwavefunction= ddHydrogenic+jas.laplaceJastrowEvaluate(r)+
-                2*dot(jas.gradientJastrowEvaluate(r,0),orbitals->gradientOrbitalEvaluate(r,0,0))+
-                2*dot(jas.gradientJastrowEvaluate(r,1),orbitals->gradientOrbitalEvaluate(r,0,1));
 
+        ddwavefunction+= jas.laplaceJastrowEvaluate(r);
 
         return ddwavefunction;
     }

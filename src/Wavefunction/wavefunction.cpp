@@ -81,7 +81,6 @@ Name:               loadConfigurations
 Description:        loads different variabels
 */
 void Wavefunction::loadConfiguration(Config *cfg){
-    charge=cfg->lookup("PotentialSettings.charge");
     useAnalyticLaplace=cfg->lookup("AppSettings.useAnalyticLaplace");
     useAnalyticGradient=cfg->lookup("AppSettings.useAnalyticGradient");
 
