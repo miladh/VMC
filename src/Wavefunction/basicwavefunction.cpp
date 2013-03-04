@@ -24,7 +24,7 @@ Name:          Gradient
 Description:
 */
 mat BasicWavefunction::gradient(const mat &r){
-
+    dwavefunction=zeros<mat>(r.n_rows,r.n_cols);
     if(useAnalyticGradient){
         for (uint i = 0; i < r.n_rows; i++){
             dwavefunction.row(i)=orbitals->gradientOrbitalEvaluate(r,0,i);

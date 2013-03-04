@@ -3,7 +3,7 @@
 Wavefunction::Wavefunction()
 {
     orbitals = new Hydrogenic;
-    hGrad= 1e-5;
+    hGrad= 1e-8;
     h =0.001;
     h2 =1000000.0;
 }
@@ -50,29 +50,27 @@ Description:
 */
 mat Wavefunction::gradientNumerical(const mat &r){
 
-
-    hVec=h*ones<rowvec>(r.n_cols);
-    rPlus = zeros<mat>( r.n_cols);
-    rMinus = zeros<mat>(r.n_cols);
-
+    rPlus = zeros<mat>(r.n_rows,r.n_cols);
+    rMinus = zeros<mat>(r.n_rows,r.n_cols);
+    dwavefunction=zeros<mat>(r.n_rows,r.n_cols);
     rPlus = rMinus = r;
-
-    wavefunctionMinus = 0;
-    wavefunctionPlus = 0;
+    wavefunctionMinus = 0.0;
+    wavefunctionPlus = 0.0;
 
     wavefunctionCurrent = wavefunction(r);
 
 
-    for(uint i = 0; i < r.n_rows; i++) {
-        rPlus.row(i) += hVec;
-        rMinus.row(i) -= hVec;
-        wavefunctionMinus = wavefunction(rMinus);
-        wavefunctionPlus = wavefunction(rPlus);
-        dwavefunction.row(i)= ones<rowvec>(r.n_cols)*(wavefunctionPlus-wavefunctionMinus)/(wavefunctionCurrent*hGrad);
-        rPlus.row(i) = r.row(i);
-        rMinus.row(i)= r.row(i);
+    for(uint i =0; i<r.n_rows ; i++){
+        for(uint j =0; j<r.n_cols ; j++){
+            rPlus(i,j)+=hGrad;
+            rMinus(i,j)-=hGrad;
+            wavefunctionMinus = wavefunction(rMinus);
+            wavefunctionPlus = wavefunction(rPlus);
+            dwavefunction(i,j)=(wavefunctionPlus-wavefunctionMinus)/(wavefunctionCurrent*hGrad);
+            rPlus(i,j)=r(i,j);
+            rMinus(i,j)=r(i,j);
+        }
     }
-
     return dwavefunction;
 
 }

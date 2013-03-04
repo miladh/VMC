@@ -44,6 +44,9 @@ void MCIS::MetropolisAlgoIS(){
     qForceNew = zeros<mat>(nParticles, nDimensions);
     qForce = zeros<mat>(nParticles, nDimensions);
 
+    rOld = zeros<mat>(nParticles, nDimensions);
+    rNew = zeros<mat>(nParticles, nDimensions);
+
     wavefunctionOld = 0;
     wavefunctionNew = 0;
 
@@ -51,7 +54,7 @@ void MCIS::MetropolisAlgoIS(){
     energySquaredSum = 0;
 
 
-    rOld = randn(nParticles,nDimensions)*sqrt(timeStep);
+    rOld = randn(nParticles,nDimensions)*sqrt(timeStep); //std=sqrt(2*D*dt), D=0.5
     rNew = rOld;
 
 
@@ -61,7 +64,6 @@ void MCIS::MetropolisAlgoIS(){
 
     // loop over Monte Carlo cycles
     for(int cycle = 0; cycle < nCycles+thermalization; cycle++) {
-
         // New position to test
         for(int i = 0; i < nParticles; i++) {
             for(int j = 0; j < nDimensions; j++) {
@@ -72,10 +74,11 @@ void MCIS::MetropolisAlgoIS(){
             wavefunctionNew = TrialWavefunction->wavefunction(rNew);
             qForceNew=getQuantumForce(rNew);
 
-
+            //compute green's function ratio
             GreensFunction=0;
             for(int l=0; l<nDimensions; l++){
-                GreensFunction+=(qForceOld(i,l)+qForceNew(i,l))*(D*timeStep*0.5*(qForceOld(i,l)-qForceNew(i,l))-rNew(i,l)+rOld(i,l));
+                GreensFunction+=(qForceOld(i,l)+qForceNew(i,l))*
+                        (D*timeStep*0.5*(qForceOld(i,l)-qForceNew(i,l))-rNew(i,l)+rOld(i,l));
             }
             GreensFunction= exp(0.5*GreensFunction);
 
@@ -118,6 +121,6 @@ Description:
 */
 mat MCIS::getQuantumForce(const mat &r){
 
-    return TrialWavefunction->gradient(r);
+    return 2*TrialWavefunction->gradient(r);
 }
 

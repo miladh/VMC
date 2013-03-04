@@ -11,7 +11,9 @@ using namespace libconfig;
 
 int main()
 {
-
+    clock_t begin, end;
+    double timeSpent;
+    begin = clock();
 
     //Fix idum!!!!
 
@@ -28,6 +30,12 @@ int main()
     min.runMinimizaer();
 
     MPI_Finalize();
+
+
+    end = clock();
+    timeSpent = (double)(end - begin) / CLOCKS_PER_SEC;
+    cout << "Execution time: "<<timeSpent << endl;
+
     return 0;
 }
 

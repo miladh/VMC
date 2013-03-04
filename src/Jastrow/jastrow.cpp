@@ -57,14 +57,12 @@ rowvec Jastrow::gradientJastrowEvaluate(const mat &r, uint i) {
     // Before i
     for (uint k = 0; k < i; k++) {
         r_ki = norm(r.row(k) - r.row(i), 2);
-        //        cout << r_ki <<endl;
         dJastrowFactor += (a(k, i) / pow((1 + beta * r_ki), 2))*((r.row(i) - r.row(k))/r_ki);
     }
 
     // After i
     for (uint k = i + 1; k < r.n_rows; k++) {
         r_ki = norm(r.row(k) - r.row(i), 2);
-        //         cout << r_ki <<endl;
         dJastrowFactor += (a(k, i) / pow((1 + beta * r_ki), 2))*((r.row(i) - r.row(k))/r_ki);
     }
     return dJastrowFactor;
@@ -89,12 +87,12 @@ double Jastrow::laplaceJastrowEvaluate(const mat &r){
             ddJastrowFactor  += 2*a(k, i)/(pow((1 + beta * r_ki),3)* r_ki);
 
         }
-
         // After i
         for (uint k = i + 1; k < r.n_rows; k++) {
             r_ki = norm(r.row(k) - r.row(i), 2);
             ddJastrowFactor  += 2*a(k, i)/(pow((1 + beta * r_ki),3)* r_ki);
         }
+
         ddJastrowFactor += dot(gradientJastrowEvaluate(r,i),gradientJastrowEvaluate(r,i));
     }
 

@@ -28,6 +28,7 @@ Description:
 */
 mat HydrogenicWavefunction::gradient(const mat &r){
     orbitals->k=charge;
+    dwavefunction=zeros<mat>(r.n_rows,r.n_cols);
     nFactor=4*pow((charge/sqrt(4*acos(-1))),3);
 
     if(useAnalyticGradient){
