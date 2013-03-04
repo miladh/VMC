@@ -5,6 +5,7 @@
 #include <iostream>
 #include <libconfig.h++>
 #include"src/Orbitals/hydrogenic.h"
+#include "src/slater/slater.h"
 #include "src/Jastrow/jastrow.h"
 
 using namespace arma;
@@ -28,8 +29,10 @@ public:
 
     void loadConfiguration(Config *cfg);
 
+    Slater slaterDet;
     Orbitals* orbitals;
     Jastrow jas;
+
 
 
 protected:

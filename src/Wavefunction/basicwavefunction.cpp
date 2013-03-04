@@ -12,13 +12,7 @@ Description:        simple wavefunction
 
 double BasicWavefunction::wavefunction(const mat &r)
 {
-    TrialWavefunction=1.0;
-
-    for(uint i=0; i< r.n_rows; i++){  //CHECK THIS LATER!!!!
-        for (uint qNum = 0; qNum < r.n_rows/2; qNum++){
-            TrialWavefunction *= orbitals->orbitalEvaluate(r,qNum,i);
-        }
-    }
+    TrialWavefunction=slaterDet.evaluateSlater(r);
 
     return TrialWavefunction;
 }

@@ -26,7 +26,8 @@ SOURCES += src/main.cpp \
     src/Solver/mcis.cpp \
     src/Orbitals/orbitals.cpp \
     src/Orbitals/hydrogenic.cpp \
-    src/Jastrow/jastrow.cpp
+    src/Jastrow/jastrow.cpp \
+    src/slater/slater.cpp
 
 HEADERS += \
     src/includes/lib.h \
@@ -46,7 +47,8 @@ HEADERS += \
     src/includes/Defines.h \
     src/Orbitals/orbitals.h \
     src/Orbitals/hydrogenic.h \
-    src/Jastrow/jastrow.h
+    src/Jastrow/jastrow.h \
+    src/slater/slater.h
 
 
 release {

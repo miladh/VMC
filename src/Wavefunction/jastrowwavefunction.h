@@ -17,6 +17,7 @@ public:
 private:
     mat dHydrogenic,dJastrow;
 
+
 };
 
 #endif // JASTROWWAVEFUNCTION_H

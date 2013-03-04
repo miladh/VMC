@@ -11,15 +11,8 @@ Description:        jastrow wavefunction wavefunction
 
 double JastrowWavefunction::wavefunction(const mat &r)
 {
-    TrialWavefunction=1.0;
 
-    for(uint i=0; i< r.n_rows; i++){  //CHECK THIS LATER!!!!
-        for (uint qNum = 0; qNum < r.n_rows/2; qNum++){
-            TrialWavefunction *= orbitals->orbitalEvaluate(r,qNum,i);
-        }
-    }
-
-    TrialWavefunction *=jas.evaluateJastrow(r);
+    TrialWavefunction =slaterDet.evaluateSlater(r)*jas.evaluateJastrow(r);
 
     return TrialWavefunction;
 

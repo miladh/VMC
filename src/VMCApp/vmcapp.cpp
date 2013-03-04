@@ -104,17 +104,20 @@ Wavefunction* VMCApp::setWavefunction(){
         wf->jas.alpha=alpha;
         wf->jas.beta=beta;
         wf->jas.setaValues(nParticles);
+        wf->slaterDet.orbitals->k=alpha;
         wf->orbitals->k=alpha;
         break;
 
     case Basic:
         wf =new BasicWavefunction;
         wf->jas.alpha=alpha;
+        wf->slaterDet.orbitals->k=alpha;
         wf->orbitals->k=alpha;
         break;
 
     case  Hydrogenic:
         wf = new HydrogenicWavefunction(charge);
+        wf->slaterDet.orbitals->k=charge;
         wf->orbitals->k=charge;
         break;
     }
