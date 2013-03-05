@@ -6,7 +6,7 @@
 class BasicWavefunction : public Wavefunction
 {
 public:
-    BasicWavefunction();
+    BasicWavefunction(const uint &nParticles);
     double wavefunction(const mat &r);
     double laplace(const mat &r);
     double KineticEnergy(const mat &r);

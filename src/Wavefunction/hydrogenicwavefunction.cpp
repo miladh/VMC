@@ -1,6 +1,7 @@
 #include "hydrogenicwavefunction.h"
 
-HydrogenicWavefunction::HydrogenicWavefunction(const int &charge):
+HydrogenicWavefunction::HydrogenicWavefunction(const uint &nParticles,const int &charge):
+    Wavefunction(nParticles),
     charge(charge),
     nFactor(4*pow((charge/sqrt(4*acos(-1))),3))
 {
@@ -13,7 +14,7 @@ Description:        hydrogen like wavefunction
 
 double HydrogenicWavefunction::wavefunction(const mat &r)
 {
-    TrialWavefunction=slaterDet.evaluateSlater(r);
+    TrialWavefunction=slater->initializeSD(r);
     return nFactor*TrialWavefunction;
 
 }
@@ -26,7 +27,6 @@ Description:
 */
 mat HydrogenicWavefunction::gradient(const mat &r){
 
-    dwavefunction=zeros<mat>(r.n_rows,r.n_cols);
 
     if(useAnalyticGradient){
         for (uint i = 0; i < r.n_rows; i++){

@@ -6,7 +6,7 @@
 class HydrogenicWavefunction : public Wavefunction
 {
 public:
-    HydrogenicWavefunction(const int &charge);
+    HydrogenicWavefunction(const uint &nParticles, const int &charge);
     double wavefunction(const mat &r);
     double laplace(const mat &r);
     mat gradient(const mat &r);

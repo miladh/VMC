@@ -100,24 +100,24 @@ Wavefunction* VMCApp::setWavefunction(){
 
     switch (WavefunctionType) {
     case Jastrow:
-        wf = new JastrowWavefunction;
+        wf = new JastrowWavefunction(nParticles);
         wf->jas.alpha=alpha;
         wf->jas.beta=beta;
         wf->jas.setaValues(nParticles);
-        wf->slaterDet.orbitals->k=alpha;
+        wf->slater->orbitals->k=alpha;
         wf->orbitals->k=alpha;
         break;
 
     case Basic:
-        wf =new BasicWavefunction;
+        wf =new BasicWavefunction(nParticles);
         wf->jas.alpha=alpha;
-        wf->slaterDet.orbitals->k=alpha;
+        wf->slater->orbitals->k=alpha;
         wf->orbitals->k=alpha;
         break;
 
     case  Hydrogenic:
-        wf = new HydrogenicWavefunction(charge);
-        wf->slaterDet.orbitals->k=charge;
+        wf = new HydrogenicWavefunction(nParticles,charge);
+        wf->slater->orbitals->k=charge;
         wf->orbitals->k=charge;
         break;
     }

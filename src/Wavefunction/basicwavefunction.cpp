@@ -1,6 +1,7 @@
 #include "basicwavefunction.h"
 
-BasicWavefunction::BasicWavefunction()
+BasicWavefunction::BasicWavefunction(const uint &nParticles):
+    Wavefunction(nParticles)
 {
 }
 
@@ -12,7 +13,7 @@ Description:        simple wavefunction
 
 double BasicWavefunction::wavefunction(const mat &r)
 {
-    TrialWavefunction=slaterDet.evaluateSlater(r);
+    TrialWavefunction=slater->initializeSD(r);
 
     return TrialWavefunction;
 }
@@ -23,7 +24,6 @@ Name:          Gradient
 Description:
 */
 mat BasicWavefunction::gradient(const mat &r){
-    dwavefunction=zeros<mat>(r.n_rows,r.n_cols);
 
     if(useAnalyticGradient){
         for (uint i = 0; i < r.n_rows; i++){

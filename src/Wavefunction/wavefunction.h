@@ -14,8 +14,24 @@ using namespace libconfig;
 
 class Wavefunction
 {
+protected:
+    uint nParticles;
+    bool useAnalyticGradient,useAnalyticLaplace;
+    double TrialWavefunction;
+    double kineticEnergy;
+    double ddwavefunction;
+    mat dwavefunction;
+
+
+
+private:
+    double hGrad,h,h2;
+    rowvec hVec;
+    mat rPlus ,rMinus;
+    double wavefunctionMinus, wavefunctionPlus, wavefunctionCurrent;
+
 public:
-    Wavefunction();
+    Wavefunction(const uint &nParticles);
 
     virtual double wavefunction(const mat &r) = 0;
     virtual double laplaceNumerical(const mat &r);
@@ -29,26 +45,10 @@ public:
 
     void loadConfiguration(Config *cfg);
 
-    Slater slaterDet;
+    Slater *slater;
     Orbitals* orbitals;
     Jastrow jas;
 
-
-
-protected:
-    bool useAnalyticGradient,useAnalyticLaplace;
-    double TrialWavefunction;
-    double kineticEnergy;
-    double ddwavefunction;
-    mat dwavefunction;
-
-
-
-private:
-    mat rPlus ,rMinus;
-    rowvec hVec;
-    double wavefunctionMinus, wavefunctionPlus, wavefunctionCurrent;
-    double hGrad,h,h2;
 
 };
 

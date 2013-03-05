@@ -7,7 +7,7 @@
 class JastrowWavefunction : public Wavefunction
 {
 public:
-    JastrowWavefunction();
+    JastrowWavefunction(const uint &nParticles);
 
     double jastrowFactor(const mat &r);
     double wavefunction(const mat &r);
@@ -16,6 +16,7 @@ public:
 
 private:
     mat dHydrogenic,dJastrow;
+    uint nParticles;
 
 
 };

@@ -1,6 +1,9 @@
 #include "jastrowwavefunction.h"
 
-JastrowWavefunction::JastrowWavefunction()
+JastrowWavefunction::JastrowWavefunction(const uint &nParticles):
+    Wavefunction(nParticles),
+    dHydrogenic(zeros(nParticles,nParticles)),
+    dJastrow(zeros(nParticles,nParticles))
 {
 }
 
@@ -12,7 +15,7 @@ Description:        jastrow wavefunction wavefunction
 double JastrowWavefunction::wavefunction(const mat &r)
 {
 
-    TrialWavefunction =slaterDet.evaluateSlater(r)*jas.evaluateJastrow(r);
+    TrialWavefunction =slater->initializeSD(r)*jas.evaluateJastrow(r);
 
     return TrialWavefunction;
 
@@ -23,9 +26,6 @@ Name:          Gradient
 Description:
 */
 mat JastrowWavefunction::gradient(const mat &r){
-    dwavefunction=zeros<mat>(r.n_rows,r.n_cols);
-    dHydrogenic=zeros<mat>(r.n_rows,r.n_cols);
-    dJastrow=zeros<mat>(r.n_rows,r.n_cols);
 
     if(useAnalyticGradient){
         for (uint i = 0; i < r.n_rows; i++){

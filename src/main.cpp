@@ -18,8 +18,6 @@ int main()
     double timeSpent;
     begin = clock();
 
-
-
     Config cfg;
     cfg.readFile("../vmc/src/config.cfg");
 
