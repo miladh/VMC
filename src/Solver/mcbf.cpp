@@ -1,7 +1,5 @@
 #include "mcbf.h"
 #include "src/includes/lib.h"
-#include "src/Wavefunction/jastrowwavefunction.h"
-#include "src/Wavefunction/basicwavefunction.h"
 #include "src/Hamiltonian/hamiltonian.h"
 #include "src/Potential/coulomb_potential.h"
 #include "src/Kinetic/kinetic.h"

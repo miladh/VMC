@@ -3,9 +3,9 @@
 #include "src/Solver/mcbf.h"
 #include "src/Solver/mcis.h"
 #include "src/includes/lib.h"
-#include "src/Wavefunction/jastrowwavefunction.h"
-#include "src/Wavefunction/basicwavefunction.h"
-#include "src/Wavefunction/hydrogenicwavefunction.h"
+#include "src/Wavefunction/hlikewavefunction.h"
+#include "src/Jastrow/padejastrow.h"
+#include "src/Jastrow/nojastrow.h"
 #include "src/Potential/coulomb_potential.h"
 #include "src/Kinetic/kinetic.h"
 #pragma GCC diagnostic ignored "-Wunused-parameter"
@@ -100,23 +100,26 @@ Wavefunction* VMCApp::setWavefunction(){
 
     switch (WavefunctionType) {
     case Jastrow:
-        wf = new JastrowWavefunction(nParticles);
-        wf->jas.alpha=alpha;
-        wf->jas.beta=beta;
-        wf->jas.setaValues(nParticles);
+        wf = new HLikeWavefunction(nParticles);
+        wf->jas=new PadeJastrow(nParticles);
+        wf->jas->alpha=alpha;
+        wf->jas->beta=beta;
+        wf->jas->setaValues(nParticles);
         wf->slater->orbitals->k=alpha;
         wf->orbitals->k=alpha;
         break;
 
     case Basic:
-        wf =new BasicWavefunction(nParticles);
-        wf->jas.alpha=alpha;
+        wf = new HLikeWavefunction(nParticles);
+        wf->jas=new NoJastrow(nParticles);
         wf->slater->orbitals->k=alpha;
         wf->orbitals->k=alpha;
         break;
 
     case  Hydrogenic:
-        wf = new HydrogenicWavefunction(nParticles,charge);
+//        wf = new HydrogenicWavefunction(nParticles,charge);
+        wf = new HLikeWavefunction(nParticles);
+        wf->jas=new NoJastrow(nParticles);
         wf->slater->orbitals->k=charge;
         wf->orbitals->k=charge;
         break;

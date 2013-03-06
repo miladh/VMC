@@ -1,6 +1,7 @@
-#include "jastrow.h"
+#include "padejastrow.h"
 
-Jastrow::Jastrow()
+PadeJastrow::PadeJastrow(const uint nParticles):
+    Jastrow(nParticles)
 {
 }
 
@@ -8,10 +9,7 @@ Jastrow::Jastrow()
 Name:               setaValues
 Description:        Initiating a matrix with all the spin dependant a-values.
 */
-void Jastrow::setaValues(const uint &nParticles){
-    a = zeros(nParticles,nParticles);
-
-
+void PadeJastrow::setaValues(const uint &nParticles){
     for (uint i = 0; i < nParticles; i++) {
         for (uint j = i+1; j <nParticles; j++) {
             if ((i < nParticles / 2 && j >= nParticles / 2) || (i >=nParticles / 2 && j < nParticles / 2)){
@@ -25,17 +23,6 @@ void Jastrow::setaValues(const uint &nParticles){
         }
     }
 
-
-//    for (uint i = 0; i < nParticles; i++) {
-//        for (uint j = i; j <nParticles; j++) {
-//            if (i == j)
-//                a(i, j) = 0;
-//            else if ((i < nParticles / 2 && j >= nParticles / 2) || (i >=nParticles / 2 && j < nParticles / 2))
-//                a(i, j) = 1.0/2.0;
-//            else
-//                a(i, j) = 1.0 / 4.0;
-//        }
-//    }
 }
 
 
@@ -43,7 +30,7 @@ void Jastrow::setaValues(const uint &nParticles){
 Name:               evaluateJastrow
 Description:        computes jastrowfactor
 */
-double Jastrow::evaluateJastrow(const mat &r){
+double PadeJastrow::evaluateJastrow(const mat &r){
 
     correlation=0;
     for (uint i=0; i<r.n_rows; i++) {
@@ -65,8 +52,7 @@ Name:               gradientJastrowEvaluate
 Description:        Computes the total Jasrow Wavefunction's
                     gradient in r, component i.
 */
-rowvec Jastrow::gradientJastrowEvaluate(const mat &r, uint i) {
-    double r_ki,b_ij;
+rowvec PadeJastrow::gradientJastrowEvaluate(const mat &r, uint i) {
     dJastrowFactor = zeros(1,r.n_cols);
 
     // Before i
@@ -91,11 +77,9 @@ Name:               laplaceJastrowEvaluate
 Description:
 */
 
-double Jastrow::laplaceJastrowEvaluate(const mat &r){
+double PadeJastrow::laplaceJastrowEvaluate(const mat &r){
 
-double r_ki,b_ij;
     ddJastrowFactor = 0;
-
 
     for(uint i=0; i<r.n_rows; i++){
         // Before i

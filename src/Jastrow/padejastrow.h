@@ -1,37 +1,31 @@
-#ifndef JASTROW_H
-#define JASTROW_H
+#ifndef PADEJASTROW_H
+#define PADEJASTROW_H
 
 
 #include <armadillo>
 #include <iostream>
 #include <libconfig.h++>
-
+#include "src/Jastrow/jastrow.h"
 
 using namespace arma;
 using namespace std;
 using namespace libconfig;
 
-class Jastrow
+class PadeJastrow :public Jastrow
 {
 public:
-    Jastrow();
+    PadeJastrow(const uint nParticles);
     void setaValues(const uint &nParticles);
     double evaluateJastrow(const mat &r);
     double laplaceJastrowEvaluate(const mat &r);
     rowvec gradientJastrowEvaluate(const mat &r, uint i);
-    double alpha,beta;
+
 private:
-    double r1, r2, rij,r1r2;
-    double eIntEnergy,eContributor;
-    double correlation, argument;
-    double ddJastrowFactor;
-    rowvec dJastrowFactor;
-    double JastrowFactor;
+    double rij;
+    double correlation;
+    double r_ki,b_ij;
 
-
-protected:
-    mat a;
 
 };
 
-#endif // JASTROW_H
+#endif // PADEJASTROW_H

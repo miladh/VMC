@@ -47,7 +47,7 @@ public:
 
     Slater *slater;
     Orbitals* orbitals;
-    Jastrow jas;
+    Jastrow* jas;
 
 
 };

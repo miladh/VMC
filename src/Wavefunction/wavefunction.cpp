@@ -1,5 +1,6 @@
 #include "wavefunction.h"
 
+
 Wavefunction::Wavefunction(const uint &nParticles) :
     nParticles(nParticles),
     dwavefunction(zeros<mat>(nParticles,3)),
@@ -11,7 +12,6 @@ Wavefunction::Wavefunction(const uint &nParticles) :
     rMinus(zeros<mat>(nParticles, 3)),
     slater(new Slater(nParticles)),
     orbitals(new Hydrogenic)
-
 {
 }
 

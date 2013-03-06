@@ -1,7 +1,5 @@
 #include "mcis.h"
 #include "src/includes/lib.h"
-#include "src/Wavefunction/jastrowwavefunction.h"
-#include "src/Wavefunction/basicwavefunction.h"
 #include "src/Hamiltonian/hamiltonian.h"
 #include "src/Potential/coulomb_potential.h"
 #include "src/Kinetic/kinetic.h"
@@ -42,7 +40,7 @@ void MCIS::MetropolisAlgoIS(){
     acceptedSteps=0;
     qForceOld = zeros<mat>(nParticles, nDimensions);
     qForceNew = zeros<mat>(nParticles, nDimensions);
-    qForce = zeros<mat>(nParticles, nDimensions);
+//    qForce = zeros<mat>(nParticles, nDimensions);
 
     rOld = zeros<mat>(nParticles, nDimensions);
     rNew = zeros<mat>(nParticles, nDimensions);
