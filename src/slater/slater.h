@@ -24,6 +24,7 @@ public:
     void rejectMove();
     void updateSlater();
     double getSDRatio();
+    void updateSlaterInverse();
 
     rowvec gradientSDEvaluate(const mat &r, uint &p);
     double laplaceSDEvaluate(const mat &r, const uint &i);
@@ -48,6 +49,10 @@ private:
 
     mat dSD;
     double ddSD;
+
+    double R;
+    rowvec S ;
+    uint i;
 
 
 };

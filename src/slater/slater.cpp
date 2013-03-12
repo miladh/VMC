@@ -69,17 +69,69 @@ Description:
 void Slater::updateSlater(){
 
     if (activeParticle < N) {
-         for (uint qNum = 0; qNum  < N; qNum ++) {
-             DUpNew(activeParticle, qNum) =orbitals->orbitalEvaluate(rNew,qNum ,activeParticle);
-         }
-     } else {
-         for (uint qNum  = 0; qNum  < N; qNum ++) {
-             DDownNew(activeParticle - N, qNum) = orbitals->orbitalEvaluate(rNew,qNum ,activeParticle);
-         }
-     }
+        for (uint qNum = 0; qNum  < N; qNum ++) {
+            DUpNew(activeParticle, qNum) =orbitals->orbitalEvaluate(rNew,qNum ,activeParticle);
+        }
+    } else {
+        for (uint qNum  = 0; qNum  < N; qNum ++) {
+            DDownNew(activeParticle - N, qNum) = orbitals->orbitalEvaluate(rNew,qNum ,activeParticle);
+        }
+    }
+    updateSlaterInverse();
+    //        DUpInvNew=inv(DUpNew);
+    //        DDownInvNew=inv(DDownNew);
+}
 
-    DUpInvNew=inv(DUpNew);
-    DDownInvNew=inv(DDownNew);
+/************************************************************
+Name:
+Description:
+*/
+void Slater::updateSlaterInverse() {
+
+    R = getSDRatio();
+
+    if (activeParticle < N) {
+        i = activeParticle;
+        S = zeros(1, N);
+
+        for (uint j = 0; j < N; j++){
+            for (uint l = 0; l < N; l++){
+                S(j) += DUpNew(i, l) * DUpInv(l, j);
+            }
+        }
+
+        for (uint k = 0; k < N; k++) {
+            for (uint j = 0; j < N; j++) {
+                if (j != i) {
+                    DUpInvNew(k, j) = DUpInv(k, j) - DUpInv(k, i) * S(j) / R;
+                } else {
+                    DUpInvNew(k, j) = DUpInv(k, i) / R;
+                }
+            }
+        }
+    }
+
+    if (activeParticle >= N) {
+        i = activeParticle - N;
+        S = zeros(1, N);
+
+        for (uint j = 0; j < N; j++){
+            for (uint l = 0; l < N; l++){
+                S(j) += DDownNew(i, l) * DDownInv(l, j);
+            }
+        }
+
+        for (uint k = 0; k < N; k++) {
+            for (uint j = 0; j < N; j++) {
+                if (j != i) {
+                    DDownInvNew(k, j) = DDownInv(k, j) - DDownInv(k, i) * S(j) / R;
+                } else {
+                    DDownInvNew(k, j) = DDownInv(k, i) / R;
+                }
+            }
+        }
+    }
+
 }
 
 
@@ -91,16 +143,16 @@ double Slater::getSDRatio(){
     double R = 0;
     uint i = activeParticle;
 
-     if (i < N) {
-         for (uint j = 0; j < N; j++) {
-             R += DUpNew(i,j) * DUpInv(j, i);
-         }
-     } else {
-         for (uint j = 0; j < N; j++) {
-             R += DDownNew(i - N,j) * DDownInv(j, i - N);
-         }
-     }
-     return R;
+    if (i < N) {
+        for (uint j = 0; j < N; j++) {
+            R += DUpNew(i,j) * DUpInv(j, i);
+        }
+    } else {
+        for (uint j = 0; j < N; j++) {
+            R += DDownNew(i - N,j) * DDownInv(j, i - N);
+        }
+    }
+    return R;
 }
 
 
@@ -112,17 +164,17 @@ Description:
 void Slater::acceptMove(){
 
     if (activeParticle < N) {
-          for (uint i = 0; i < N; i++){
-              DUp(activeParticle, i) = DUpNew(activeParticle, i);
-          }
-          DUpInv = DUpInvNew;
-      }
+        for (uint i = 0; i < N; i++){
+            DUp(activeParticle, i) = DUpNew(activeParticle, i);
+        }
+        DUpInv = DUpInvNew;
+    }
     else {
-          for (uint i = 0; i < N; i++){
-              DDown(activeParticle - N, i) = DDownNew(activeParticle - N, i);
-          }
-          DDownInv = DDownInvNew;
-      }
+        for (uint i = 0; i < N; i++){
+            DDown(activeParticle - N, i) = DDownNew(activeParticle - N, i);
+        }
+        DDownInv = DDownInvNew;
+    }
 }
 
 
@@ -133,17 +185,17 @@ Description:
 void Slater::rejectMove(){
 
     if (activeParticle < N) {
-          for (uint i = 0; i < N; i++){
-              DUpNew(activeParticle, i) = DUp(activeParticle,i);
-          }
-          DUpInvNew = DUpInv;
-      }
+        for (uint i = 0; i < N; i++){
+            DUpNew(activeParticle, i) = DUp(activeParticle,i);
+        }
+        DUpInvNew = DUpInv;
+    }
     else {
-          for (uint i = 0; i < N; i++){
-              DDownNew(activeParticle - N, i) = DDown(activeParticle - N, i);
-          }
-          DDownInvNew = DDownInv;
-      }
+        for (uint i = 0; i < N; i++){
+            DDownNew(activeParticle - N, i) = DDown(activeParticle - N, i);
+        }
+        DDownInvNew = DDownInv;
+    }
 
 }
 
