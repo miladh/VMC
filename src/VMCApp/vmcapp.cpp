@@ -18,6 +18,7 @@ VMCApp::VMCApp(Config *cfg, const int &myRank, const int &nProcess)
 {
     this->cfg=cfg;
     nParticles=cfg->lookup("SolverSettings.N");
+    nDimensions=cfg->lookup("SolverSettings.dim");
     charge=cfg->lookup("PotentialSettings.charge");
     this->myRank=myRank;
     this->nProcess=nProcess;
@@ -30,7 +31,9 @@ Description:        starts VMC calculations
 void VMCApp::runVMCApp(int nCycles, long idum)
 {
 
-    idum = idum- myRank - time(NULL);
+    idum = idum - myRank - time(NULL);
+    srand(-idum);
+
     nCycles /= nProcess;
 
     TrialWavefunction = setWavefunction();
@@ -79,10 +82,10 @@ Solver* VMCApp::setSolverMethod(){
 
     switch (solverType) {
     case BF:
-        solver = new MCBF(hamiltonian,TrialWavefunction);
+        solver = new MCBF(nParticles,nDimensions,hamiltonian,TrialWavefunction);
         break;
     case IS:
-        solver =new MCIS(hamiltonian,TrialWavefunction);
+        solver =new MCIS(nParticles,nDimensions,hamiltonian,TrialWavefunction);
         break;
     }
     return solver;
@@ -106,22 +109,18 @@ Wavefunction* VMCApp::setWavefunction(){
         wf->jas->beta=beta;
         wf->jas->setaValues(nParticles);
         wf->slater->orbitals->k=alpha;
-        wf->orbitals->k=alpha;
         break;
 
     case Basic:
         wf = new HLikeWavefunction(nParticles);
         wf->jas=new NoJastrow(nParticles);
         wf->slater->orbitals->k=alpha;
-        wf->orbitals->k=alpha;
         break;
 
     case  Hydrogenic:
-//        wf = new HydrogenicWavefunction(nParticles,charge);
         wf = new HLikeWavefunction(nParticles);
         wf->jas=new NoJastrow(nParticles);
         wf->slater->orbitals->k=charge;
-        wf->orbitals->k=charge;
         break;
     }
 

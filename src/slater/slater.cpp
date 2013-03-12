@@ -12,7 +12,7 @@ Slater::Slater(const uint &nParticles):
     DDownInv(zeros(N,N)),
     DUpInvNew(zeros(N,N)),
     DDownInvNew(zeros(N,N)),
-    rNew(zeros(nParticles,nParticles))
+    rNew(zeros(nParticles,3))
 
 {
 }
@@ -22,19 +22,17 @@ Slater::Slater(const uint &nParticles):
 Name:
 Description:
 */
-double Slater::initializeSD(const mat &r){
+void Slater::initializeSD(const mat &r){
 
-    initialSD=evaluateSD(r);
-
+    evaluateSD(r);
     DUpNew=DUp;
     DDownNew=DDown;
 
-    DUpInv=inv(DUp).t();
-    DDownInv=inv(DDown).t();
+    DUpInv=inv(DUp);
+    DDownInv=inv(DDown);
+
     DUpInvNew=DUpInv;
     DDownInvNew=DDownInv;
-
-    return initialSD;
 
 }
 
@@ -44,10 +42,10 @@ Name:
 Description:
 */
 double Slater::evaluateSD(const mat &r){
-    for (uint i = 0; i < N; i++) {
+    for (uint p = 0; p < N; p++) {
         for (uint qNum = 0; qNum < N; qNum++) {
-            DUp(qNum, i) = orbitals->orbitalEvaluate(r,qNum,i);
-            DDown(qNum, i) = orbitals->orbitalEvaluate(r,qNum,i+N);
+            DUp(p,qNum) = orbitals->orbitalEvaluate(r,qNum,p);
+            DDown(p, qNum) = orbitals->orbitalEvaluate(r,qNum,p+N);
         }
     }
 
@@ -68,22 +66,20 @@ void Slater::setActiveParticleAndCurrentPosition(const mat &r, uint i ){
 Name:
 Description:
 */
-double Slater::updateSlater(){
+void Slater::updateSlater(){
 
     if (activeParticle < N) {
          for (uint qNum = 0; qNum  < N; qNum ++) {
-             DUpNew(qNum , activeParticle) =orbitals->orbitalEvaluate(rNew,qNum ,activeParticle);
+             DUpNew(activeParticle, qNum) =orbitals->orbitalEvaluate(rNew,qNum ,activeParticle);
          }
      } else {
          for (uint qNum  = 0; qNum  < N; qNum ++) {
-             DDownNew(qNum , activeParticle - N) = orbitals->orbitalEvaluate(rNew,qNum ,activeParticle);
+             DDownNew(activeParticle - N, qNum) = orbitals->orbitalEvaluate(rNew,qNum ,activeParticle);
          }
      }
 
-    DUpInvNew=inv(DUpNew).t();
-    DDownInvNew=inv(DDownNew).t();
-
-    return det(DUpNew)*det(DDownNew);
+    DUpInvNew=inv(DUpNew);
+    DDownInvNew=inv(DDownNew);
 }
 
 
@@ -95,13 +91,13 @@ double Slater::getSDRatio(){
     double R = 0;
     uint i = activeParticle;
 
-     if (i < N) { // Spin up
+     if (i < N) {
          for (uint j = 0; j < N; j++) {
-             R += DUpNew(j, i) * DUpInv(j, i);
+             R += DUpNew(i,j) * DUpInv(j, i);
          }
      } else {
          for (uint j = 0; j < N; j++) {
-             R += DDownNew(j, i - N) * DDownInv(j, i - N);
+             R += DDownNew(i - N,j) * DDownInv(j, i - N);
          }
      }
      return R;
@@ -113,20 +109,43 @@ double Slater::getSDRatio(){
 Name:
 Description:
 */
-void Slater::acceptNewPosition(){
+void Slater::acceptMove(){
+
     if (activeParticle < N) {
-          for (uint i = 0; i < N; i++)
-              DUp(i, activeParticle) = DUpNew(i, activeParticle);
+          for (uint i = 0; i < N; i++){
+              DUp(activeParticle, i) = DUpNew(activeParticle, i);
+          }
           DUpInv = DUpInvNew;
-      } else {
-          for (uint i = 0; i < N; i++)
-              DDown(i, activeParticle - N) = DDownNew(i, activeParticle - N);
+      }
+    else {
+          for (uint i = 0; i < N; i++){
+              DDown(activeParticle - N, i) = DDownNew(activeParticle - N, i);
+          }
           DDownInv = DDownInvNew;
       }
 }
 
 
+/************************************************************
+Name:
+Description:
+*/
+void Slater::rejectMove(){
 
+    if (activeParticle < N) {
+          for (uint i = 0; i < N; i++){
+              DUpNew(activeParticle, i) = DUp(activeParticle,i);
+          }
+          DUpInvNew = DUpInv;
+      }
+    else {
+          for (uint i = 0; i < N; i++){
+              DDownNew(activeParticle - N, i) = DDown(activeParticle - N, i);
+          }
+          DDownInvNew = DDownInv;
+      }
+
+}
 
 
 
@@ -139,12 +158,12 @@ rowvec Slater::gradientSDEvaluate(const mat &r, uint &i) {
     dSD= zeros(1, r.n_cols);
 
     if (i < N) {
-        for (uint qNum = 0; qNum < N; qNum++) { // Spin up.
-            dSD += orbitals->gradientOrbitalEvaluate(r,qNum,i)* DUpInv(qNum, i);
+        for (uint j = 0; j < N; j++) {
+            dSD += orbitals->gradientOrbitalEvaluate(r,j,i) * DUpInvNew(j, i);
         }
     } else {
-        for (uint qNum = 0; qNum < N; qNum++) { // Spin down.
-            dSD += orbitals->gradientOrbitalEvaluate(r,qNum,i) * DDownInv(qNum, i - N);
+        for (uint j = 0; j < N; j++) {
+            dSD += orbitals->gradientOrbitalEvaluate(r,j,i) * DDownInvNew(j, i - N);
         }
     }
     return dSD;
@@ -157,15 +176,14 @@ Description:
 */
 
 double Slater::laplaceSDEvaluate(const mat &r,const uint &i) {
-
     ddSD = 0;
     if (i < N) {
-        for (uint qNum = 0; qNum < N; qNum++) { // Spin up.
-            ddSD += orbitals->laplaceOrbitalEvaluate(r,qNum,i)*DUpInv(qNum, i);
+        for (uint j = 0; j < N; j++) {
+            ddSD += orbitals->laplaceOrbitalEvaluate(r,j,i)*DUpInv(j, i);
         }
     } else {
-        for (uint qNum = 0; qNum < N; qNum++) { // Spin down.
-            ddSD += orbitals->laplaceOrbitalEvaluate(r,qNum,i)*DUpInv(qNum, i-N);
+        for (uint j = 0; j < N; j++) {
+            ddSD += orbitals->laplaceOrbitalEvaluate(r,j,i)*DDownInv(j, i-N);
         }
     }
 

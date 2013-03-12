@@ -21,18 +21,6 @@ int main()
     Config cfg;
     cfg.readFile("../vmc/src/config.cfg");
 
-//    Slater slater(2);
-
-//    rowvec r1(1,3), r2(1,3);
-//    mat r(2,3);
-
-//    r1 << 1 << 0 <<0;
-//    r2 << 1 << 0 <<0;
-
-//    r.row(0)=r1;
-//    r.row(1)=r2;
-//    cout << slater.evaluateSlater(r) <<endl;
-
 
     int nProcess, myRank;
     MPI_Init(NULL, NULL);
@@ -48,7 +36,7 @@ int main()
 
     end = clock();
     timeSpent = (double)(end - begin) / CLOCKS_PER_SEC;
-    cout << "Execution time: "<<timeSpent << endl;
+    cout << "Execution time: " <<timeSpent << endl;
 
     return 0;
 }

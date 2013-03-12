@@ -24,6 +24,17 @@ public:
     double laplace(const mat &r);
     mat gradient(const mat &r);
 
+
+    void initializewavefunction(const mat &r);
+    void activeParticle(const mat &r,const uint &i);
+    void updateWavefunction();
+    double getRatio();
+    void acceptMove();
+    void rejectMove();
+
+
+
+
 private:
     mat dHydrogenic,dJastrow;
     uint nParticles;

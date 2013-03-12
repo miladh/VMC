@@ -17,14 +17,15 @@ public:
     Slater(const uint &nParticles);
 
 
-    double initializeSD(const mat &r);
+    void initializeSD(const mat &r);
     double evaluateSD(const mat &r);
     void setActiveParticleAndCurrentPosition(const mat &r, uint i );
-    void acceptNewPosition();
-    double updateSlater();
+    void acceptMove();
+    void rejectMove();
+    void updateSlater();
     double getSDRatio();
 
-    rowvec gradientSDEvaluate(const mat &r, uint &i);
+    rowvec gradientSDEvaluate(const mat &r, uint &p);
     double laplaceSDEvaluate(const mat &r, const uint &i);
 
 
@@ -43,6 +44,7 @@ private:
     mat DUpInv, DDownInv;
     mat DUpInvNew,DDownInvNew;
     mat rNew;
+
 
     mat dSD;
     double ddSD;

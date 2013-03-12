@@ -4,14 +4,12 @@
 Wavefunction::Wavefunction(const uint &nParticles) :
     nParticles(nParticles),
     dwavefunction(zeros<mat>(nParticles,3)),
-    hGrad(1e-8),
-    h(0.001),
-    h2(1000000.0),
-    hVec(h*ones<rowvec>(3)),
+    hGrad(1e-5),
+    h(1e-5),
+    h2(1e10),
     rPlus(zeros<mat>(nParticles, 3)),
     rMinus(zeros<mat>(nParticles, 3)),
-    slater(new Slater(nParticles)),
-    orbitals(new Hydrogenic)
+    slater(new Slater(nParticles))
 {
 }
 
@@ -26,13 +24,15 @@ double Wavefunction::laplaceNumerical(const mat &r){
     ddwavefunction = 0;
 
     for(uint i = 0; i <r.n_rows; i++) {
-        rPlus.row(i) += hVec;
-        rMinus.row(i) -= hVec;
-        wavefunctionMinus = wavefunction(rMinus);
-        wavefunctionPlus = wavefunction(rPlus);
-        ddwavefunction += (wavefunctionMinus + wavefunctionPlus - 2 * wavefunctionCurrent);
-        rPlus.row(i) = r.row(i);
-        rMinus.row(i)= r.row(i);
+        for(uint j=0; j <r.n_cols ; j++){
+            rPlus(i,j) += h;
+            rMinus(i,j) -= h;
+            wavefunctionMinus = wavefunction(rMinus);
+            wavefunctionPlus = wavefunction(rPlus);
+            ddwavefunction += (wavefunctionMinus + wavefunctionPlus - 2 * wavefunctionCurrent);
+            rPlus(i,j) = r(i,j);
+            rMinus(i,j)= r(i,j);
+        }
     }
 
     ddwavefunction =h2 * ddwavefunction / wavefunctionCurrent;
@@ -49,15 +49,15 @@ Description:
 mat Wavefunction::gradientNumerical(const mat &r){
 
     rPlus = rMinus = r;
-    wavefunctionCurrent = wavefunction(r);
 
+    wavefunctionCurrent = wavefunction(r);
     for(uint i =0; i<r.n_rows ; i++){
         for(uint j =0; j<r.n_cols ; j++){
             rPlus(i,j)+=hGrad;
             rMinus(i,j)-=hGrad;
             wavefunctionMinus = wavefunction(rMinus);
             wavefunctionPlus = wavefunction(rPlus);
-            dwavefunction(i,j)=(wavefunctionPlus-wavefunctionMinus)/(wavefunctionCurrent*hGrad);
+            dwavefunction(i,j)=(wavefunctionPlus-wavefunctionMinus)/(2*wavefunctionCurrent*hGrad);
             rPlus(i,j)=r(i,j);
             rMinus(i,j)=r(i,j);
         }

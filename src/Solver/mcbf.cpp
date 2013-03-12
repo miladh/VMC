@@ -8,10 +8,9 @@
 #include <math.h>
 #include <iomanip>
 
-MCBF::MCBF(Hamiltonian *hamiltonian, Wavefunction* TrialWaveFunction)
+MCBF::MCBF(const uint &nParticles, const uint &nDimensions, Hamiltonian *hamiltonian, Wavefunction* TrialWavefunction):
+    Solver(nParticles,nDimensions,hamiltonian,TrialWavefunction)
 {
-    this->hamiltonian=hamiltonian;
-    this->TrialWaveFunction=TrialWaveFunction;
 }
 
 
@@ -21,7 +20,6 @@ Description:        starts a MC-sample
 */
 
 void MCBF::solve(int nCycles, long idum)
-
 {
     this->idum=idum;
     stepLength=optimalStepLength();
@@ -37,15 +35,8 @@ Description:
 void MCBF::MetropolisAlgoBF(int nCycles, double stepLength){
 
     acceptedSteps=0;
-    rOld = zeros<mat>(nParticles, nDimensions);
-    rNew = zeros<mat>(nParticles, nDimensions);
-
-    waveFunctionOld = 0;
-    waveFunctionNew = 0;
-
     energySum = 0;
     energySquaredSum = 0;
-
 
     // initial trial positions
     for(int i = 0; i < nParticles; i++) {
@@ -55,47 +46,55 @@ void MCBF::MetropolisAlgoBF(int nCycles, double stepLength){
     }
     rNew = rOld;
 
+    // Store the current value of the wave function
+    TrialWavefunction->initializewavefunction(rOld);
+
+
+
     // loop over Monte Carlo cycles
     for(int cycle = 0; cycle < nCycles+thermalization; cycle++) {
 
-        // Store the current value of the wave function
-        waveFunctionOld = TrialWaveFunction->wavefunction(rOld);
-
         // New position to test
         for(int i = 0; i < nParticles; i++) {
+
             for(int j = 0; j < nDimensions; j++) {
                 rNew(i,j) = rOld(i,j) + stepLength*(ran2(&idum) - 0.5);
             }
-           // rNew.row(i) =rOld.row(i)+sqrt(stepLength)*randn<rowvec>(nDimensions);
 
             // Recalculate the value of the wave function
-            waveFunctionNew = TrialWaveFunction->wavefunction(rNew);
+            TrialWavefunction->activeParticle(rNew,i);
+            TrialWavefunction->updateWavefunction();
+            R =TrialWavefunction->getRatio();
+            R*=R;
 
-            // Check for step acceptance (if yes, update position, if no, reset position)
-            if(ran2(&idum) <= (waveFunctionNew*waveFunctionNew) / (waveFunctionOld*waveFunctionOld)) {
-                    rOld.row(i) = rNew.row(i);
-                    waveFunctionOld = waveFunctionNew;
+            if(ran2(&idum) <= R) {
+                TrialWavefunction->acceptMove();
+                rOld.row(i) = rNew.row(i);
 
                 if(cycle > thermalization){
                     acceptedSteps++;
                 }
 
             } else {
-                    rNew.row(i) = rOld.row(i);
+                TrialWavefunction->rejectMove();
+                rNew.row(i) = rOld.row(i);
 
             }
 
-            // update energies
-            if(cycle > thermalization){
+        }
+
+        // update energies
+        if(cycle > thermalization){
             deltaE =hamiltonian->getEnergy(rNew);
             energySum += deltaE;
             energySquaredSum += deltaE*deltaE;
-            }
         }
     }
-    energy = energySum/(nCycles * nParticles);
-    energySquared = energySquaredSum/(nCycles * nParticles);
+
+    energy = energySum/(nCycles-1);
+    energySquared = energySquaredSum/(nCycles-1);
     acceptedSteps= acceptedSteps/nParticles;
+
 
 }
 
@@ -114,7 +113,6 @@ double MCBF::optimalStepLength() {
 
         MetropolisAlgoBF(nPreCycles,(minStepLength + maxStepLength)/2);
         stepMinMax=acceptedSteps/nPreCycles-0.5;
-
 
         if (stepMin*stepMinMax < 0)
             maxStepLength = (minStepLength + maxStepLength) / 2;

@@ -6,9 +6,33 @@
 
 HLikeWavefunction::HLikeWavefunction(const uint &nParticles):
     Wavefunction(nParticles),
-    dHydrogenic(zeros(nParticles,nParticles)),
-    dJastrow(zeros(nParticles,nParticles))
+    dHydrogenic(zeros(nParticles,3)),
+    dJastrow(zeros(nParticles,3))
 {
+}
+
+
+
+/************************************************************
+Name:
+Description:
+*/
+void HLikeWavefunction::initializewavefunction(const mat &r)
+{
+    slater->initializeSD(r);
+    jas->initializeJastrow(r);
+}
+
+/************************************************************
+Name:
+Description:
+*/
+double HLikeWavefunction::wavefunction(const mat &r)
+{
+    TrialWavefunction =slater->evaluateSD(r);
+    TrialWavefunction*=exp(jas->evaluateJastrow(r));
+
+    return TrialWavefunction;
 }
 
 
@@ -16,14 +40,55 @@ HLikeWavefunction::HLikeWavefunction(const uint &nParticles):
 Name:
 Description:
 */
-
-double HLikeWavefunction::wavefunction(const mat &r)
+void HLikeWavefunction::activeParticle(const mat &r,const uint &i)
 {
-    TrialWavefunction =slater->initializeSD(r)*jas->evaluateJastrow(r);
+    slater->setActiveParticleAndCurrentPosition(r,i);
+    jas->setActiveParticleAndCurrentPosition(r,i);
+}
 
-    return TrialWavefunction;
+
+/************************************************************
+Name:
+Description:
+*/
+void HLikeWavefunction::updateWavefunction()
+{
+    slater->updateSlater();
 
 }
+
+
+/************************************************************
+Name:
+Description:
+*/
+double HLikeWavefunction::getRatio()
+{
+
+    return slater->getSDRatio()*jas->getJasRatio();
+}
+
+
+/************************************************************
+Name:
+Description:
+*/
+void HLikeWavefunction::rejectMove()
+{
+    slater->rejectMove();
+    jas->rejectMove();
+}
+/************************************************************
+Name:
+Description:
+*/
+void HLikeWavefunction::acceptMove()
+{
+    slater->acceptMove();
+    jas->acceptMove();
+}
+
+
 
 /************************************************************
 Name:          Gradient
@@ -33,13 +98,11 @@ mat HLikeWavefunction::gradient(const mat &r){
 
     if(useAnalyticGradient){
         for (uint i = 0; i < r.n_rows; i++){
-            for (uint qNum = 0; qNum < r.n_rows/2; qNum++){
-                dHydrogenic.row(i)=orbitals->gradientOrbitalEvaluate(r,qNum,i);
-            }
+            dHydrogenic.row(i)=slater->gradientSDEvaluate(r,i);
             dJastrow.row(i)=jas->gradientJastrowEvaluate(r,i);
         }
-
         dwavefunction=dHydrogenic+dJastrow;
+
         return dwavefunction;
     }
     else{
@@ -58,10 +121,9 @@ double HLikeWavefunction::laplace(const mat &r){
     if(useAnalyticLaplace){
         ddwavefunction = 0;
         for (uint i = 0; i < r.n_rows; i++){
-            for (uint qNum = 0; qNum < r.n_rows/2; qNum++){
-                ddwavefunction+=orbitals->laplaceOrbitalEvaluate(r,qNum,i)+
-                2*dot(jas->gradientJastrowEvaluate(r,i),orbitals->gradientOrbitalEvaluate(r,qNum,i));
-            }
+
+            ddwavefunction+=slater->laplaceSDEvaluate(r,i)+
+                    2*dot(slater->gradientSDEvaluate(r,i),jas->gradientJastrowEvaluate(r,i));
         }
 
         ddwavefunction+= jas->laplaceJastrowEvaluate(r);
@@ -69,6 +131,7 @@ double HLikeWavefunction::laplace(const mat &r){
         return ddwavefunction;
     }
     else{
+
         return laplaceNumerical(r);
     }
 

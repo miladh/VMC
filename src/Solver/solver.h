@@ -18,7 +18,7 @@ using namespace libconfig;
 class Solver
 {
 public:
-    Solver();
+    Solver(const uint &nParticles, const uint &nDimensions, Hamiltonian *hamiltonian, Wavefunction *TrialWavefunction);
     virtual void solve(int nCycles, long idum) = 0;
     void loadConfiguration(Config *cfg);
 
@@ -28,9 +28,13 @@ public:
 
 
 protected:
-    int nDimensions,nParticles;
+    int nParticles,nDimensions;
     double thermalization,nPreCycles;
     double minStepLength, maxStepLength, tolerance;
+    double R;
+    mat rOld, rNew;
+    Hamiltonian *hamiltonian;
+    Wavefunction* TrialWavefunction;
 };
 
 #endif // VMCSOLVER_H

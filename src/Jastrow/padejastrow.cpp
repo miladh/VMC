@@ -11,7 +11,7 @@ Description:        Initiating a matrix with all the spin dependant a-values.
 */
 void PadeJastrow::setaValues(const uint &nParticles){
     for (uint i = 0; i < nParticles; i++) {
-        for (uint j = i+1; j <nParticles; j++) {
+        for (uint j = i; j <nParticles; j++) {
             if ((i < nParticles / 2 && j >= nParticles / 2) || (i >=nParticles / 2 && j < nParticles / 2)){
                 a(i, j) = 0.5;
                 a(j,i) = 0.5;
@@ -19,12 +19,11 @@ void PadeJastrow::setaValues(const uint &nParticles){
             else{
                 a(i, j) = 0.25;
                 a(j,i) = 0.25;
-        }
+            }
         }
     }
 
 }
-
 
 /************************************************************
 Name:               evaluateJastrow
@@ -41,9 +40,56 @@ double PadeJastrow::evaluateJastrow(const mat &r){
         }
     }
 
-    JastrowFactor = exp(correlation);
-    return JastrowFactor;
+    return correlation;
 
+}
+/************************************************************
+Name:
+Description:
+*/
+void PadeJastrow::initializeJastrow(const mat &r){
+    rOld=r;
+}
+
+
+
+/************************************************************
+Name:
+Description:
+*/
+void PadeJastrow::setActiveParticleAndCurrentPosition(const mat &r, const uint &i){
+    rNew=r;
+    activeParticle= i;
+}
+
+/************************************************************
+Name:               evaluateJastrow
+Description:        computes jastrowfactor
+*/
+double PadeJastrow::getJasRatio(){
+
+    deltaJastrow = evaluateJastrow(rNew) - evaluateJastrow(rOld);
+    return exp(deltaJastrow);
+}
+
+
+
+/************************************************************
+Name:               evaluateJastrow
+Description:        computes jastrowfactor
+*/
+void PadeJastrow::acceptMove(){
+    rOld= rNew;
+}
+
+
+
+/************************************************************
+Name:               evaluateJastrow
+Description:        computes jastrowfactor
+*/
+void PadeJastrow::rejectMove(){
+    rNew=rOld;
 }
 
 
@@ -54,6 +100,7 @@ Description:        Computes the total Jasrow Wavefunction's
 */
 rowvec PadeJastrow::gradientJastrowEvaluate(const mat &r, uint i) {
     dJastrowFactor = zeros(1,r.n_cols);
+
 
     // Before i
     for (uint k = 0; k < i; k++) {
@@ -66,7 +113,7 @@ rowvec PadeJastrow::gradientJastrowEvaluate(const mat &r, uint i) {
     for (uint k = i + 1; k < r.n_rows; k++) {
         r_ki = norm(r.row(k) - r.row(i), 2);
         b_ij=(1 + beta * r_ki);
-         dJastrowFactor += (a(k, i) / (b_ij*b_ij))*((r.row(i) - r.row(k))/r_ki);
+        dJastrowFactor += (a(k, i) / (b_ij*b_ij))*((r.row(i) - r.row(k))/r_ki);
     }
     return dJastrowFactor;
 }

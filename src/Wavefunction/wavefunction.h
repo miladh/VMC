@@ -26,7 +26,6 @@ protected:
 
 private:
     double hGrad,h,h2;
-    rowvec hVec;
     mat rPlus ,rMinus;
     double wavefunctionMinus, wavefunctionPlus, wavefunctionCurrent;
 
@@ -46,8 +45,15 @@ public:
     void loadConfiguration(Config *cfg);
 
     Slater *slater;
-    Orbitals* orbitals;
     Jastrow* jas;
+
+
+    virtual void activeParticle(const mat &r,const uint &i)=0;
+    virtual void updateWavefunction()=0;
+    virtual double getRatio()=0;
+    virtual void acceptMove()=0;
+    virtual void rejectMove()=0;
+    virtual void initializewavefunction(const mat &r)=0;
 
 
 };
