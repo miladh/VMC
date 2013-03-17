@@ -28,6 +28,7 @@ SOURCES += src/main.cpp \
     src/Jastrow/jastrow.cpp \
     src/Jastrow/nojastrow.cpp \
     src/Wavefunction/hlikewavefunction.cpp \
+    src/OnebodyDensity/onebodydensity.cpp \
     src/Blocking/blocking.cpp
 
 HEADERS += \
@@ -50,6 +51,7 @@ HEADERS += \
     src/Jastrow/jastrow.h \
     src/Jastrow/nojastrow.h \
     src/Wavefunction/hlikewavefunction.h \
+    src/OnebodyDensity/onebodydensity.h \
     src/Blocking/blocking.h
 
 

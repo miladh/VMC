@@ -6,6 +6,10 @@
 #define BLOCKING 0
 
 
+// 0: OBD off
+// 1: OBD on
+#define ONEBODYDENSITY 1
+
 enum TrialWavefunction {
    Jastrow, Basic, Hydrogenic
 };
