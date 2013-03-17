@@ -2,6 +2,8 @@
 #include <libconfig.h++>
 #include "src/Minimizer/minimizer.h"
 #include "src/slater/slater.h"
+#include "src/Blocking/blocking.h"
+
 #pragma GCC diagnostic ignored "-Wunused-parameter"
 #include <mpi.h>
 // Enable warnings again
@@ -36,7 +38,29 @@ int main()
 
     end = clock();
     timeSpent = (double)(end - begin) / CLOCKS_PER_SEC;
+
+    if(myRank==0){
     cout << "Execution time: " <<timeSpent << endl;
+    }
+
+
+
+#if BLOCKING
+    if (myRank==0){
+    cout << "Starting blocking analysis." << endl;
+    Blocking block(nProcess);
+    block.loadConfiguration(&cfg);
+    block.doBlocking();
+
+
+    string dataPath = "../vmc/results/blocking";
+    // Plotting result
+    string pythonPath = "python " + dataPath
+            + "/plotBlocking.py "
+            + dataPath + "/blocking.mat";
+    system(pythonPath.c_str());
+}
+#endif
 
     return 0;
 }

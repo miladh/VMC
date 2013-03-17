@@ -78,8 +78,8 @@ void Slater::updateSlater(){
         }
     }
     updateSlaterInverse();
-    //        DUpInvNew=inv(DUpNew);
-    //        DDownInvNew=inv(DDownNew);
+//            DUpInvNew=inv(DUpNew);
+//            DDownInvNew=inv(DDownNew);
 }
 
 /************************************************************
@@ -91,7 +91,7 @@ void Slater::updateSlaterInverse() {
     R = getSDRatio();
 
     if (activeParticle < N) {
-        i = activeParticle;
+        uint i = activeParticle;
         S = zeros(1, N);
 
         for (uint j = 0; j < N; j++){
@@ -112,7 +112,7 @@ void Slater::updateSlaterInverse() {
     }
 
     if (activeParticle >= N) {
-        i = activeParticle - N;
+        uint i = activeParticle - N;
         S = zeros(1, N);
 
         for (uint j = 0; j < N; j++){

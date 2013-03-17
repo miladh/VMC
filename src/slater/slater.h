@@ -52,7 +52,7 @@ private:
 
     double R;
     rowvec S ;
-    uint i;
+
 
 
 };

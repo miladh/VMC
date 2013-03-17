@@ -7,7 +7,6 @@ Solver::Solver(const uint &nParticles, const uint &nDimensions,Hamiltonian *hami
     rNew(zeros<mat>(nParticles, nDimensions)),
     hamiltonian(hamiltonian),
     TrialWavefunction(TrialWavefunction)
-
 {
 }
 
@@ -22,6 +21,4 @@ void Solver::loadConfiguration(Config *cfg){
     minStepLength = cfg->lookup("OptimalStepSettings.minstep");
     maxStepLength = cfg->lookup("OptimalStepSettings.maxstep");
     tolerance = cfg->lookup("OptimalStepSettings.tolerance");
-
-
 }

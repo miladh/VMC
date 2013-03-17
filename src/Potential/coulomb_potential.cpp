@@ -10,7 +10,6 @@ Description:        Computes the total potential energy
 */
 
 double CoulombPotential::evaluate(const mat &r){
-
     return electronNucleusPotential(r)+electronElectronPotential(r);
 }
 

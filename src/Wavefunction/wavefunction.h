@@ -4,7 +4,7 @@
 #include <armadillo>
 #include <iostream>
 #include <libconfig.h++>
-#include"src/Orbitals/hydrogenic.h"
+#include "src/Orbitals/hydrogenic.h"
 #include "src/slater/slater.h"
 #include "src/Jastrow/jastrow.h"
 

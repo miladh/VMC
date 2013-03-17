@@ -4,11 +4,16 @@
 #include <armadillo>
 #include <iostream>
 #include <libconfig.h++>
+#pragma GCC diagnostic ignored "-Wunused-parameter"
+#include <mpi.h>
+// Enable warnings again
+#pragma GCC diagnostic warning "-Wunused-parameter"
 
 #include "src/Wavefunction/wavefunction.h"
 #include "src/Hamiltonian/hamiltonian.h"
 #include "src/Potential/potential.h"
 #include "src/Kinetic/kinetic.h"
+#include "src/includes/Defines.h"
 
 using namespace arma;
 using namespace std;
@@ -34,7 +39,11 @@ protected:
     double R;
     mat rOld, rNew;
     Hamiltonian *hamiltonian;
-    Wavefunction* TrialWavefunction;
+    Wavefunction *TrialWavefunction;
+
+    int myRank,nProcess;
+    mat energyVector;
+
 };
 
 #endif // VMCSOLVER_H

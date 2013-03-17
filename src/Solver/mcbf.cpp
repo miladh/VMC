@@ -22,6 +22,12 @@ Description:        starts a MC-sample
 void MCBF::solve(int nCycles, long idum)
 {
     this->idum=idum;
+
+#if BLOCKING
+    MPI_Comm_rank(MPI_COMM_WORLD, &myRank);
+    energyVector=zeros(nCycles-1);
+#endif
+
     stepLength=optimalStepLength();
     MetropolisAlgoBF(nCycles,stepLength);
 
@@ -87,7 +93,10 @@ void MCBF::MetropolisAlgoBF(int nCycles, double stepLength){
         if(cycle > thermalization){
             deltaE =hamiltonian->getEnergy(rNew);
             energySum += deltaE;
-            energySquaredSum += deltaE*deltaE;
+            energySquaredSum += deltaE*deltaE;       
+#if BLOCKING
+            energyVector(cycle-thermalization-1)=deltaE;
+#endif
         }
     }
 
@@ -95,7 +104,11 @@ void MCBF::MetropolisAlgoBF(int nCycles, double stepLength){
     energySquared = energySquaredSum/(nCycles-1);
     acceptedSteps= acceptedSteps/nParticles;
 
-
+#if BLOCKING
+    ostringstream filename;
+    filename << "../vmc/results/blocking/data_" << myRank << ".mat";
+    energyVector.save(filename.str());
+#endif
 }
 
 

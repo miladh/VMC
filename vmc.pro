@@ -27,7 +27,8 @@ SOURCES += src/main.cpp \
     src/Jastrow/padejastrow.cpp \
     src/Jastrow/jastrow.cpp \
     src/Jastrow/nojastrow.cpp \
-    src/Wavefunction/hlikewavefunction.cpp
+    src/Wavefunction/hlikewavefunction.cpp \
+    src/Blocking/blocking.cpp
 
 HEADERS += \
     src/includes/lib.h \
@@ -48,7 +49,8 @@ HEADERS += \
     src/Jastrow/padejastrow.h \
     src/Jastrow/jastrow.h \
     src/Jastrow/nojastrow.h \
-    src/Wavefunction/hlikewavefunction.h
+    src/Wavefunction/hlikewavefunction.h \
+    src/Blocking/blocking.h
 
 
 release {

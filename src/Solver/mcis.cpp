@@ -27,7 +27,14 @@ void MCIS::solve(int nCycles, long idum)
 {
     this->idum=idum;
     this->nCycles=nCycles;
+
+#if BLOCKING
+    MPI_Comm_rank(MPI_COMM_WORLD, &myRank);
+    energyVector=zeros(nCycles-1);
+#endif
+
     MetropolisAlgoIS();
+
 }
 
 
@@ -37,6 +44,7 @@ Name:               MetropolisAlgoIS
 Description:        MetropolisAlgo important sampling
 */
 void MCIS::MetropolisAlgoIS(){
+
     acceptedSteps=0;
     energySum = 0;
     energySquaredSum = 0;
@@ -96,12 +104,22 @@ void MCIS::MetropolisAlgoIS(){
             deltaE =hamiltonian->getEnergy(rNew);
             energySum += deltaE;
             energySquaredSum += deltaE*deltaE;
+#if BLOCKING
+            energyVector(cycle-thermalization-1)=deltaE;
+#endif
         }
     }
 
     energy = energySum/(nCycles-1);
     energySquared = energySquaredSum/(nCycles-1);
     acceptedSteps= acceptedSteps/nParticles;
+
+
+#if BLOCKING
+    ostringstream filename;
+    filename << "../vmc/results/blocking/data_" << myRank << ".mat";
+    energyVector.save(filename.str());
+#endif
 
 }
 
