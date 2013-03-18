@@ -12,11 +12,7 @@
 
 OnebodyDensity::OnebodyDensity(const int &nProcess, const int &myRank):
     nNodes(nProcess),
-    myRank(myRank),
-    nSteps(100),
-    dr(0.05),
-    a(-2),
-    b(2)
+    myRank(myRank)
 {
 }
 
@@ -26,20 +22,24 @@ Description:
 */
 void OnebodyDensity::computeOnebodyDensity()
 {
-    mat r = zeros(nParticles,nDimensions);
-    vec rho = zeros(nSteps);
     idum = idum - myRank - time(NULL);
+    r=zeros(nParticles,nDimensions);
+    rho=zeros(nSteps);
 
     wf=setWavefunction();
     nCycles/=nNodes;
 
     for (int i = 0; i < nSteps; i++) {
-        rho(i) = McIntegrator(r);
+//        r(0,1)=acos(-1)*ran2(&idum);
+//        r(0,2)=asin(1)*ran2(&idum);
+        rho(i) = McIntegrator();
         r(0,0)+=dr;
     }
 
-    normalize(rho);
-    writeToFile(r,rho);
+    if (myRank==0){
+        normalize();
+        writeToFile();
+    }
 }
 
 
@@ -47,12 +47,11 @@ void OnebodyDensity::computeOnebodyDensity()
 Name:
 Description:
 */
-vec OnebodyDensity::normalize(vec rho){
+void OnebodyDensity::normalize(){
 
     double norm = sum(rho);
     rho/=norm;
 
-    return rho;
 }
 
 
@@ -60,7 +59,7 @@ vec OnebodyDensity::normalize(vec rho){
 Name:
 Description:
 */
-double OnebodyDensity::McIntegrator(mat r){
+double OnebodyDensity::McIntegrator(){
 
     double rho=0.0;
     //Lopp over MC cycles
@@ -73,13 +72,14 @@ double OnebodyDensity::McIntegrator(mat r){
             }
         }
 
-        wfValue=wf->wavefunction(r)*r(0,0)*r(0,0);
+        wfValue=wf->wavefunction(r)*r(0,0);
         rho+=wfValue*wfValue;
     }
 
+
     double tmp = rho;
     MPI_Allreduce(&tmp, &rho, 1, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD);
-    rho/= nNodes;
+    rho/= nNodes/nCycles;
     return rho;
 }
 
@@ -87,7 +87,7 @@ double OnebodyDensity::McIntegrator(mat r){
 Name:
 Description:
 */
-void OnebodyDensity::writeToFile(mat r,vec rho) {
+void OnebodyDensity::writeToFile() {
 
     myfile.open("../vmc/results/onebodyDensity/OBD.mat");
     r(0,0)=0.0;
@@ -142,12 +142,16 @@ Description:
 void OnebodyDensity::loadConfiguration(Config *cfg){
     nDimensions=cfg->lookup("SolverSettings.dim");
     nParticles=cfg->lookup("SolverSettings.N");
-    nCycles=cfg->lookup("AppSettings.cycles");
+    nCycles=cfg->lookup("OnebodyDensitySettrings.cycles");
     WavefunctionType= cfg->lookup("AppSettings.wavefunction");
     alpha=cfg->lookup("MinimizerSettings.minalpha");
     beta=cfg->lookup("MinimizerSettings.minbeta");
     idum=cfg->lookup("AppSettings.idum");
     charge=cfg->lookup("PotentialSettings.charge");
+    nSteps= cfg->lookup("OnebodyDensitySettrings.nSteps");
+    dr=cfg->lookup("OnebodyDensitySettrings.dr");
+    a=cfg->lookup("OnebodyDensitySettrings.a");
+    b=cfg->lookup("OnebodyDensitySettrings.b");
 
 }
 

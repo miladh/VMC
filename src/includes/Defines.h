@@ -8,7 +8,7 @@
 
 // 0: OBD off
 // 1: OBD on
-#define ONEBODYDENSITY 1
+#define ONEBODYDENSITY 0
 
 enum TrialWavefunction {
    Jastrow, Basic, Hydrogenic

@@ -28,7 +28,16 @@ int main()
     begin = clock();
 
     Config cfg;
-    cfg.readFile("../vmc/src/config.cfg");
+
+    for(int i=0; i<nProcess;i++){
+        if(myRank==i){
+            cfg.readFile("../vmc/src/config.cfg");
+        }
+    MPI_Barrier(MPI_COMM_WORLD);
+    }
+
+
+
 
     //    Minimizer min(myRank,nProcess);
     //    min.loadConfiguration(&cfg);
@@ -77,10 +86,8 @@ int main()
 
     MPI_Finalize();
 
-
     end = clock();
     timeSpent = (double)(end - begin) / CLOCKS_PER_SEC;
-
     if(myRank==0){
         cout << "Execution time: " <<timeSpent << endl;
     }

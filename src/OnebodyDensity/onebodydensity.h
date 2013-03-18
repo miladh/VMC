@@ -21,25 +21,26 @@ public:
 
     void computeOnebodyDensity();
     void loadConfiguration(Config *cfg);
-    void writeToFile(mat r, vec rho);
-    double McIntegrator(mat r);
-    vec normalize(vec rho);
+    void writeToFile();
+    double McIntegrator();
+    void normalize();
     Wavefunction* setWavefunction();
 
 private:
-    double nCycles;
     Wavefunction* wf;
-    uint nDimensions;
-    uint nParticles;
-    long idum;
-    int nNodes, myRank;
-
+    uint nDimensions,nParticles;
+    int charge;
     double alpha,beta;
     double nSteps,dr, a, b;
-    double wfValue;
-    ofstream myfile;
-    int charge;
+    double nCycles,wfValue;
+
+    int nNodes, myRank;
     int WavefunctionType;
+    long idum;
+    ofstream myfile;
+
+    mat r;
+    vec rho;
 };
 
 #endif // ONEBODYDENSITY_H
