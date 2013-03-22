@@ -30,8 +30,6 @@ void OnebodyDensity::computeOnebodyDensity()
     nCycles/=nNodes;
 
     for (int i = 0; i < nSteps; i++) {
-//        r(0,1)=acos(-1)*ran2(&idum);
-//        r(0,2)=asin(1)*ran2(&idum);
         rho(i) = McIntegrator();
         r(0,0)+=dr;
     }

@@ -44,6 +44,7 @@ Name:               MetropolisAlgoIS
 Description:        MetropolisAlgo important sampling
 */
 void MCIS::MetropolisAlgoIS(){
+    vector <mat> positionsMat;
 
     acceptedSteps=0;
     energySum = 0;
@@ -90,6 +91,12 @@ void MCIS::MetropolisAlgoIS(){
 
                 if(cycle > thermalization){
                     acceptedSteps++;
+
+//                    if(cycle%25==0){
+//                        positionsMat.push_back(rNew);
+//                    }
+
+
                 }
 
             } else {
@@ -121,6 +128,13 @@ void MCIS::MetropolisAlgoIS(){
     energyVector.save(filename.str());
 #endif
 
+//    if(myRank==0){
+//        ofstream myfile;
+//        myfile.open("../vmc/results/onebodyDensity/OBD.mat");
+//        for(uint i=0; i<positionsMat.size(); i++){
+//            myfile << positionsMat[i] <<endl;
+//        }
+//    }
 }
 
 

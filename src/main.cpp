@@ -33,15 +33,13 @@ int main()
         if(myRank==i){
             cfg.readFile("../vmc/src/config.cfg");
         }
-    MPI_Barrier(MPI_COMM_WORLD);
+        MPI_Barrier(MPI_COMM_WORLD);
     }
 
 
-
-
-    //    Minimizer min(myRank,nProcess);
-    //    min.loadConfiguration(&cfg);
-    //    min.runMinimizaer();
+    Minimizer min(myRank,nProcess);
+    min.loadConfiguration(&cfg);
+    min.runMinimizaer();
 
 
 #if ONEBODYDENSITY
@@ -82,14 +80,12 @@ int main()
     }
 #endif
 
-
-
     MPI_Finalize();
 
     end = clock();
     timeSpent = (double)(end - begin) / CLOCKS_PER_SEC;
     if(myRank==0){
-        cout << "Execution time: " <<timeSpent << endl;
+        cout << "Execution time: " << timeSpent << endl;
     }
 
     return 0;

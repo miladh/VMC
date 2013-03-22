@@ -14,11 +14,11 @@ void PadeJastrow::setaValues(const uint &nParticles){
         for (uint j = i; j <nParticles; j++) {
             if ((i < nParticles / 2 && j >= nParticles / 2) || (i >=nParticles / 2 && j < nParticles / 2)){
                 a(i, j) = 0.5;
-                a(j,i) = 0.5;
+                a(j, i) = 0.5;
             }
             else{
                 a(i, j) = 0.25;
-                a(j,i) = 0.25;
+                a(j, i) = 0.25;
             }
         }
     }
