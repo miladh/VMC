@@ -68,7 +68,7 @@ int main()
     }
     Blocking block(nProcess);
     block.loadConfiguration(&cfg);
-    block.doBlocking();
+    block.doBlocking();|
 
     if (myRank==0){
         string dataPath = "../vmc/results/blocking";
