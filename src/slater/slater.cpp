@@ -207,7 +207,7 @@ Description:
 */
 
 rowvec Slater::gradientSDEvaluate(const mat &r, uint &i) {
-    dSD= zeros(1, r.n_cols);
+    dSD = zeros(1, r.n_cols);
 
     if (i < N) {
         for (uint j = 0; j < N; j++) {

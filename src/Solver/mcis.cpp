@@ -12,7 +12,7 @@ MCIS::MCIS(const uint &nParticles, const uint &nDimensions,Hamiltonian *hamilton
     Solver(nParticles,nDimensions,hamiltonian,TrialWavefunction),
     qForceOld (zeros<mat>(nParticles, nDimensions)),
     qForceNew (zeros<mat>(nParticles, nDimensions)),
-    timeStep(0.005),
+    timeStep(0.05),
     D(0.5)
 {
 }

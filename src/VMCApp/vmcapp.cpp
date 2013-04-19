@@ -113,7 +113,7 @@ Wavefunction* VMCApp::setWavefunction(){
 
     case Basic:
         wf = new HLikeWavefunction(nParticles);
-        wf->jas=new NoJastrow(nParticles);
+        wf->jas = new NoJastrow(nParticles);
         wf->slater->orbitals->k=alpha;
         break;
 

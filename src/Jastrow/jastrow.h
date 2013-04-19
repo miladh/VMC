@@ -25,13 +25,13 @@ protected:
 
 public:
     Jastrow(const uint &nParticles);
-    virtual void setaValues(const uint &nParticles)=0;
-    virtual double evaluateJastrow(const mat &r)=0;
-    virtual double laplaceJastrowEvaluate(const mat &r)=0;
-    virtual rowvec gradientJastrowEvaluate(const mat &r, uint i)=0;
+    virtual void setaValues(const uint& nParticles)=0;
+    virtual double evaluateJastrow(const mat& r)=0;
+    virtual double laplaceJastrowEvaluate(const mat& r)=0;
+    virtual rowvec gradientJastrowEvaluate(const mat& r, uint i)=0;
     virtual double getJasRatio()=0;
-    virtual void initializeJastrow(const mat &r)=0;
-    virtual void setActiveParticleAndCurrentPosition(const mat &r, const uint &i)=0;
+    virtual void initializeJastrow(const mat& r)=0;
+    virtual void setActiveParticleAndCurrentPosition(const mat& r, const uint& i)=0;
     virtual void acceptMove()=0;
     virtual void rejectMove()=0;
 
