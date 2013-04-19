@@ -1,7 +1,7 @@
 #ifndef MCIP_H
 #define MCIP_H
 
-#include "src/Solver/solver.h"
+#include <src/Solver/solver.h>
 
 class MCIS : public Solver
 {

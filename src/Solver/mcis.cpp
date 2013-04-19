@@ -1,12 +1,9 @@
 #include "mcis.h"
-#include "src/includes/lib.h"
-#include "src/Hamiltonian/hamiltonian.h"
-#include "src/Potential/coulomb_potential.h"
-#include "src/Kinetic/kinetic.h"
-#include <armadillo>
-#include <iostream>
-#include <math.h>
-#include <iomanip>
+#include <src/includes/lib.h>
+#include <src/Hamiltonian/hamiltonian.h>
+#include <src/Potential/coulombPotential.h>
+#include <src/Kinetic/kinetic.h>
+
 
 MCIS::MCIS(const uint &nParticles, const uint &nDimensions,Hamiltonian *hamiltonian, Wavefunction* TrialWavefunction):
     Solver(nParticles,nDimensions,hamiltonian,TrialWavefunction),

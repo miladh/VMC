@@ -10,7 +10,7 @@ SOURCES += main.cpp \
     includes/lib.cpp \
     Wavefunction/wavefunction.cpp \
     Potential/potential.cpp \
-    Potential/coulomb_potential.cpp \
+    Potential/coulombPotential.cpp \
     Kinetic/kinetic.cpp \
     Solver/solver.cpp \
     Solver/mcbf.cpp \
@@ -26,13 +26,15 @@ SOURCES += main.cpp \
     Jastrow/nojastrow.cpp \
     Wavefunction/hlikewavefunction.cpp \
     OnebodyDensity/onebodydensity.cpp \
-    Blocking/blocking.cpp
+    Blocking/blocking.cpp \
+    electronInteraction/electroninteraction.cpp \
+    electronInteraction/coulombinteraction.cpp \
+    electronInteraction/nointeraction.cpp
 
 HEADERS += \
     includes/lib.h \
     Wavefunction/wavefunction.h \
     Potential/potential.h \
-    Potential/coulomb_potential.h \
     Kinetic/kinetic.h \
     Solver/solver.h \
     Solver/mcbf.h \
@@ -49,7 +51,11 @@ HEADERS += \
     Jastrow/nojastrow.h \
     Wavefunction/hlikewavefunction.h \
     OnebodyDensity/onebodydensity.h \
-    Blocking/blocking.h
+    Blocking/blocking.h \
+    electronInteraction/electroninteraction.h \
+    electronInteraction/coulombinteraction.h \
+    electronInteraction/nointeraction.h \
+    Potential/coulombPotential.h
 
 
 

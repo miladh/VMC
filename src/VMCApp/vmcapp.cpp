@@ -1,16 +1,15 @@
 #include "vmcapp.h"
-#include "src/includes/Defines.h"
-#include "src/Solver/mcbf.h"
-#include "src/Solver/mcis.h"
-#include "src/includes/lib.h"
-#include "src/Wavefunction/hlikewavefunction.h"
-#include "src/Jastrow/padejastrow.h"
-#include "src/Jastrow/nojastrow.h"
-#include "src/Potential/coulomb_potential.h"
-#include "src/Kinetic/kinetic.h"
-#pragma GCC diagnostic ignored "-Wunused-parameter"
-#include <mpi.h>
-#pragma GCC diagnostic warning "-Wunused-parameter"
+#include <src/includes/Defines.h>
+#include <src/Solver/mcbf.h>
+#include <src/Solver/mcis.h>
+#include <src/includes/lib.h>
+#include <src/Wavefunction/hlikewavefunction.h>
+#include <src/Jastrow/padejastrow.h>
+#include <src/Jastrow/nojastrow.h>
+#include <src/Potential/coulombPotential.h>
+#include <src/Kinetic/kinetic.h>
+#include <src/electronInteraction/coulombinteraction.h>
+#include <src/electronInteraction/nointeraction.h>
 
 
 
@@ -46,9 +45,12 @@ void VMCApp::runVMCApp(int nCycles, long idum)
     kinetic= new Kinetic;
     kinetic->wf=TrialWavefunction;
 
+    electonInteraction = setInteraction();
+
     hamiltonian =new Hamiltonian;
     hamiltonian->potential=potential;
     hamiltonian->kinetic=kinetic;
+    hamiltonian->electronInteraction = electonInteraction;
 
     solver = setSolverMethod();
     solver->loadConfiguration(cfg);
@@ -68,6 +70,28 @@ void VMCApp::runVMCApp(int nCycles, long idum)
     MPI_Allreduce(&tmp, &Acceptance, 1, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD);
     Acceptance /= (nProcess*nCycles);
 
+}
+
+
+/************************************************************
+Name:               setSolverMethod
+Description:
+*/
+ElectronInteraction *VMCApp::setInteraction(){
+
+    ElectronInteraction* interaction;
+    InteractionType = cfg->lookup("AppSettings.interactionType");
+
+    switch (InteractionType) {
+    case NOINTERACTION:
+        interaction = new NoInteraction;
+        break;
+
+    case COULOMBINTERACTION:
+        interaction =new CoulombInteraction;
+        break;
+    }
+    return interaction;
 }
 
 

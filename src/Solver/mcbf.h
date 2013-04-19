@@ -1,7 +1,7 @@
 #ifndef MCBF_H
 #define MCBF_H
 
-#include "src/Solver/solver.h"
+#include <src/Solver/solver.h>
 
 
 class MCBF : public Solver

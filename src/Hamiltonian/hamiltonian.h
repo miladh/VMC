@@ -3,6 +3,7 @@
 
 #include"src/Potential/potential.h"
 #include"src/Kinetic/kinetic.h"
+#include <src/electronInteraction/electroninteraction.h>
 
 class Hamiltonian
 {
@@ -12,9 +13,10 @@ public:
     double getEnergy(const mat &r);
     Potential* potential;
     Kinetic* kinetic;
+    ElectronInteraction* electronInteraction;
 
 private:
-    double potentialEnergy, kineticEnergy, Energy;
+    double potentialEnergy, kineticEnergy,interactionEnergy, Energy;
 
 };
 

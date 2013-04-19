@@ -1,4 +1,4 @@
-#include "coulomb_potential.h"
+#include "coulombPotential.h"
 
 CoulombPotential::CoulombPotential()
 {
@@ -10,7 +10,7 @@ Description:        Computes the total potential energy
 */
 
 double CoulombPotential::evaluate(const mat &r){
-    return electronNucleusPotential(r)+electronElectronPotential(r);
+    return electronNucleusPotential(r);
 }
 
 /********************************************************************************
@@ -30,22 +30,3 @@ double CoulombPotential::electronNucleusPotential(const mat &r){
     return enPotentialEnergy;
 }
 
-
-/*********************************************************************************
-Name:               electron_electron_pot
-Description:        Computes potential energy due to electron-electron interactions
-*/
-
-double CoulombPotential::electronElectronPotential(const mat &r){
-    rij = 0;
-    eePotentialEnergy = 0;
-
-    for(uint i = 0; i < r.n_rows; i++) {
-        for(uint j = i + 1; j < r.n_rows; j++) {
-
-            rij= norm( r.row(i)-r.row(j) ,2);
-            eePotentialEnergy += 1 / rij;
-        }
-    }
-    return eePotentialEnergy;
-}

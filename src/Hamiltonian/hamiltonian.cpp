@@ -1,4 +1,6 @@
 #include "hamiltonian.h"
+#include <src/electronInteraction/coulombinteraction.h>
+#include <src/electronInteraction/nointeraction.h>
 
 Hamiltonian::Hamiltonian()
 {
@@ -13,7 +15,8 @@ double Hamiltonian::getEnergy(const mat &r) {
 
     potentialEnergy = potential->evaluate(r);
     kineticEnergy = kinetic->evaluate(r);
-    Energy = kineticEnergy+potentialEnergy;
+    interactionEnergy = electronInteraction->evaluate(r);
+    Energy = interactionEnergy+kineticEnergy+potentialEnergy;
 
     return Energy;
 

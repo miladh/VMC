@@ -7,6 +7,11 @@
 #include "src/Solver/solver.h"
 #include "src/Wavefunction/wavefunction.h"
 #include "src/Hamiltonian/hamiltonian.h"
+#include <src/electronInteraction/electroninteraction.h>
+
+#pragma GCC diagnostic ignored "-Wunused-parameter"
+#include <mpi.h>
+#pragma GCC diagnostic warning "-Wunused-parameter"
 
 using namespace arma;
 using namespace std;
@@ -30,7 +35,7 @@ public:
 private:
     int nParticles,charge,nDimensions;
     int nProcess, myRank;
-    int WavefunctionType,solverType;
+    int WavefunctionType,solverType,InteractionType;
     long idum;
 
     double totEnergy,totEnergySquared;
@@ -42,10 +47,12 @@ private:
     Wavefunction *TrialWavefunction;
     Potential *potential;
     Kinetic *kinetic;
+    ElectronInteraction *electonInteraction;
     Hamiltonian *hamiltonian;
 
     Wavefunction* setWavefunction();
     Solver* setSolverMethod();
+    ElectronInteraction* setInteraction();
 
 };
 

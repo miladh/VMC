@@ -14,8 +14,12 @@ enum TrialWavefunction {
    Jastrow, Basic, Hydrogenic
 };
 
-
 enum solver {
    BF, IS
 };
+
+enum INTERACTION {
+   NOINTERACTION, COULOMBINTERACTION
+};
+
 #endif // DEFINES_H
