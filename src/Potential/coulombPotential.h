@@ -1,7 +1,7 @@
 #ifndef COULOMB_POTENTIAL_H
 #define COULOMB_POTENTIAL_H
 
-#include "src/Potential/potential.h"
+#include <src/Potential/potential.h>
 
 class CoulombPotential : public Potential
 {

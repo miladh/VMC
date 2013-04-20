@@ -29,7 +29,8 @@ SOURCES += main.cpp \
     Blocking/blocking.cpp \
     electronInteraction/electroninteraction.cpp \
     electronInteraction/coulombinteraction.cpp \
-    electronInteraction/nointeraction.cpp
+    electronInteraction/nointeraction.cpp \
+    Minimizer/bfminimizer.cpp
 
 HEADERS += \
     includes/lib.h \
@@ -55,7 +56,8 @@ HEADERS += \
     electronInteraction/electroninteraction.h \
     electronInteraction/coulombinteraction.h \
     electronInteraction/nointeraction.h \
-    Potential/coulombPotential.h
+    Potential/coulombPotential.h \
+    Minimizer/bfminimizer.h
 
 
 

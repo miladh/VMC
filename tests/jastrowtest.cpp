@@ -5,5 +5,5 @@ TEST(JastrowTest) {
     NoJastrow jas(2);
     mat A = zeros(2,3);
     double result = jas.evaluateJastrow(A);
-    CHECK(result == 6);
+    CHECK(result == 1);
 }

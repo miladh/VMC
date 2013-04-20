@@ -1,8 +1,8 @@
 #include <iostream>
 #include <libconfig.h++>
-#include "src/Minimizer/minimizer.h"
-#include "src/Blocking/blocking.h"
-#include "src/OnebodyDensity/onebodydensity.h"
+#include <src/Minimizer/bfminimizer.h>
+#include <src/Blocking/blocking.h>
+#include <src/OnebodyDensity/onebodydensity.h>
 
 #pragma GCC diagnostic ignored "-Wunused-parameter"
 #include <mpi.h>
@@ -37,9 +37,9 @@ int main()
     }
 
 
-    Minimizer min(myRank,nProcess);
+    BFMinimizer min(myRank,nProcess);
     min.loadConfiguration(&cfg);
-    min.runMinimizaer();
+    min.runMinimizer();
 
 
 #if ONEBODYDENSITY
