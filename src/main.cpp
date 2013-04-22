@@ -38,12 +38,12 @@ int main()
     }
 
 
-//    BFMinimizer min(myRank,nProcess);
-//    min.loadConfiguration(&cfg);
-//    min.runMinimizer();
-    SteepestDescent min(myRank,nProcess);
+    BFMinimizer min(myRank,nProcess);
+//    SteepestDescent min(myRank,nProcess);
+
     min.loadConfiguration(&cfg);
     min.runMinimizer();
+
 
 
 
@@ -70,12 +70,10 @@ int main()
 #if BLOCKING
     if (myRank==0){
         cout << "Starting blocking analysis." << endl;
-    }
-    Blocking block(nProcess);
-    block.loadConfiguration(&cfg);
-    block.doBlocking();|
+        Blocking block(nProcess);
+        block.loadConfiguration(&cfg);
+        block.doBlocking();
 
-    if (myRank==0){
         string dataPath = "../vmc/results/blocking";
         // Plotting result
         string pythonPath = "python " + dataPath

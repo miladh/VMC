@@ -4,10 +4,11 @@
 #include <armadillo>
 #include <iostream>
 #include <libconfig.h++>
-#include "src/Solver/solver.h"
-#include "src/Wavefunction/wavefunction.h"
-#include "src/Hamiltonian/hamiltonian.h"
+#include <src/Solver/solver.h>
+#include <src/Wavefunction/wavefunction.h>
+#include <src/Hamiltonian/hamiltonian.h>
 #include <src/electronInteraction/electroninteraction.h>
+#include <src/Observables/observables.h>
 
 #pragma GCC diagnostic ignored "-Wunused-parameter"
 #include <mpi.h>
@@ -20,9 +21,11 @@ using namespace libconfig;
 class VMCApp
 {
 public:
-    VMCApp(Config* cfg, const int &myRank, const int &nProcess);
+    VMCApp(const int &myRank, const int &nProcess);
 
+    void loadConfiguration(Config *cfg);
     void runVMCApp(int nCycles, long idum);
+    void messagePassing();
     double getEnergy();
     double getEnergySquared();
     double getVariance();
@@ -37,6 +40,7 @@ private:
     int nParticles,nDimensions,charge;
     int nProcess, myRank;
     int WavefunctionType,solverType,InteractionType;
+    int minimize, doBlocking;
     long idum;
 
     double totEnergy,totEnergySquared;
@@ -47,11 +51,12 @@ private:
 
     Config *cfg;
     Solver* solver;
-    Wavefunction *TrialWavefunction;
+    Wavefunction *trialWavefunction;
     Potential *potential;
     Kinetic *kinetic;
     ElectronInteraction *electonInteraction;
     Hamiltonian *hamiltonian;
+    Observables* observables;
 
     Wavefunction* setWavefunction();
     Solver* setSolverMethod();

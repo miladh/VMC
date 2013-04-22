@@ -29,11 +29,12 @@ void BFMinimizer::runMinimizer(){
 
             vmcapp->beta=beta;
             vmcapp->runVMCApp(nCycles,idum);
+            vmcapp->messagePassing();
 
-            Energy=vmcapp->getEnergy();
-            EnergySquared=vmcapp->getEnergySquared();
-            Variance=vmcapp->getVariance();
-            Sigma=vmcapp->getSigma();
+            Energy =vmcapp->getEnergy();
+            EnergySquared = vmcapp->getEnergySquared();
+            Variance = vmcapp->getVariance();
+            Sigma = vmcapp->getSigma();
             Acceptance= vmcapp->getAcceptanceRate();
 
             if (myRank == 0) {
@@ -80,7 +81,9 @@ void BFMinimizer::loadConfiguration(Config *cfg){
     nVarBeta=cfg->lookup("MinimizerSettings.nVarBeta");
     nCycles=cfg->lookup("AppSettings.cycles");
     idum=cfg->lookup("AppSettings.idum");
-    vmcapp= new VMCApp(cfg,myRank,nProcess);
+
+    vmcapp= new VMCApp(myRank,nProcess);
+    vmcapp->loadConfiguration(cfg);
 }
 
 

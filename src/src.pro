@@ -31,7 +31,8 @@ SOURCES += main.cpp \
     electronInteraction/coulombinteraction.cpp \
     electronInteraction/nointeraction.cpp \
     Minimizer/bfminimizer.cpp \
-    Minimizer/steepestdescent.cpp
+    Minimizer/steepestdescent.cpp \
+    Observables/observables.cpp
 
 HEADERS += \
     includes/lib.h \
@@ -59,7 +60,8 @@ HEADERS += \
     electronInteraction/nointeraction.h \
     Potential/coulombPotential.h \
     Minimizer/bfminimizer.h \
-    Minimizer/steepestdescent.h
+    Minimizer/steepestdescent.h \
+    Observables/observables.h
 
 
 

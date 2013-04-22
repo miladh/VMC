@@ -1,30 +1,20 @@
 #include "mcbf.h"
-#include <src/includes/lib.h>
-#include <src/Hamiltonian/hamiltonian.h>
-#include <src/Potential/coulombPotential.h>
-#include <src/Kinetic/kinetic.h>
 
 
-MCBF::MCBF(const uint &nParticles, const uint &nDimensions, Hamiltonian *hamiltonian, Wavefunction* TrialWavefunction):
-    Solver(nParticles,nDimensions,hamiltonian,TrialWavefunction)
+
+
+MCBF::MCBF(Hamiltonian *hamiltonian, Wavefunction* TrialWavefunction, Observables* observables):
+    Solver(hamiltonian,TrialWavefunction,observables)
 {
 }
-
 
 /************************************************************
 Name:               solve
 Description:        starts a MC-sample
 */
-
 void MCBF::solve(int nCycles, long idum)
 {
     this->idum=idum;
-
-#if BLOCKING
-    MPI_Comm_rank(MPI_COMM_WORLD, &myRank);
-    energyVector=zeros(nCycles-1);
-#endif
-
     stepLength=optimalStepLength();
     MetropolisAlgoBF(nCycles,stepLength);
 
@@ -36,10 +26,8 @@ Name:               MetropolisAlgoBF
 Description:
 */
 void MCBF::MetropolisAlgoBF(int nCycles, double stepLength){
-
+    observables->initializeObservables(nCycles);
     acceptedSteps=0;
-    energy = 0;
-    energySquared = 0;
 
     // initial trial positions
     for(int i = 0; i < nParticles; i++) {
@@ -88,41 +76,13 @@ void MCBF::MetropolisAlgoBF(int nCycles, double stepLength){
 
         // update energies
         if(cycle > thermalization){
-            deltaE = hamiltonian->getEnergy(rNew);
-            energy += deltaE;
-            energySquared += deltaE*deltaE;
-
-            variationalDerivate = TrialWavefunction->getVariationalDerivate(rNew);
-            for(uint p = 0; p <variationalDerivate.n_rows; p++ ){
-                variationalDerivateSum(p) += variationalDerivate(p);
-                energyVarDerivate(p) += deltaE*variationalDerivate(p);
-            }
-
-
-#if BLOCKING
-            energyVector(cycle-thermalization-1)=deltaE;
-#endif
+            observables->currentConfiguration(rNew);
+            observables->calculateObservables();
         }
     }
 
-    energy        /=(nCycles-1);
-    energySquared /=(nCycles-1);
     acceptedSteps /= ((nCycles-1)*nParticles);
-
-    for(uint p = 0; p <variationalDerivate.n_rows; p++ ){
-        variationalDerivateSum(p) /= (nCycles-1);
-        energyVarDerivate(p) /= (nCycles-1);
-    }
-
-
-#if BLOCKING
-    ostringstream filename;
-    filename << "../vmc/results/blocking/data_" << myRank << ".mat";
-    energyVector.save(filename.str());
-#endif
 }
-
-
 
 /************************************************************
 Name:               optimalStepLength
@@ -130,7 +90,6 @@ Description:        Finds the optimal steplength using intersection method
 */
 
 double MCBF::optimalStepLength() {
-
     while ((maxStepLength - minStepLength) > tolerance) {
         MetropolisAlgoBF(nPreCycles,minStepLength);
         stepMin=acceptedSteps/nPreCycles-0.5;
@@ -143,8 +102,6 @@ double MCBF::optimalStepLength() {
         else
             minStepLength = (minStepLength + maxStepLength) / 2;
     }
-
-
     return (minStepLength + maxStepLength) / 2;
 }
 

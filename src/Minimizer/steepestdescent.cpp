@@ -18,6 +18,7 @@ void SteepestDescent::runMinimizer(){
         vmcapp->alpha = alpha;
         vmcapp->beta  = beta;
         vmcapp->runVMCApp(nCycles,idum);
+        vmcapp->messagePassing();
 
         variationalDerivate = vmcapp->getVariationalDerivate();
         energy = vmcapp->getEnergy();
@@ -63,6 +64,7 @@ void SteepestDescent::loadConfiguration(Config *cfg){
     alpha=cfg->lookup("MinimizerSettings.minalpha");
     beta=cfg->lookup("MinimizerSettings.minbeta");
     nCycles=cfg->lookup("AppSettings.cycles");
-    idum=cfg->lookup("AppSettings.idum");
-    vmcapp= new VMCApp(cfg,myRank,nProcess);
+    idum = cfg->lookup("AppSettings.idum");
+    vmcapp= new VMCApp(myRank,nProcess);
+    vmcapp->loadConfiguration(cfg);
 }

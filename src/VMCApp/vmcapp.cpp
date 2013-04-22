@@ -13,15 +13,9 @@
 
 
 
-VMCApp::VMCApp(Config *cfg, const int &myRank, const int &nProcess):
-    nParticles(cfg->lookup("SolverSettings.N")),
-    nDimensions(cfg->lookup("SolverSettings.dim")),
-    charge(cfg->lookup("PotentialSettings.charge")),
+VMCApp::VMCApp(const int &myRank, const int &nProcess):
     nProcess(nProcess),
-    myRank(myRank),
-    totVariationalDerivate(zeros<vec>(2)),
-    totEnergyVarDerivate(zeros<vec>(2)),
-    cfg(cfg)
+    myRank(myRank)
 {
 }
 
@@ -37,15 +31,15 @@ void VMCApp::runVMCApp(int nCycles, long idum)
 
     nCycles /= nProcess;
 
-    TrialWavefunction = setWavefunction();
-    TrialWavefunction->loadConfiguration(cfg);
+    trialWavefunction = setWavefunction();
+    trialWavefunction->loadConfiguration(cfg);
 
 
     potential = new CoulombPotential;
     potential->loadConfiguration(cfg);
 
     kinetic= new Kinetic;
-    kinetic->wf=TrialWavefunction;
+    kinetic->wf=trialWavefunction;
 
     electonInteraction = setInteraction();
 
@@ -54,34 +48,48 @@ void VMCApp::runVMCApp(int nCycles, long idum)
     hamiltonian->kinetic=kinetic;
     hamiltonian->electronInteraction = electonInteraction;
 
+    observables = new Observables(hamiltonian,trialWavefunction);
+    observables->loadConfiguration(cfg);
+
     solver = setSolverMethod();
     solver->loadConfiguration(cfg);
+    solver->initializeSolver();
     solver->solve(nCycles,idum);
 
 
-    tmp = solver->energy;
+}
+/************************************************************
+Name:
+Description:
+*/
+void VMCApp::messagePassing()
+{
+
+    tmp = observables->getEnergy();
     MPI_Allreduce(&tmp, &totEnergy, 1, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD);
     totEnergy/= nProcess;
 
-    tmp = solver->energySquared;
+    tmp = observables->getEnergySquared();
     MPI_Allreduce(&tmp, &totEnergySquared, 1, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD);
     totEnergySquared /= nProcess;
-
 
     tmp = solver->acceptedSteps;
     MPI_Allreduce(&tmp, &Acceptance, 1, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD);
     Acceptance /= nProcess;
 
-    tmpVec = solver->variationalDerivateSum;
-    MPI_Allreduce(&tmpVec[0], &totVariationalDerivate[0], tmpVec.n_rows, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD);
-    totVariationalDerivate /= nProcess;
+    if(minimize){
+        tmpVec = observables->getVariationalDerivateRatio();
+        MPI_Allreduce(&tmpVec[0], &totVariationalDerivate[0], tmpVec.n_rows, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD);
+        totVariationalDerivate /= nProcess;
 
+        tmpVec = observables->getEnergyVariationalDerivate();
+        MPI_Allreduce(&tmpVec[0], &totEnergyVarDerivate[0], tmpVec.n_rows, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD);
+        totEnergyVarDerivate /= nProcess;
+    }
 
-
-    tmpVec = solver->energyVarDerivate;
-    MPI_Allreduce(&tmpVec[0], &totEnergyVarDerivate[0], tmpVec.n_rows, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD);
-    totEnergyVarDerivate /= nProcess;
-
+    if(doBlocking){
+        observables->writeEnergyVectorToFile(myRank);
+    }
 }
 
 
@@ -118,10 +126,10 @@ Solver* VMCApp::setSolverMethod(){
 
     switch (solverType) {
     case BF:
-        solver = new MCBF(nParticles,nDimensions,hamiltonian,TrialWavefunction);
+        solver = new MCBF(hamiltonian,trialWavefunction,observables);
         break;
     case IS:
-        solver =new MCIS(nParticles,nDimensions,hamiltonian,TrialWavefunction);
+        solver =new MCIS(hamiltonian,trialWavefunction,observables);
         break;
     }
     return solver;
@@ -218,4 +226,20 @@ Description:
 */
 vec VMCApp::getVariationalDerivate(){
     return 2*totEnergyVarDerivate - 2*totVariationalDerivate*totEnergy;
+}
+
+
+/************************************************************
+Name:               loadConfiguration
+Description:        loads different variables
+*/
+void VMCApp::loadConfiguration(Config *cfg){
+    this->cfg=cfg;
+    nParticles = cfg->lookup("SolverSettings.N");
+    nDimensions = cfg->lookup("SolverSettings.dim");
+    charge = cfg->lookup("PotentialSettings.charge");
+    minimize=cfg->lookup("MinimizerSettings.minimize");
+    doBlocking= cfg->lookup("BlockingSettings.doBlocking");
+    totVariationalDerivate=zeros<vec>(2);
+    totEnergyVarDerivate=zeros<vec>(2);
 }

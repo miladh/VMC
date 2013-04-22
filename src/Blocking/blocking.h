@@ -19,11 +19,11 @@ public:
 protected:
     vec readDataFromFile();
     vec computeBlock(const vec &data, int blockSize);
-    string dataPath;
     int deltaBlockSize;
     int nNodes;
     double maxBlockSizeTreshold;
     int stepLength;
+    string dataPath;
     string outFilename;
     string dataName;
 };

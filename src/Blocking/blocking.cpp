@@ -20,7 +20,7 @@ void Blocking::doBlocking()
         maxBlockSize = maxBlockSizeTreshold;
 
     mat results(3, maxBlockSize/deltaBlockSize);
-    string outFile = dataPath + "/" + outFilename;
+    string outFile = dataPath + outFilename;
 
     for (int i = 1; i*deltaBlockSize <= maxBlockSize; i++) {
         int blockSize = i*deltaBlockSize;
@@ -41,14 +41,14 @@ vec Blocking::readDataFromFile()
 
     // Loading the first file
     stringstream file;
-    file << dataPath << "/" << dataName << 0 << ".mat";
+    file << dataPath << dataName << 0 << ".mat";
     data.load(file.str());
 
     // Loading the rest of the files
     vec data_i;
     for (int i = 1; i < nNodes; i++) {
         file.str("");
-        file << dataPath << "/" << dataName << i << ".mat";
+        file << dataPath << dataName << i << ".mat";
         data_i.load( file.str() );
         data = join_cols(data, data_i);
     }

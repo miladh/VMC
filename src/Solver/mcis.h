@@ -6,7 +6,7 @@
 class MCIS : public Solver
 {
 public:
-    MCIS(const uint &nParticles, const uint &nDimensions,Hamiltonian *hamiltonian, Wavefunction *TrialWavefunction);
+    MCIS(Hamiltonian *hamiltonian, Wavefunction *TrialWavefunction, Observables *observables);
     void solve(int nCycles, long idum);
 
 

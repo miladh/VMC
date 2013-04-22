@@ -9,11 +9,13 @@
 // Enable warnings again
 #pragma GCC diagnostic warning "-Wunused-parameter"
 
+#include <src/includes/lib.h>
 #include <src/Wavefunction/wavefunction.h>
 #include <src/Hamiltonian/hamiltonian.h>
 #include <src/Potential/potential.h>
 #include <src/Kinetic/kinetic.h>
 #include <src/includes/Defines.h>
+#include <src/Observables/observables.h>
 
 using namespace arma;
 using namespace std;
@@ -23,14 +25,12 @@ using namespace libconfig;
 class Solver
 {
 public:
-    Solver(const uint &nParticles, const uint &nDimensions, Hamiltonian *hamiltonian, Wavefunction *TrialWavefunction);
+    Solver(Hamiltonian *hamiltonian, Wavefunction *TrialWavefunction, Observables* observables);
     virtual void solve(int nCycles, long idum) = 0;
     void loadConfiguration(Config *cfg);
+    void initializeSolver();
 
-    double energySquared;
-    double energy;
     double acceptedSteps;
-    vec variationalDerivate, variationalDerivateSum, energyVarDerivate ;
 
 
 protected:
@@ -39,10 +39,10 @@ protected:
     double minStepLength, maxStepLength, tolerance;
     double R;
     mat rOld, rNew;
-    Hamiltonian *hamiltonian;
-    Wavefunction *TrialWavefunction;
+    Hamiltonian* hamiltonian;
+    Wavefunction* TrialWavefunction;
+    Observables* observables;
 
-//    int myRank,nProcess;
     mat energyVector;
 
 };

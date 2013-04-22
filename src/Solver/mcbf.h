@@ -7,7 +7,7 @@
 class MCBF : public Solver
 {
 public:
-    MCBF(const uint &nParticles, const uint &nDimensions,Hamiltonian *hamiltonian, Wavefunction *TrialWavefunction);
+    MCBF(Hamiltonian *hamiltonian, Wavefunction *TrialWavefunction, Observables *observables);
     void solve(int nCycles, long idum);
 
 

@@ -1,20 +1,13 @@
 #include "mcis.h"
-#include <src/includes/lib.h>
-#include <src/Hamiltonian/hamiltonian.h>
-#include <src/Potential/coulombPotential.h>
-#include <src/Kinetic/kinetic.h>
 
 
-MCIS::MCIS(const uint &nParticles, const uint &nDimensions,Hamiltonian *hamiltonian, Wavefunction* TrialWavefunction):
-    Solver(nParticles,nDimensions,hamiltonian,TrialWavefunction),
-    qForceOld (zeros<mat>(nParticles, nDimensions)),
-    qForceNew (zeros<mat>(nParticles, nDimensions)),
+
+MCIS::MCIS(Hamiltonian *hamiltonian, Wavefunction* TrialWavefunction, Observables* observables):
+    Solver(hamiltonian,TrialWavefunction,observables),
     timeStep(0.05),
     D(0.5)
 {
 }
-
-
 
 /************************************************************
 Name:               solve
@@ -24,17 +17,9 @@ void MCIS::solve(int nCycles, long idum)
 {
     this->idum=idum;
     this->nCycles=nCycles;
-
-#if BLOCKING
-    MPI_Comm_rank(MPI_COMM_WORLD, &myRank);
-    energyVector=zeros(nCycles-1);
-#endif
-
     MetropolisAlgoIS();
 
 }
-
-
 
 /************************************************************
 Name:               MetropolisAlgoIS
@@ -42,10 +27,11 @@ Description:        MetropolisAlgo important sampling
 */
 void MCIS::MetropolisAlgoIS(){
     vector <mat> positionsMat;
-
+    observables->initializeObservables(nCycles);
+    qForceOld = zeros<mat>(nParticles, nDimensions);
+    qForceNew = zeros<mat>(nParticles, nDimensions);
     acceptedSteps=0;
-    energy = 0;
-    energySquared = 0;
+
 
     rOld = randn(nParticles,nDimensions)*sqrt(timeStep); //std=sqrt(2*D*dt), D=0.5
     rNew = rOld;
@@ -93,7 +79,6 @@ void MCIS::MetropolisAlgoIS(){
 //                        positionsMat.push_back(rNew);
 //                    }
 
-
                 }
 
             } else {
@@ -105,44 +90,19 @@ void MCIS::MetropolisAlgoIS(){
         }
         // update energies
         if(cycle > thermalization){
-            deltaE =hamiltonian->getEnergy(rNew);
-            energy += deltaE;
-            energySquared += deltaE*deltaE;
-
-            variationalDerivate = TrialWavefunction->getVariationalDerivate(rNew);
-            for(uint p = 0; p <variationalDerivate.n_rows; p++ ){
-                variationalDerivateSum(p) += variationalDerivate(p);
-                energyVarDerivate(p) += deltaE* variationalDerivate(p);
-            }
-#if BLOCKING
-            energyVector(cycle-thermalization-1)=deltaE;
-#endif
+            observables->currentConfiguration(rNew);
+            observables->calculateObservables();
         }
     }
 
-    energy        /= (nCycles-1);
-    energySquared /=(nCycles-1);
-    acceptedSteps /= ((nCycles-1)*nParticles);
-
-    for(uint p = 0; p <variationalDerivate.n_rows; p++ ){
-        variationalDerivateSum(p) /= (nCycles-1);
-        energyVarDerivate(p) /= (nCycles-1);
-    }
-
-
-#if BLOCKING
-    ostringstream filename;
-    filename << "../vmc/results/blocking/data_" << myRank << ".mat";
-    energyVector.save(filename.str());
-#endif
-
-//    if(myRank==0){
-//        ofstream myfile;
-//        myfile.open("../vmc/results/onebodyDensity/OBD.mat");
-//        for(uint i=0; i<positionsMat.size(); i++){
-//            myfile << positionsMat[i] <<endl;
-//        }
-//    }
+    //    if(myRank==0){
+    //        ofstream myfile;
+    //        myfile.open("../vmc/results/onebodyDensity/OBD.mat");
+    //        for(uint i=0; i<positionsMat.size(); i++){
+    //            myfile << positionsMat[i] <<endl;
+    //        }
+    //    }
+        acceptedSteps /= ((nCycles-1)*nParticles);
 }
 
 
