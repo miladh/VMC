@@ -118,14 +118,14 @@ double Hydrogenic::laplaceOrbitalEvaluate(const mat &r, int qNum, int Particle){
 
 
 
-double Hydrogenic::variationalDerivative(const mat &r, int qNum, int Particle){
+double Hydrogenic::getVariationalDerivative(const mat &r, int qNum, int Particle){
     rNorm= norm(r.row(Particle),2);
 
     if(qNum==0){
         dVariational= -rNorm*exp(-k*rNorm);
     }
     else if (qNum==1){
-        dVariational = (3*rNorm/2)*exp(-0.5*k*rNorm);
+        dVariational = rNorm*(2 - rNorm*k/2)*exp(-0.5*k*rNorm);
     }
     else if (qNum == 2) {
         dVariational = (-0.5*rNorm)*r(Particle,2)*exp(-0.5*k*rNorm);
@@ -144,7 +144,7 @@ double Hydrogenic::variationalDerivative(const mat &r, int qNum, int Particle){
         cerr << "Orbital doesn't exist!"<<endl;
         exit(1);}
 
-    return phi;
+    return dVariational;
 }
 
 

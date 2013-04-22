@@ -16,7 +16,7 @@ public:
     virtual double orbitalEvaluate(const mat &r, int qNum, int Particle) = 0;
     virtual double laplaceOrbitalEvaluate(const mat &r, int qNum, int Particle) = 0;
     virtual rowvec gradientOrbitalEvaluate(const mat &r, int qNum, int Particle) = 0;
-    virtual double variationalDerivative(const mat &r, int qNum, int Particle) = 0;
+    virtual double getVariationalDerivative(const mat &r, int qNum, int Particle) = 0;
 
     double k;
 

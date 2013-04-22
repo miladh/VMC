@@ -16,7 +16,7 @@ public:
     inline void setActiveParticleAndCurrentPosition(const mat&, const uint&){}
     inline void acceptMove(){}
     inline void rejectMove(){}
-    inline double variationalDerivative(const mat&){return 1;}
+    inline double getVariationalDerivative(const mat&){return 0;}
 
 };
 

@@ -31,6 +31,7 @@ public:
     double getRatio();
     void acceptMove();
     void rejectMove();
+    vec getVariationalDerivate(const mat &r);
 
 
 

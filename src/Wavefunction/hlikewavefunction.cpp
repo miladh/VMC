@@ -137,5 +137,31 @@ double HLikeWavefunction::laplace(const mat &r){
 
 }
 
+/************************************************************
+Name:          laplace
+Description:
+*/
+vec HLikeWavefunction::getVariationalDerivate(const mat &r)
+{
+    dvariational(0) = slater->getVariationalDerivate(r);
+    dvariational(1) = jas->getVariationalDerivative(r);
+    return dvariational;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 

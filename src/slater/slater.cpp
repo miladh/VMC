@@ -78,8 +78,8 @@ void Slater::updateSlater(){
         }
     }
     updateSlaterInverse();
-//            DUpInvNew=inv(DUpNew);
-//            DDownInvNew=inv(DDownNew);
+    //            DUpInvNew=inv(DUpNew);
+    //            DDownInvNew=inv(DDownNew);
 }
 
 /************************************************************
@@ -242,4 +242,36 @@ double Slater::laplaceSDEvaluate(const mat &r,const uint &i) {
     return ddSD;
 }
 
+
+
+/************************************************************
+Name:          laplace
+Description:
+*/
+double Slater::getVariationalDerivate(const mat &r)
+{
+    //    dVSD = 0;
+    //    for (uint i = 0; i < r.n_rows; i++){
+    //        if (i < N) {
+    //            for (uint j = 0; j < N; j++) {
+    //                dVSD += orbitals->getVariationalDerivative(r,j,i)*DUpInv(j, i);
+    //            }
+    //        } else {
+    //            for (uint j = 0; j < N; j++) {
+    //                dVSD += orbitals->getVariationalDerivative(r,j,i)*DDownInv(j, i-N);
+    //            }
+    //        }
+    //    }
+    //    return dVSD;
+
+
+    dVSD = 0;
+    for (uint i = 0; i < N; i++){
+        for (uint j = 0; j < N; j++) {
+            dVSD += orbitals->getVariationalDerivative(r,j,i)*DUpInv(j, i)
+                    +orbitals->getVariationalDerivative(r,j,i+N)*DDownInv(j, i) ;
+        }
+    }
+    return dVSD;
+}
 

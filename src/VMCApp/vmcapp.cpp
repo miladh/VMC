@@ -13,14 +13,16 @@
 
 
 
-VMCApp::VMCApp(Config *cfg, const int &myRank, const int &nProcess)
+VMCApp::VMCApp(Config *cfg, const int &myRank, const int &nProcess):
+    nParticles(cfg->lookup("SolverSettings.N")),
+    nDimensions(cfg->lookup("SolverSettings.dim")),
+    charge(cfg->lookup("PotentialSettings.charge")),
+    nProcess(nProcess),
+    myRank(myRank),
+    totVariationalDerivate(zeros<vec>(2)),
+    totEnergyVarDerivate(zeros<vec>(2)),
+    cfg(cfg)
 {
-    this->cfg=cfg;
-    nParticles=cfg->lookup("SolverSettings.N");
-    nDimensions=cfg->lookup("SolverSettings.dim");
-    charge=cfg->lookup("PotentialSettings.charge");
-    this->myRank=myRank;
-    this->nProcess=nProcess;
 }
 
 /************************************************************
@@ -68,7 +70,17 @@ void VMCApp::runVMCApp(int nCycles, long idum)
 
     tmp = solver->acceptedSteps;
     MPI_Allreduce(&tmp, &Acceptance, 1, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD);
-    Acceptance /= (nProcess*nCycles);
+    Acceptance /= nProcess;
+
+    tmpVec = solver->variationalDerivateSum;
+    MPI_Allreduce(&tmpVec[0], &totVariationalDerivate[0], tmpVec.n_rows, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD);
+    totVariationalDerivate /= nProcess;
+
+
+
+    tmpVec = solver->energyVarDerivate;
+    MPI_Allreduce(&tmpVec[0], &totEnergyVarDerivate[0], tmpVec.n_rows, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD);
+    totEnergyVarDerivate /= nProcess;
 
 }
 
@@ -198,4 +210,12 @@ Description:
 double VMCApp::getAcceptanceRate(){
 
     return Acceptance;
+}
+
+/************************************************************
+Name:               getAcceptanceRate
+Description:
+*/
+vec VMCApp::getVariationalDerivate(){
+    return 2*totEnergyVarDerivate - 2*totVariationalDerivate*totEnergy;
 }

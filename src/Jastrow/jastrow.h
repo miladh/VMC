@@ -34,7 +34,7 @@ public:
     virtual void setActiveParticleAndCurrentPosition(const mat& r, const uint& i)=0;
     virtual void acceptMove()=0;
     virtual void rejectMove()=0;
-    virtual double variationalDerivative(const mat &r) = 0;
+    virtual double getVariationalDerivative(const mat &r) = 0;
 
     double alpha,beta;
     mat rOld,rNew;

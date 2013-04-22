@@ -4,6 +4,7 @@
 Wavefunction::Wavefunction(const uint &nParticles) :
     nParticles(nParticles),
     dwavefunction(zeros<mat>(nParticles,3)),
+    dvariational(zeros<vec>(2)),
     hGrad(1e-5),
     h(1e-5),
     h2(1e10),

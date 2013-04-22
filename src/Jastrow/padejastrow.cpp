@@ -154,7 +154,7 @@ double PadeJastrow::laplaceJastrowEvaluate(const mat &r){
 Name:               evaluateJastrow
 Description:        computes jastrowfactor
 */
-double PadeJastrow::variationalDerivative(const mat &r){
+double PadeJastrow::getVariationalDerivative(const mat &r){
 
     correlation=0;
     for (uint i=0; i<r.n_rows; i++) {

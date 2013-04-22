@@ -28,6 +28,7 @@ public:
 
     rowvec gradientSDEvaluate(const mat &r, uint &p);
     double laplaceSDEvaluate(const mat &r, const uint &i);
+    double getVariationalDerivate(const mat &r);
 
 
 
@@ -48,8 +49,7 @@ private:
 
 
     mat dSD;
-    double ddSD;
-
+    double ddSD, dVSD;
     double R;
     rowvec S ;
 

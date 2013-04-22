@@ -1,6 +1,7 @@
 #include <iostream>
 #include <libconfig.h++>
 #include <src/Minimizer/bfminimizer.h>
+#include <src/Minimizer/steepestdescent.h>
 #include <src/Blocking/blocking.h>
 #include <src/OnebodyDensity/onebodydensity.h>
 
@@ -37,9 +38,13 @@ int main()
     }
 
 
-    BFMinimizer min(myRank,nProcess);
+//    BFMinimizer min(myRank,nProcess);
+//    min.loadConfiguration(&cfg);
+//    min.runMinimizer();
+    SteepestDescent min(myRank,nProcess);
     min.loadConfiguration(&cfg);
     min.runMinimizer();
+
 
 
 #if ONEBODYDENSITY

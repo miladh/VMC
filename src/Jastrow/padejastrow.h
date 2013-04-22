@@ -24,7 +24,7 @@ public:
     void setActiveParticleAndCurrentPosition(const mat &r, const uint &i);
     void acceptMove();
     void rejectMove();
-    double variationalDerivative(const mat &r);
+    double getVariationalDerivative(const mat &r);
 private:
     double rij;
     double correlation;

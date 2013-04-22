@@ -17,7 +17,7 @@ private:
 
     long idum;
     double timeStep,nCycles;
-    double energySum,energySquaredSum, deltaE;
+    double deltaE;
     double h,D,GreensFunction;
 };
 

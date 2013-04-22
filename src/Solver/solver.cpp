@@ -1,6 +1,9 @@
 #include "solver.h"
 
 Solver::Solver(const uint &nParticles, const uint &nDimensions,Hamiltonian *hamiltonian, Wavefunction* TrialWavefunction):
+    variationalDerivate(zeros<vec>(2)),
+    variationalDerivateSum(zeros<vec>(2)),
+    energyVarDerivate(zeros<vec>(2)),
     nParticles(nParticles),
     nDimensions(nDimensions),
     rOld(zeros<mat>(nParticles, nDimensions)),

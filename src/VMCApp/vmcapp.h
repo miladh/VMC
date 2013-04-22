@@ -28,19 +28,22 @@ public:
     double getVariance();
     double getSigma();
     double getAcceptanceRate();
+    vec getVariationalDerivate();
 
     double alpha, beta;
 
 
 private:
-    int nParticles,charge,nDimensions;
+    int nParticles,nDimensions,charge;
     int nProcess, myRank;
     int WavefunctionType,solverType,InteractionType;
     long idum;
 
     double totEnergy,totEnergySquared;
     double Variance, Acceptance,Sigma;
+    vec totVariationalDerivate,totEnergyVarDerivate;
     double tmp;
+    vec tmpVec;
 
     Config *cfg;
     Solver* solver;

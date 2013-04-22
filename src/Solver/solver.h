@@ -30,6 +30,7 @@ public:
     double energySquared;
     double energy;
     double acceptedSteps;
+    vec variationalDerivate, variationalDerivateSum, energyVarDerivate ;
 
 
 protected:
@@ -41,7 +42,7 @@ protected:
     Hamiltonian *hamiltonian;
     Wavefunction *TrialWavefunction;
 
-    int myRank,nProcess;
+//    int myRank,nProcess;
     mat energyVector;
 
 };

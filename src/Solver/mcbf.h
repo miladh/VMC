@@ -17,7 +17,8 @@ private:
 
     long idum;
     double stepLength,stepMinMax,stepMin;
-    double energySum,energySquaredSum, deltaE;
+    double  deltaE;
+
 
 };
 

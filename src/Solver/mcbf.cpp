@@ -38,8 +38,8 @@ Description:
 void MCBF::MetropolisAlgoBF(int nCycles, double stepLength){
 
     acceptedSteps=0;
-    energySum = 0;
-    energySquaredSum = 0;
+    energy = 0;
+    energySquared = 0;
 
     // initial trial positions
     for(int i = 0; i < nParticles; i++) {
@@ -88,18 +88,32 @@ void MCBF::MetropolisAlgoBF(int nCycles, double stepLength){
 
         // update energies
         if(cycle > thermalization){
-            deltaE =hamiltonian->getEnergy(rNew);
-            energySum += deltaE;
-            energySquaredSum += deltaE*deltaE;       
+            deltaE = hamiltonian->getEnergy(rNew);
+            energy += deltaE;
+            energySquared += deltaE*deltaE;
+
+            variationalDerivate = TrialWavefunction->getVariationalDerivate(rNew);
+            for(uint p = 0; p <variationalDerivate.n_rows; p++ ){
+                variationalDerivateSum(p) += variationalDerivate(p);
+                energyVarDerivate(p) += deltaE*variationalDerivate(p);
+            }
+
+
 #if BLOCKING
             energyVector(cycle-thermalization-1)=deltaE;
 #endif
         }
     }
 
-    energy = energySum/(nCycles-1);
-    energySquared = energySquaredSum/(nCycles-1);
-    acceptedSteps= acceptedSteps/nParticles;
+    energy        /=(nCycles-1);
+    energySquared /=(nCycles-1);
+    acceptedSteps /= ((nCycles-1)*nParticles);
+
+    for(uint p = 0; p <variationalDerivate.n_rows; p++ ){
+        variationalDerivateSum(p) /= (nCycles-1);
+        energyVarDerivate(p) /= (nCycles-1);
+    }
+
 
 #if BLOCKING
     ostringstream filename;

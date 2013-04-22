@@ -21,6 +21,7 @@ protected:
     double kineticEnergy;
     double ddwavefunction;
     mat dwavefunction;
+    vec dvariational;
 
 
 
@@ -54,6 +55,7 @@ public:
     virtual void acceptMove()=0;
     virtual void rejectMove()=0;
     virtual void initializewavefunction(const mat &r)=0;
+    virtual vec getVariationalDerivate(const mat &r)=0;
 
 
 };
