@@ -48,15 +48,6 @@ void SteepestDescent::runMinimizer(){
         }
 
         old = variationalDerivate;
-
-
-//        if(myRank==0){
-//            cout << alpha << ", " << beta << " Energy = " << energy
-//                 << ", Variance = " << variance
-//                 << ", Accepted = " << acceptance
-//                 << "\n";
-//        }
-
     }
 
 }

@@ -59,13 +59,6 @@ void BFMinimizer::writeToFile(){
           <<"     "<<Variance<<"     "<<Sigma
          <<"     "<<Acceptance<< endl;
 
-//    cout << alpha << ", " << beta << " Energy = " << Energy
-//         << ", Variance = " << Variance
-//         << ", Accepted = " << Acceptance
-//         << "\n";
-
-
-
 }
 
 
