@@ -77,7 +77,7 @@ void VMCApp::messagePassing()
     MPI_Allreduce(&tmp, &Acceptance, 1, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD);
     Acceptance /= nProcess;
 
-    if(minimize){
+    if(minimizationIsEnable){
         tmpVec = observables->getVariationalDerivateRatio();
         MPI_Allreduce(&tmpVec[0], &totVariationalDerivate[0], tmpVec.n_rows, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD);
         totVariationalDerivate /= nProcess;
@@ -87,9 +87,17 @@ void VMCApp::messagePassing()
         totEnergyVarDerivate /= nProcess;
     }
 
-    if(doBlocking){
+    if(blockingIsEnable ){
         observables->writeEnergyVectorToFile(myRank);
     }
+
+    if(myRank==0){
+        cout << alpha << ", " << beta << " Energy = " << totEnergy
+             << ", Variance = " << getVariance()
+             << ", Accepted = " << Acceptance
+             << "\n";
+    }
+
 }
 
 
@@ -238,8 +246,8 @@ void VMCApp::loadConfiguration(Config *cfg){
     nParticles = cfg->lookup("SolverSettings.N");
     nDimensions = cfg->lookup("SolverSettings.dim");
     charge = cfg->lookup("PotentialSettings.charge");
-    minimize=cfg->lookup("MinimizerSettings.minimize");
-    doBlocking= cfg->lookup("BlockingSettings.doBlocking");
+    minimizationIsEnable =cfg->lookup("setup.minimization");
+    blockingIsEnable = cfg->lookup("setup.blocking");
     totVariationalDerivate=zeros<vec>(2);
     totEnergyVarDerivate=zeros<vec>(2);
 }

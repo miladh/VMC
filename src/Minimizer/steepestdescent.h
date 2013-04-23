@@ -12,6 +12,7 @@ public:
 
     void runMinimizer();
     void loadConfiguration(Config *cfg);
+    int signFunc(double varDer);
 
 private:
     int nProcess, myRank;

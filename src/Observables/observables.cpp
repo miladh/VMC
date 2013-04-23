@@ -20,7 +20,7 @@ void Observables::calculateObservables()
     }
     else{
         calculateEnergy();
-        if(doBlocking){
+        if(blockingIsEnable ){
             addEnergyToEnergyVector();
         }
     }
@@ -127,10 +127,10 @@ Name:
 Description:
 */
 void Observables::loadConfiguration(Config *cfg){
-    minimize=cfg->lookup("MinimizerSettings.minimize");
-    doBlocking= cfg->lookup("BlockingSettings.doBlocking");
-    cfg->lookupValue("BlockingSettings.dataPath", dataPath);
-    cfg->lookupValue("BlockingSettings.dataName", dataName);
+    minimize=cfg->lookup("setup.minimization");
+    blockingIsEnable = cfg->lookup("setup.blocking");
+    cfg->lookupValue("setup.BlockingSettings.dataPath", dataPath);
+    cfg->lookupValue("setup.BlockingSettings.dataName", dataName);
 }
 
 /************************************************************

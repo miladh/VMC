@@ -1,7 +1,7 @@
 #include <src/Minimizer/minimizer.h>
 
 
-Minimizer::Minimizer()
+Minimizer::Minimizer(const int& myRank, const int& nProcess)
 {
 }
 

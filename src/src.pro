@@ -32,7 +32,8 @@ SOURCES += main.cpp \
     electronInteraction/nointeraction.cpp \
     Minimizer/bfminimizer.cpp \
     Minimizer/steepestdescent.cpp \
-    Observables/observables.cpp
+    Observables/observables.cpp \
+    ConfigurationParser/configurationparser.cpp
 
 HEADERS += \
     includes/lib.h \
@@ -61,7 +62,8 @@ HEADERS += \
     Potential/coulombPotential.h \
     Minimizer/bfminimizer.h \
     Minimizer/steepestdescent.h \
-    Observables/observables.h
+    Observables/observables.h \
+    ConfigurationParser/configurationparser.h
 
 
 

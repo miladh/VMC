@@ -11,7 +11,7 @@ Description:        Initiating a matrix with all the spin dependant a-values.
 */
 void PadeJastrow::setaValues(const uint &nParticles){
     for (uint i = 0; i < nParticles; i++) {
-        for (uint j = i; j <nParticles; j++) {
+        for (uint j = i; j < nParticles; j++) {
             if ((i < nParticles / 2 && j >= nParticles / 2) || (i >=nParticles / 2 && j < nParticles / 2)){
                 a(i, j) = 0.5;
                 a(j, i) = 0.5;

@@ -10,6 +10,8 @@
 // 1: OBD on
 #define ONEBODYDENSITY 0
 
+
+
 enum TrialWavefunction {
    Jastrow, Basic, Hydrogenic
 };
@@ -22,4 +24,8 @@ enum INTERACTION {
    NOINTERACTION, COULOMBINTERACTION
 };
 
+
+enum MINIMIZER {
+   BRUTEFORCE, STEEPESTDESCENT
+};
 #endif // DEFINES_H

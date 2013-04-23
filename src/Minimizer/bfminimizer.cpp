@@ -1,7 +1,8 @@
 #include <src/Minimizer/bfminimizer.h>
 
 
-BFMinimizer::BFMinimizer(const int& myRank, const int& nProcess)
+BFMinimizer::BFMinimizer(const int& myRank, const int& nProcess):
+    Minimizer(myRank,nProcess)
 {
     this->myRank=myRank;
     this->nProcess=nProcess;
@@ -58,10 +59,10 @@ void BFMinimizer::writeToFile(){
           <<"     "<<Variance<<"     "<<Sigma
          <<"     "<<Acceptance<< endl;
 
-    cout << alpha << ", " << beta << " Energy = " << Energy
-         << ", Variance = " << Variance
-         << ", Accepted = " << Acceptance
-         << "\n";
+//    cout << alpha << ", " << beta << " Energy = " << Energy
+//         << ", Variance = " << Variance
+//         << ", Accepted = " << Acceptance
+//         << "\n";
 
 
 
@@ -73,12 +74,12 @@ Name:               loadConfigurations
 Description:        loads different variabels
 */
 void BFMinimizer::loadConfiguration(Config *cfg){
-    minAlpha=cfg->lookup("MinimizerSettings.minalpha");
-    maxAlpha=cfg->lookup("MinimizerSettings.maxalpha");
-    minBeta=cfg->lookup("MinimizerSettings.minbeta");
-    maxBeta=cfg->lookup("MinimizerSettings.maxbeta");
-    nVarAlpha=cfg->lookup("MinimizerSettings.nVarAlpha");
-    nVarBeta=cfg->lookup("MinimizerSettings.nVarBeta");
+    minAlpha=cfg->lookup("setup.MinimizerSettings.BFMinSettings.minalpha");
+    maxAlpha=cfg->lookup("setup.MinimizerSettings.BFMinSettings.maxalpha");
+    minBeta=cfg->lookup("setup.MinimizerSettings.BFMinSettings.minbeta");
+    maxBeta=cfg->lookup("setup.MinimizerSettings.BFMinSettings.maxbeta");
+    nVarAlpha=cfg->lookup("setup.MinimizerSettings.BFMinSettings.nVarAlpha");
+    nVarBeta=cfg->lookup("setup.MinimizerSettings.BFMinSettings.nVarBeta");
     nCycles=cfg->lookup("AppSettings.cycles");
     idum=cfg->lookup("AppSettings.idum");
 

@@ -110,12 +110,12 @@ Description:
 */
 
 void Blocking::loadConfiguration(Config *cfg){
-   cfg->lookupValue("BlockingSettings.outFilename",outFilename);
-   cfg->lookupValue("BlockingSettings.dataPath",dataPath);
-   cfg->lookupValue("BlockingSettings.dataName",dataName);
-   deltaBlockSize =cfg->lookup("BlockingSettings.deltaBlockSize");
-   maxBlockSizeTreshold = cfg->lookup("BlockingSettings.maxBlockSizeTreshold");
-   stepLength = cfg->lookup("BlockingSettings.stepLength");
+   cfg->lookupValue("setup.BlockingSettings.outFilename",outFilename);
+   cfg->lookupValue("setup.BlockingSettings.dataPath",dataPath);
+   cfg->lookupValue("setup.BlockingSettings.dataName",dataName);
+   deltaBlockSize =cfg->lookup("setup.BlockingSettings.deltaBlockSize");
+   maxBlockSizeTreshold = cfg->lookup("setup.BlockingSettings.maxBlockSizeTreshold");
+   stepLength = cfg->lookup("setup.BlockingSettings.stepLength");
 }
 
 

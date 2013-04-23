@@ -40,7 +40,7 @@ private:
     int nParticles,nDimensions,charge;
     int nProcess, myRank;
     int WavefunctionType,solverType,InteractionType;
-    int minimize, doBlocking;
+    int minimizationIsEnable, blockingIsEnable ;
     long idum;
 
     double totEnergy,totEnergySquared;

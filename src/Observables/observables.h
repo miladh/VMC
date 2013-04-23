@@ -30,7 +30,7 @@ private:
     Hamiltonian* hamiltonian;
     Wavefunction* wavefunction;
     int nCycles, cycle;
-    int minimize, doBlocking;
+    int minimize, blockingIsEnable ;
     double deltaE, energy, energySquared;
     vec deltaVariationalDerivateRatio,variationalDerivateRatio,energyVariationalDerivate;
     vec energyVector;

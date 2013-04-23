@@ -1,8 +1,5 @@
 #include "mcbf.h"
 
-
-
-
 MCBF::MCBF(Hamiltonian *hamiltonian, Wavefunction* TrialWavefunction, Observables* observables):
     Solver(hamiltonian,TrialWavefunction,observables)
 {
