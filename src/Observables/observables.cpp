@@ -1,4 +1,6 @@
 #include "observables.h"
+#include <src/Hamiltonian/atomichamiltonian.h>
+#include <src/Hamiltonian/diatomichamiltonian.h>
 
 Observables::Observables(Hamiltonian *hamiltonian, Wavefunction *wavefunction):
     hamiltonian(hamiltonian),

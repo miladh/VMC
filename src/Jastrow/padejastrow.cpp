@@ -30,7 +30,6 @@ Name:               evaluateJastrow
 Description:        computes jastrowfactor
 */
 double PadeJastrow::evaluateJastrow(const mat &r){
-
     correlation=0;
     for (uint i=0; i<r.n_rows; i++) {
         for (uint j=i+1; j<r.n_rows; j++) {
@@ -39,7 +38,6 @@ double PadeJastrow::evaluateJastrow(const mat &r){
             correlation+=a(i,j)*rij/(1+beta*rij);
         }
     }
-
     return correlation;
 
 }

@@ -10,13 +10,15 @@
 // 1: OBD on
 #define ONEBODYDENSITY 0
 
-
-
-enum TrialWavefunction {
-   Jastrow, Basic, Hydrogenic
+enum SYSTEM{
+   ATOMS, MOLECULES
 };
 
-enum solver {
+enum TrialWavefunction {
+   JASTROW, BASIC, HYDROGENIC
+};
+
+enum SOLVER {
    BF, IS
 };
 

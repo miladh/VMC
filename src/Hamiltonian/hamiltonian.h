@@ -1,8 +1,8 @@
 #ifndef HAMILTONIAN_H
 #define HAMILTONIAN_H
 
-#include"src/Potential/potential.h"
-#include"src/Kinetic/kinetic.h"
+#include <src/Potential/potential.h>
+#include <src/Kinetic/kinetic.h>
 #include <src/electronInteraction/electroninteraction.h>
 
 class Hamiltonian
@@ -10,13 +10,11 @@ class Hamiltonian
 public:
     Hamiltonian();
 
-    double getEnergy(const mat &r);
+    virtual double getEnergy(const mat &r)= 0;
+
     Potential* potential;
     Kinetic* kinetic;
     ElectronInteraction* electronInteraction;
-
-private:
-    double potentialEnergy, kineticEnergy,interactionEnergy, Energy;
 
 };
 

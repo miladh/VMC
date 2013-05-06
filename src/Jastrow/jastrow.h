@@ -36,7 +36,7 @@ public:
     virtual void rejectMove()=0;
     virtual double getVariationalDerivative(const mat &r) = 0;
 
-    double alpha,beta;
+    double beta;
     mat rOld,rNew;
 };
 

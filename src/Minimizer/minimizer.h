@@ -14,7 +14,7 @@ using namespace libconfig;
 class Minimizer
 {
 public:
-    Minimizer(const int &myRank, const int &nProcess);
+    Minimizer(const int &, const int &);
 
     virtual void runMinimizer()=0;
     virtual void loadConfiguration(Config *cfg)=0;

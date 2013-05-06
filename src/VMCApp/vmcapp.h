@@ -39,10 +39,11 @@ public:
 private:
     int nParticles,nDimensions,charge;
     int nProcess, myRank;
-    int WavefunctionType,solverType,InteractionType;
+    int systemType, wavefunctionType,solverType,InteractionType;
     int minimizationIsEnable, blockingIsEnable ;
     long idum;
 
+    double R;
     double totEnergy,totEnergySquared;
     double Variance, Acceptance,Sigma;
     vec totVariationalDerivate,totEnergyVarDerivate;
@@ -58,6 +59,7 @@ private:
     Hamiltonian *hamiltonian;
     Observables* observables;
 
+    Hamiltonian* setHamiltonian();
     Wavefunction* setWavefunction();
     Solver* setSolverMethod();
     ElectronInteraction* setInteraction();

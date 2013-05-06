@@ -1,21 +1,24 @@
-#ifndef HYDROGENIC_H
-#define HYDROGENIC_H
+#ifndef MOLECULAR_H
+#define MOLECULAR_H
 #include<src/Orbitals/orbitals.h>
 
-class Hydrogenic : public Orbitals
+class Molecular : public Orbitals
 {
 public:
-    Hydrogenic();
+    Molecular(const double &R, const double &k);
     double orbitalEvaluate(const mat &r, int qNum, int Particle);
     double laplaceOrbitalEvaluate(const mat &r, int qNum, int Particle);
     rowvec gradientOrbitalEvaluate(const mat &r, int qNum, int Particle);
     double getVariationalDerivative(const mat &r, int qNum, int Particle);
 
+    Orbitals* atomicOrbitals;
+
 private:
-    double rNorm;
+    double k,R;
     double phi,ddphi;
     rowvec dphi;
+    mat Rmatrix;
     double dVariational;
 };
 
-#endif // HYDROGENIC_H
+#endif // MOLECULAR_H

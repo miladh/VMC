@@ -1,9 +1,7 @@
 #include "slater.h"
-#include "src/Orbitals/hydrogenic.h"
 
 Slater::Slater(const uint &nParticles):
     N(nParticles/2),
-    orbitals(new Hydrogenic),
     DUp(zeros(N,N)),
     DDown(zeros(N,N)),
     DUpNew(zeros(N,N)),

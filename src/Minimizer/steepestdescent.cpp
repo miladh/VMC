@@ -52,7 +52,10 @@ void SteepestDescent::runMinimizer(){
 
 }
 
-
+/************************************************************
+Name:               loadConfigurations
+Description:        loads different variabels
+*/
 int SteepestDescent::signFunc(double varDer){
 
     if(varDer < 0){

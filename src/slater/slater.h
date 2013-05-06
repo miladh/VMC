@@ -4,8 +4,10 @@
 #include <armadillo>
 #include <iostream>
 #include <libconfig.h++>
-#include "src/Jastrow/jastrow.h"
-#include "src/Orbitals/orbitals.h"
+#include <src/Jastrow/jastrow.h>
+#include <src/Orbitals/orbitals.h>
+#include <src/Orbitals/hydrogenic.h>
+#include <src/Orbitals/molecular.h>
 
 using namespace arma;
 using namespace std;
@@ -29,9 +31,6 @@ public:
     rowvec gradientSDEvaluate(const mat &r, uint &p);
     double laplaceSDEvaluate(const mat &r, const uint &i);
     double getVariationalDerivate(const mat &r);
-
-
-
 
     uint N;
     Orbitals* orbitals;

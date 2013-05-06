@@ -11,7 +11,6 @@ public:
 
 private:
     double electronNucleusPotential(const mat &r);
-
     double enPotentialEnergy,eePotentialEnergy;
     double rSingleParticle,rij;
 };

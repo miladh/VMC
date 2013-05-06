@@ -108,22 +108,21 @@ Wavefunction* OnebodyDensity::setWavefunction(){
     Wavefunction* wf;
 
     switch (WavefunctionType) {
-    case Jastrow:
+    case JASTROW:
         wf = new HLikeWavefunction(nParticles);
         wf->jas=new PadeJastrow(nParticles);
-        wf->jas->alpha=alpha;
         wf->jas->beta=beta;
         wf->jas->setaValues(nParticles);
         wf->slater->orbitals->k=alpha;
         break;
 
-    case Basic:
+    case BASIC:
         wf = new HLikeWavefunction(nParticles);
         wf->jas=new NoJastrow(nParticles);
         wf->slater->orbitals->k=alpha;
         break;
 
-    case  Hydrogenic:
+    case  HYDROGENIC:
         wf = new HLikeWavefunction(nParticles);
         wf->jas=new NoJastrow(nParticles);
         wf->slater->orbitals->k=charge;
