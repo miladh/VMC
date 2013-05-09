@@ -5,9 +5,8 @@
 class NoJastrow : public Jastrow
 {
 public:
-    NoJastrow(const uint nParticles);
+    NoJastrow();
 
-    inline void setaValues(const uint&){}
     inline double evaluateJastrow(const mat&){return 0;}
     inline rowvec gradientJastrowEvaluate(const mat&, uint){ return zeros(1,3);}
     inline double laplaceJastrowEvaluate(const mat&){return 0;}

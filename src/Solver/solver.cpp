@@ -1,8 +1,8 @@
 #include "solver.h"
 
-Solver::Solver(Hamiltonian *hamiltonian, Wavefunction* TrialWavefunction, Observables* observables):
+Solver::Solver(Hamiltonian *hamiltonian, Wavefunction* trialWavefunction, Observables* observables):
     hamiltonian(hamiltonian),
-    TrialWavefunction(TrialWavefunction),
+    trialWavefunction(trialWavefunction),
     observables(observables)
 {
 }

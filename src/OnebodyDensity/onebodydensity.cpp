@@ -1,7 +1,6 @@
 #include "onebodydensity.h"
 #include "src/includes/lib.h"
 #include "src/includes/Defines.h"
-#include "src/Wavefunction/hlikewavefunction.h"
 #include "src/Jastrow/padejastrow.h"
 #include "src/Jastrow/nojastrow.h"
 
@@ -26,7 +25,7 @@ void OnebodyDensity::computeOnebodyDensity()
     r=zeros(nParticles,nDimensions);
     rho=zeros(nSteps);
 
-    wf=setWavefunction();
+//    wf=setWavefunction();
     nCycles/=nNodes;
 
     for (int i = 0; i < nSteps; i++) {
@@ -70,7 +69,7 @@ double OnebodyDensity::McIntegrator(){
             }
         }
 
-        wfValue=wf->wavefunction(r)*r(0,0);
+        wfValue=wf->evaluateWavefunction(r)*r(0,0);
         rho+=wfValue*wfValue;
     }
 
@@ -103,33 +102,32 @@ void OnebodyDensity::writeToFile() {
 Name:
 Description:
 */
-Wavefunction* OnebodyDensity::setWavefunction(){
+void OnebodyDensity::setWavefunction(){
 
-    Wavefunction* wf;
+//    Wavefunction* wf = new Wavefunction();
 
-    switch (WavefunctionType) {
-    case JASTROW:
-        wf = new HLikeWavefunction(nParticles);
-        wf->jas=new PadeJastrow(nParticles);
-        wf->jas->beta=beta;
-        wf->jas->setaValues(nParticles);
-        wf->slater->orbitals->k=alpha;
-        break;
+//    switch (WavefunctionType) {
+//    case JASTROW:
+//        wf = new HLikeWavefunction(nParticles);
+//        wf->jas=new PadeJastrow(nParticles,beta);
+//        wf->jas->setaValues(nParticles);
+//        wf->slater->orbitals->k=alpha;
+//        break;
 
-    case BASIC:
-        wf = new HLikeWavefunction(nParticles);
-        wf->jas=new NoJastrow(nParticles);
-        wf->slater->orbitals->k=alpha;
-        break;
+//    case BASIC:
+//        wf = new HLikeWavefunction(nParticles);
+//        wf->jas=new NoJastrow;
+//        wf->slater->orbitals->k=alpha;
+//        break;
 
-    case  HYDROGENIC:
-        wf = new HLikeWavefunction(nParticles);
-        wf->jas=new NoJastrow(nParticles);
-        wf->slater->orbitals->k=charge;
-        break;
-    }
+////    case  HYDROGENIC:
+////        wf = new HLikeWavefunction(nParticles);
+////        wf->jas=new NoJastrow(nParticles);
+////        wf->slater->orbitals->k=charge;
+////        break;
+//    }
 
-    return wf;
+//    return wf;
 }
 
 /************************************************************

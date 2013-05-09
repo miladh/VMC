@@ -16,7 +16,7 @@ using namespace libconfig;
 class Slater
 {
 public:
-    Slater(const uint &nParticles);
+    Slater(const uint &nParticles, Orbitals *orbitals);
 
 
     void initializeSD(const mat &r);
@@ -32,11 +32,9 @@ public:
     double laplaceSDEvaluate(const mat &r, const uint &i);
     double getVariationalDerivate(const mat &r);
 
-    uint N;
-    Orbitals* orbitals;
-
-
 private:
+    Orbitals* orbitals;
+    uint N;
     uint nParticles;
     uint activeParticle;
     double initialSD;
@@ -51,9 +49,6 @@ private:
     double ddSD, dVSD;
     double R;
     rowvec S ;
-
-
-
 };
 
 #endif // SLATER_H

@@ -1,6 +1,7 @@
 #include "kinetic.h"
 
-Kinetic::Kinetic()
+Kinetic::Kinetic(Wavefunction* wavefunction):
+    wavefunction(wavefunction)
 {
 }
 
@@ -11,8 +12,5 @@ Description:        Computes the kinetic energy
 */
 double Kinetic::evaluate(const mat &r){
 
-    ddwavefunction = wf->laplace(r);
-    KineticEnergy = -0.5 * ddwavefunction;
-
-    return KineticEnergy;
+    return -0.5 * wavefunction->laplace(r);
 }

@@ -35,7 +35,7 @@ void MCBF::MetropolisAlgoBF(int nCycles, double stepLength){
     rNew = rOld;
 
     // Store the current value of the wave function
-    TrialWavefunction->initializewavefunction(rOld);
+    trialWavefunction->initializewavefunction(rOld);
 
 
 
@@ -50,13 +50,13 @@ void MCBF::MetropolisAlgoBF(int nCycles, double stepLength){
             }
 
             // Recalculate the value of the wave function
-            TrialWavefunction->activeParticle(rNew,i);
-            TrialWavefunction->updateWavefunction();
-            R =TrialWavefunction->getRatio();
+            trialWavefunction->activeParticle(rNew,i);
+            trialWavefunction->updateWavefunction();
+            R =trialWavefunction->getRatio();
             R*=R;
 
             if(ran2(&idum) <= R) {
-                TrialWavefunction->acceptMove();
+                trialWavefunction->acceptMove();
                 rOld.row(i) = rNew.row(i);
 
                 if(cycle > thermalization){
@@ -64,7 +64,7 @@ void MCBF::MetropolisAlgoBF(int nCycles, double stepLength){
                 }
 
             } else {
-                TrialWavefunction->rejectMove();
+                trialWavefunction->rejectMove();
                 rNew.row(i) = rOld.row(i);
 
             }

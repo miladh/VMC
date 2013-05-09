@@ -18,7 +18,7 @@ private:
     long idum;
     double timeStep,nCycles;
     double deltaE;
-    double h,D,GreensFunction;
+    double D,GreensFunction;
 };
 
 #endif // MCIP_H

@@ -1,6 +1,12 @@
 #ifndef DEFINES_H
 #define DEFINES_H
 
+
+#define hGrad 1e-5
+#define h 1e-5
+#define h2 1e10
+
+
 // 0: Blocking off
 // 1: Blocking on
 #define BLOCKING 0
@@ -14,8 +20,8 @@ enum SYSTEM{
    ATOMS, MOLECULES
 };
 
-enum TrialWavefunction {
-   JASTROW, BASIC, HYDROGENIC
+enum TRIALWAVEFUNCTION {
+   BASIC,JASTROW
 };
 
 enum SOLVER {

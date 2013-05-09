@@ -2,15 +2,13 @@
 #include <src/Orbitals/hydrogenic.h>
 
 Molecular::Molecular(const double& R, const double& k):
-    atomicOrbitals(new Hydrogenic),
-    k(k),
+    atomicOrbitals(new Hydrogenic(k)),
     R(R),
     Rmatrix(zeros<mat>(2,3)),
     dphi(zeros<rowvec>(1,3))
 {
     Rmatrix(0,0) = R/2.0;
     Rmatrix(1,0) = R/2.0;
-    atomicOrbitals->k = k;
 }
 
 

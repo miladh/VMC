@@ -6,6 +6,7 @@
 #include <libconfig.h++>
 #include <src/slater/slater.h>
 #include <src/Jastrow/jastrow.h>
+#include <src/includes/Defines.h>
 
 using namespace arma;
 using namespace std;
@@ -13,48 +14,41 @@ using namespace libconfig;
 
 class Wavefunction
 {
-protected:
-    uint nParticles;
-    bool useAnalyticGradient,useAnalyticLaplace;
-    double TrialWavefunction;
-    double kineticEnergy;
-    double ddwavefunction;
-    mat dwavefunction;
-    vec dvariational;
 
+public:
+    Wavefunction(Config *cfg, Orbitals *orbitals, Jastrow *jastrow);
+
+
+    void activeParticle(const mat &r,const uint &i);
+    double evaluateWavefunction(const mat &r);
+    void initializewavefunction(const mat &r);
+    void updateWavefunction();
+    void acceptMove();
+    void rejectMove();
+    double getRatio();
+    double laplace(const mat &r);
+    mat gradient(const mat &r);
+    vec getVariationalDerivate(const mat &r);
 
 
 private:
-    double hGrad,h,h2;
-    mat rPlus ,rMinus;
+    uint nParticles, nDimensions;
+    double trialWavefunction;
+    double ddwavefunction;
     double wavefunctionMinus, wavefunctionPlus, wavefunctionCurrent;
+    bool useAnalyticGradient,useAnalyticLaplace;
+    mat dwavefunction,dSlater,dJastrow;
+    mat rPlus ,rMinus;
+    vec dvariational; 
 
-public:
-    Wavefunction(const uint &nParticles);
-
-    virtual double wavefunction(const mat &r) = 0;
-    virtual double laplaceNumerical(const mat &r);
-    virtual mat gradientNumerical(const mat &r);
-
-    virtual double laplace(const mat &r){
-        return laplaceNumerical(r);}
-
-    virtual mat gradient(const mat &r){
-        return gradientNumerical(r);}
-
-    void loadConfiguration(Config *cfg);
-
-    Slater *slater;
+    Config* cfg;
+    Orbitals* orbitals;
     Jastrow* jas;
+    Slater *slater;
 
-
-    virtual void activeParticle(const mat &r,const uint &i)=0;
-    virtual void updateWavefunction()=0;
-    virtual double getRatio()=0;
-    virtual void acceptMove()=0;
-    virtual void rejectMove()=0;
-    virtual void initializewavefunction(const mat &r)=0;
-    virtual vec getVariationalDerivate(const mat &r)=0;
+    void loadAndSetConfiguration();
+    double laplaceNumerical(const mat &r);
+    mat gradientNumerical(const mat &r);
 
 
 };

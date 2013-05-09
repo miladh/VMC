@@ -24,7 +24,7 @@ public:
     void writeToFile();
     double McIntegrator();
     void normalize();
-    Wavefunction* setWavefunction();
+    void setWavefunction();
 
 private:
     Wavefunction* wf;

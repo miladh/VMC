@@ -16,7 +16,7 @@ double CoulombInteraction::evaluate(const mat& r){
 
     for(uint i = 0; i < r.n_rows; i++) {
         for(uint j = i + 1; j < r.n_rows; j++) {
-            rij= norm( r.row(i)-r.row(j) ,2);
+            rij = norm( r.row(i)-r.row(j) ,2);
             interactionEnergy += 1 / rij;
         }
     }

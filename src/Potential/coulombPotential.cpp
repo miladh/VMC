@@ -1,6 +1,7 @@
 #include "coulombPotential.h"
 
-CoulombPotential::CoulombPotential()
+CoulombPotential::CoulombPotential(const int &charge):
+    charge(charge)
 {
 }
 

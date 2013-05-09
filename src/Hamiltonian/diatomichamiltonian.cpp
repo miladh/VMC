@@ -1,8 +1,12 @@
 #include <src/Hamiltonian/diatomichamiltonian.h>
 
-DiatomicHamiltonian::DiatomicHamiltonian(const double& R):
+DiatomicHamiltonian::DiatomicHamiltonian(Kinetic* kinetic,Potential* potential,
+                                         ElectronInteraction* electronInteraction,
+                                         const double& R):
+    Hamiltonian(kinetic,potential,electronInteraction),
     R(R),
     Rmatrix(zeros<mat>(2,3))
+
 {
     Rmatrix(0,0) = R/2;
     Rmatrix(1,0) = R/2;

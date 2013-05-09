@@ -1,7 +1,9 @@
 #include <src/Hamiltonian/atomichamiltonian.h>
 
 
-AtomicHamiltonian::AtomicHamiltonian()
+AtomicHamiltonian::AtomicHamiltonian(Kinetic* kinetic,Potential* potential,
+                                     ElectronInteraction* electronInteraction):
+    Hamiltonian(kinetic,potential,electronInteraction)
 {
 }
 

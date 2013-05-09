@@ -14,8 +14,7 @@ using namespace libconfig;
 class PadeJastrow :public Jastrow
 {
 public:
-    PadeJastrow(const uint nParticles);
-    void setaValues(const uint &nParticles);
+    PadeJastrow(const uint nParticles, const double &beta);
     double evaluateJastrow(const mat &r);
     double laplaceJastrowEvaluate(const mat &r);
     rowvec gradientJastrowEvaluate(const mat &r, uint i);
@@ -25,10 +24,17 @@ public:
     void acceptMove();
     void rejectMove();
     double getVariationalDerivative(const mat &r);
+
+
 private:
+    uint nParticles;
+    double beta;
     double rij;
     double correlation;
     double r_ki,b_ij;
+    mat a, rOld,rNew;
+
+    void setaValues();
 
 
 };

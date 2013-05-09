@@ -35,7 +35,7 @@ void MCIS::MetropolisAlgoIS(){
 
     rOld = randn(nParticles,nDimensions)*sqrt(timeStep); //std=sqrt(2*D*dt), D=0.5
     rNew = rOld;
-    TrialWavefunction->initializewavefunction(rOld);
+    trialWavefunction->initializewavefunction(rOld);
     qForceOld = getQuantumForce(rOld);
 
     // loop over Monte Carlo cycles
@@ -47,8 +47,8 @@ void MCIS::MetropolisAlgoIS(){
                 rNew(i,j) = rOld(i,j) + randn()*sqrt(timeStep)+qForceOld(i,j)*timeStep*D;
             }
 
-            TrialWavefunction->activeParticle(rNew,i);
-            TrialWavefunction->updateWavefunction();
+            trialWavefunction->activeParticle(rNew,i);
+            trialWavefunction->updateWavefunction();
 
             qForceNew=getQuantumForce(rNew);
 
@@ -64,11 +64,11 @@ void MCIS::MetropolisAlgoIS(){
             GreensFunction= exp(0.5*GreensFunction);
 
 
-            R =TrialWavefunction->getRatio();
+            R =trialWavefunction->getRatio();
             R*=R*GreensFunction;
 
             if(ran2(&idum) <= R) {
-                TrialWavefunction->acceptMove();
+                trialWavefunction->acceptMove();
                 rOld.row(i) = rNew.row(i);
                 qForceOld=qForceNew;
 
@@ -82,7 +82,7 @@ void MCIS::MetropolisAlgoIS(){
                 }
 
             } else {
-                TrialWavefunction->rejectMove();
+                trialWavefunction->rejectMove();
                 rNew.row(i) = rOld.row(i);
                 qForceNew=qForceOld;
             }
@@ -112,6 +112,6 @@ Description:
 */
 mat MCIS::getQuantumForce(const mat &r){
 
-    return 2*TrialWavefunction->gradient(r);
+    return 2*trialWavefunction->gradient(r);
 }
 

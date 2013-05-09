@@ -1,15 +1,20 @@
 #include "padejastrow.h"
 
-PadeJastrow::PadeJastrow(const uint nParticles):
-    Jastrow(nParticles)
+PadeJastrow::PadeJastrow(const uint nParticles,const double& beta):
+    nParticles(nParticles),
+    beta(beta),
+    a(zeros(nParticles,nParticles)),
+    rOld(zeros(nParticles,3)),
+    rNew(zeros(nParticles,3))
 {
+    setaValues();
 }
 
 /************************************************************
 Name:               setaValues
 Description:        Initiating a matrix with all the spin dependant a-values.
 */
-void PadeJastrow::setaValues(const uint &nParticles){
+void PadeJastrow::setaValues(){
     for (uint i = 0; i < nParticles; i++) {
         for (uint j = i; j < nParticles; j++) {
             if ((i < nParticles / 2 && j >= nParticles / 2) || (i >=nParticles / 2 && j < nParticles / 2)){

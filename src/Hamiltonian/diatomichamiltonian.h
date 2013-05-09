@@ -6,7 +6,9 @@
 class DiatomicHamiltonian : public Hamiltonian
 {
 public:
-    DiatomicHamiltonian(const double &R);
+    DiatomicHamiltonian(Kinetic* kinetic,Potential* potential,
+                        ElectronInteraction* electronInteraction,
+                        const double &R);
 
     double getEnergy(const mat &r);
 
@@ -14,7 +16,6 @@ private:
     double R;
     mat Rmatrix;
     double potentialEnergy, kineticEnergy,interactionEnergy, Energy;
-    uint charge;
 };
 
 #endif // DIATOMICHAMILTONIAN_H

@@ -1,6 +1,7 @@
 #include "slater.h"
 
-Slater::Slater(const uint &nParticles):
+Slater::Slater(const uint &nParticles, Orbitals* orbitals):
+    orbitals(orbitals),
     N(nParticles/2),
     DUp(zeros(N,N)),
     DDown(zeros(N,N)),

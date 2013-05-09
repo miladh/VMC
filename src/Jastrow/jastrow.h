@@ -15,17 +15,14 @@ class Jastrow
 {
 
 protected:
-    uint nParticles;
-    mat a;
     double ddJastrowFactor;
-    rowvec dJastrowFactor;
     double JastrowFactor;
-    uint activeParticle;
     double deltaJastrow;
+    uint activeParticle;
+    rowvec dJastrowFactor;
 
 public:
-    Jastrow(const uint &nParticles);
-    virtual void setaValues(const uint& nParticles)=0;
+    Jastrow();
     virtual double evaluateJastrow(const mat& r)=0;
     virtual double laplaceJastrowEvaluate(const mat& r)=0;
     virtual rowvec gradientJastrowEvaluate(const mat& r, uint i)=0;
@@ -35,9 +32,6 @@ public:
     virtual void acceptMove()=0;
     virtual void rejectMove()=0;
     virtual double getVariationalDerivative(const mat &r) = 0;
-
-    double beta;
-    mat rOld,rNew;
 };
 
 #endif // JASTROW_H

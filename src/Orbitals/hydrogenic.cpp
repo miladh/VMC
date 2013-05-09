@@ -1,6 +1,7 @@
 #include "hydrogenic.h"
 
-Hydrogenic::Hydrogenic()
+Hydrogenic::Hydrogenic(const double& k):
+    k(k)
 {
 }
 

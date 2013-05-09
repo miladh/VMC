@@ -3,7 +3,6 @@
 #include <src/Solver/mcbf.h>
 #include <src/Solver/mcis.h>
 #include <src/includes/lib.h>
-#include <src/Wavefunction/hlikewavefunction.h>
 #include <src/Jastrow/padejastrow.h>
 #include <src/Jastrow/nojastrow.h>
 #include <src/Potential/coulombPotential.h>
@@ -15,56 +14,183 @@
 
 
 
-
 VMCApp::VMCApp(const int &myRank, const int &nProcess):
     nProcess(nProcess),
     myRank(myRank)
 {
 }
 
-/************************************************************
-Name:               runVMCApp
-Description:        starts VMC calculations
-*/
+//****************************************************************************
 void VMCApp::runVMCApp(int nCycles, long idum)
 {
 
-    idum = idum - myRank - time(NULL);
-    srand(-idum);
-
-    nCycles /= nProcess;
-
-    trialWavefunction = setWavefunction();
-    trialWavefunction->loadConfiguration(cfg);
+    this->nCycles=nCycles/nProcess;
+    this->idum = idum - myRank - time(NULL);
+    srand(-this->idum);
 
 
-    potential = new CoulombPotential;
-    potential->loadConfiguration(cfg);
+    setWavefunction();
+    setKinetic();
+    setPotential();
+    setInteraction();
+    setHamiltonian();
+    setObservables();
+    setSolverMethod();
+    initilizeAndRunSolver();
 
-    kinetic= new Kinetic;
-    kinetic->wf=trialWavefunction;
+}
 
-    electonInteraction = setInteraction();
+//****************************************************************************
+void VMCApp::setWavefunction(){
 
-    hamiltonian = setHamiltonian();
-    hamiltonian->potential = potential;
-    hamiltonian->kinetic   = kinetic;
-    hamiltonian->electronInteraction = electonInteraction;
 
+    switch (systemType) {
+    case ATOMS:
+        orbitals = new Hydrogenic(alpha);
+        break;
+
+    case MOLECULES:
+        orbitals = new Molecular(R, alpha);
+        break;
+    }
+
+    switch (wavefunctionType) {
+    case BASIC:
+        jastrow = new NoJastrow;
+        break;
+
+    case JASTROW:
+        jastrow = new PadeJastrow(nParticles,beta);
+        break;
+    }
+
+    trialWavefunction = new Wavefunction(cfg, orbitals,jastrow);
+}
+
+//****************************************************************************
+void VMCApp::setKinetic(){
+    kinetic= new Kinetic(trialWavefunction);
+}
+
+//****************************************************************************
+void VMCApp::setPotential(){
+    potential = new CoulombPotential(charge);
+}
+
+//****************************************************************************
+void VMCApp::setInteraction(){
+
+    switch (InteractionType) {
+    case NOINTERACTION:
+        electonInteraction = new NoInteraction;
+        break;
+
+    case COULOMBINTERACTION:
+        electonInteraction = new CoulombInteraction;
+        break;
+    }
+}
+
+//****************************************************************************
+void VMCApp::setHamiltonian(){
+
+    switch (systemType) {
+    case ATOMS:
+        hamiltonian = new AtomicHamiltonian(kinetic,potential,electonInteraction);
+        break;
+
+    case MOLECULES:
+        hamiltonian = new DiatomicHamiltonian(kinetic,potential,electonInteraction,R);
+        break;
+    }
+}
+
+
+//****************************************************************************
+void VMCApp::setObservables(){
     observables = new Observables(hamiltonian,trialWavefunction);
     observables->loadConfiguration(cfg);
+}
 
-    solver = setSolverMethod();
+
+
+//****************************************************************************
+void VMCApp::setSolverMethod(){
+
+    switch (solverType) {
+    case BF:
+        solver = new MCBF(hamiltonian,trialWavefunction,observables);
+        break;
+    case IS:
+        solver =new MCIS(hamiltonian,trialWavefunction,observables);
+        break;
+    }
+}
+
+//****************************************************************************
+void VMCApp::initilizeAndRunSolver(){
+
     solver->loadConfiguration(cfg);
     solver->initializeSolver();
     solver->solve(nCycles,idum);
-
-
 }
-/************************************************************
-Name:
-Description:
-*/
+
+//****************************************************************************
+void VMCApp::loadConfiguration(Config *cfg){
+    this->cfg=cfg;
+    nParticles = cfg->lookup("SolverSettings.N");
+    nDimensions = cfg->lookup("SolverSettings.dim");
+    charge = cfg->lookup("PotentialSettings.charge");
+    minimizationIsEnable =cfg->lookup("setup.minimization");
+    blockingIsEnable = cfg->lookup("setup.blocking");
+    InteractionType = cfg->lookup("AppSettings.interactionType");
+    wavefunctionType = cfg->lookup("AppSettings.wavefunction");
+    systemType = cfg->lookup("setup.system");
+    solverType= cfg->lookup("AppSettings.solverType");
+    R =cfg->lookup("setup.singleRunSettings.R");
+    totVariationalDerivate=zeros<vec>(2);
+    totEnergyVarDerivate=zeros<vec>(2);
+}
+//****************************************************************************
+double VMCApp::getEnergy(){
+
+    return totEnergy;
+}
+
+//****************************************************************************
+double VMCApp::getEnergySquared(){
+
+    return totEnergySquared;
+}
+
+
+//****************************************************************************
+double VMCApp::getVariance(){
+
+    Variance = totEnergySquared - totEnergy * totEnergy;
+    return Variance;
+}
+
+//****************************************************************************
+double VMCApp::getSigma(){
+
+    Sigma = sqrt(Variance);
+    return Sigma;
+}
+
+//****************************************************************************
+double VMCApp::getAcceptanceRate(){
+
+    return Acceptance;
+}
+
+//****************************************************************************
+vec VMCApp::getVariationalDerivate(){
+    return 2*totEnergyVarDerivate - 2*totVariationalDerivate*totEnergy;
+}
+
+
+//****************************************************************************
 void VMCApp::messagePassing()
 {
 
@@ -101,186 +227,4 @@ void VMCApp::messagePassing()
              << "\n";
     }
 
-}
-
-
-
-/************************************************************
-Name:               setSolverMethod
-Description:
-*/
-Hamiltonian* VMCApp::setHamiltonian(){
-
-    Hamiltonian* hamiltonian;
-    switch (systemType) {
-    case ATOMS:
-        hamiltonian = new AtomicHamiltonian;
-        break;
-
-    case MOLECULES:
-        hamiltonian = new DiatomicHamiltonian(R);
-        break;
-    }
-    return hamiltonian;
-}
-
-
-/************************************************************
-Name:               setSolverMethod
-Description:
-*/
-ElectronInteraction *VMCApp::setInteraction(){
-
-    ElectronInteraction* interaction;
-    switch (InteractionType) {
-    case NOINTERACTION:
-        interaction = new NoInteraction;
-        break;
-
-    case COULOMBINTERACTION:
-        interaction =new CoulombInteraction;
-        break;
-    }
-    return interaction;
-}
-
-
-/************************************************************
-Name:               setSolverMethod
-Description:
-*/
-Solver* VMCApp::setSolverMethod(){
-
-    Solver* solver;
-
-    switch (solverType) {
-    case BF:
-        solver = new MCBF(hamiltonian,trialWavefunction,observables);
-        break;
-    case IS:
-        solver =new MCIS(hamiltonian,trialWavefunction,observables);
-        break;
-    }
-    return solver;
-}
-
-
-/************************************************************
-Name:               setWaveFunction
-Description:
-*/
-Wavefunction* VMCApp::setWavefunction(){
-
-    Wavefunction* wf;
-    wf = new HLikeWavefunction(nParticles);
-
-    switch (systemType) {
-    case ATOMS:
-        wf->slater->orbitals = new Hydrogenic();
-        break;
-
-    case MOLECULES:
-        wf->slater->orbitals = new Molecular(R, alpha);
-        break;
-    }
-
-
-    switch (wavefunctionType) {
-    case JASTROW:
-        wf->jas = new PadeJastrow(nParticles);
-        wf->jas->beta=beta;
-        wf->jas->setaValues(nParticles);
-        wf->slater->orbitals->k=alpha;
-        break;
-
-    case BASIC:
-        wf->jas = new NoJastrow(nParticles);
-        wf->slater->orbitals->k=alpha;
-        break;
-
-    case  HYDROGENIC:
-        wf->jas=new NoJastrow(nParticles);
-        wf->slater->orbitals->k=charge;
-        break;
-    }
-
-    return wf;
-}
-
-
-/************************************************************
-Name:               setWaveFunction
-Description:
-*/
-double VMCApp::getEnergy(){
-
-    return totEnergy;
-}
-
-
-/************************************************************
-Name:               getEnergySquared
-Description:
-*/
-double VMCApp::getEnergySquared(){
-
-    return totEnergySquared;
-}
-
-/************************************************************
-Name:               getVariance
-Description:
-*/
-double VMCApp::getVariance(){
-
-    Variance = totEnergySquared - totEnergy * totEnergy;
-    return Variance;
-}
-
-/************************************************************
-Name:               getSigma
-Description:
-*/
-double VMCApp::getSigma(){
-
-    Sigma = sqrt(Variance);
-    return Sigma;
-}
-
-/************************************************************
-Name:               getAcceptanceRate
-Description:
-*/
-double VMCApp::getAcceptanceRate(){
-
-    return Acceptance;
-}
-
-/************************************************************
-Name:               getAcceptanceRate
-Description:
-*/
-vec VMCApp::getVariationalDerivate(){
-    return 2*totEnergyVarDerivate - 2*totVariationalDerivate*totEnergy;
-}
-
-
-/************************************************************
-Name:               loadConfiguration
-Description:        loads different variables
-*/
-void VMCApp::loadConfiguration(Config *cfg){
-    this->cfg=cfg;
-    nParticles = cfg->lookup("SolverSettings.N");
-    nDimensions = cfg->lookup("SolverSettings.dim");
-    charge = cfg->lookup("PotentialSettings.charge");
-    minimizationIsEnable =cfg->lookup("setup.minimization");
-    blockingIsEnable = cfg->lookup("setup.blocking");
-    InteractionType = cfg->lookup("AppSettings.interactionType");
-    wavefunctionType = cfg->lookup("AppSettings.wavefunction");
-    systemType = cfg->lookup("setup.system");
-    solverType= cfg->lookup("AppSettings.solverType");
-    R =cfg->lookup("setup.singleRunSettings.R");
-    totVariationalDerivate=zeros<vec>(2);
-    totEnergyVarDerivate=zeros<vec>(2);
 }

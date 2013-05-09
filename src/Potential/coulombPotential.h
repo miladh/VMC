@@ -6,13 +6,14 @@
 class CoulombPotential : public Potential
 {
 public:
-    CoulombPotential();
+    CoulombPotential(const int &charge);
     double evaluate(const mat &r);
 
 private:
     double electronNucleusPotential(const mat &r);
     double enPotentialEnergy,eePotentialEnergy;
     double rSingleParticle,rij;
+    int charge;
 };
 
 #endif // COULOMB_POTENTIAL_H

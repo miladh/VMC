@@ -25,6 +25,9 @@ public:
 
     void loadConfiguration(Config *cfg);
     void runVMCApp(int nCycles, long idum);
+
+
+
     void messagePassing();
     double getEnergy();
     double getEnergySquared();
@@ -42,6 +45,7 @@ private:
     int systemType, wavefunctionType,solverType,InteractionType;
     int minimizationIsEnable, blockingIsEnable ;
     long idum;
+    double nCycles;
 
     double R;
     double totEnergy,totEnergySquared;
@@ -50,19 +54,28 @@ private:
     double tmp;
     vec tmpVec;
 
-    Config *cfg;
+    Config* cfg;
+    Orbitals* orbitals;
+    Jastrow* jastrow;
+    Wavefunction* trialWavefunction;
+
+
     Solver* solver;
-    Wavefunction *trialWavefunction;
     Potential *potential;
     Kinetic *kinetic;
     ElectronInteraction *electonInteraction;
     Hamiltonian *hamiltonian;
     Observables* observables;
 
-    Hamiltonian* setHamiltonian();
-    Wavefunction* setWavefunction();
-    Solver* setSolverMethod();
-    ElectronInteraction* setInteraction();
+
+    void setWavefunction();
+    void setKinetic();
+    void setPotential();
+    void setInteraction();
+    void setHamiltonian();
+    void setObservables();
+    void setSolverMethod();
+    void initilizeAndRunSolver();
 
 };
 

@@ -25,7 +25,7 @@ using namespace libconfig;
 class Solver
 {
 public:
-    Solver(Hamiltonian *hamiltonian, Wavefunction *TrialWavefunction, Observables* observables);
+    Solver(Hamiltonian *hamiltonian, Wavefunction* trialWavefunction, Observables* observables);
     virtual void solve(int nCycles, long idum) = 0;
     void loadConfiguration(Config *cfg);
     void initializeSolver();
@@ -40,7 +40,7 @@ protected:
     double R;
     mat rOld, rNew;
     Hamiltonian* hamiltonian;
-    Wavefunction* TrialWavefunction;
+    Wavefunction* trialWavefunction;
     Observables* observables;
 
     mat energyVector;

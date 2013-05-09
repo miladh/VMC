@@ -15,10 +15,6 @@ class Potential
 public:
     Potential();
     virtual double evaluate(const mat &r) = 0;
-    void loadConfiguration(Config *cfg);
-
-protected:
- int charge;
 
 };
 
