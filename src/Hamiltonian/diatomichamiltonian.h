@@ -14,6 +14,7 @@ private:
     double R;
     mat Rmatrix;
     double potentialEnergy, kineticEnergy,interactionEnergy, Energy;
+    uint charge;
 };
 
 #endif // DIATOMICHAMILTONIAN_H

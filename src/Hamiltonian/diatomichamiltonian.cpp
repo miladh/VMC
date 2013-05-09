@@ -6,6 +6,7 @@ DiatomicHamiltonian::DiatomicHamiltonian(const double& R):
 {
     Rmatrix(0,0) = R/2;
     Rmatrix(1,0) = R/2;
+
 }
 
 /************************************************************

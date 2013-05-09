@@ -16,8 +16,8 @@ public:
 private:
     double k,R;
     double phi,ddphi;
-    rowvec dphi;
     mat Rmatrix;
+    rowvec dphi;
     double dVariational;
 };
 

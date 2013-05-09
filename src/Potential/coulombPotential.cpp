@@ -8,7 +8,6 @@ CoulombPotential::CoulombPotential()
 Name:               evaluate
 Description:        Computes the total potential energy
 */
-
 double CoulombPotential::evaluate(const mat &r){
     return electronNucleusPotential(r);
 }
@@ -17,8 +16,6 @@ double CoulombPotential::evaluate(const mat &r){
 Name:               electron_nucleus_pot
 Description:        Computes potential energy due to electron-nucleus interactions
 */
-
-
 double CoulombPotential::electronNucleusPotential(const mat &r){
     enPotentialEnergy = 0;
 

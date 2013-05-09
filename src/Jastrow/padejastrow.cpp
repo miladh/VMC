@@ -99,7 +99,6 @@ Description:        Computes the total Jasrow Wavefunction's
 rowvec PadeJastrow::gradientJastrowEvaluate(const mat &r, uint i) {
     dJastrowFactor = zeros(1,r.n_cols);
 
-
     // Before i
     for (uint k = 0; k < i; k++) {
         r_ki = norm(r.row(k) - r.row(i), 2);
