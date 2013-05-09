@@ -34,9 +34,9 @@ SOURCES += main.cpp \
     Minimizer/steepestdescent.cpp \
     Observables/observables.cpp \
     ConfigurationParser/configurationparser.cpp \
-    Orbitals/molecular.cpp \
     Hamiltonian/diatomichamiltonian.cpp \
-    Hamiltonian/atomichamiltonian.cpp
+    Hamiltonian/atomichamiltonian.cpp \
+    Orbitals/diatomic.cpp
 
 HEADERS += \
     includes/lib.h \
@@ -67,9 +67,9 @@ HEADERS += \
     Minimizer/steepestdescent.h \
     Observables/observables.h \
     ConfigurationParser/configurationparser.h \
-    Orbitals/molecular.h \
     Hamiltonian/diatomichamiltonian.h \
-    Hamiltonian/atomichamiltonian.h
+    Hamiltonian/atomichamiltonian.h \
+    Orbitals/diatomic.h
 
 
 

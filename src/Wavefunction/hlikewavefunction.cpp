@@ -1,7 +1,7 @@
 #include "hlikewavefunction.h"
-#include"src/Jastrow/nojastrow.h"
-#include"src/Jastrow/padejastrow.h"
-#include"src/Orbitals/hydrogenic.h"
+#include<src/Jastrow/nojastrow.h>
+#include<src/Jastrow/padejastrow.h>
+#include<src/Orbitals/hydrogenic.h>
 
 
 HLikeWavefunction::HLikeWavefunction(const uint &nParticles):
@@ -10,7 +10,6 @@ HLikeWavefunction::HLikeWavefunction(const uint &nParticles):
     dJastrow(zeros(nParticles,3))
 {
 }
-
 
 
 /************************************************************
@@ -78,6 +77,7 @@ void HLikeWavefunction::rejectMove()
     slater->rejectMove();
     jas->rejectMove();
 }
+
 /************************************************************
 Name:
 Description:

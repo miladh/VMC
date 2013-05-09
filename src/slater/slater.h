@@ -7,7 +7,7 @@
 #include <src/Jastrow/jastrow.h>
 #include <src/Orbitals/orbitals.h>
 #include <src/Orbitals/hydrogenic.h>
-#include <src/Orbitals/molecular.h>
+#include <src/Orbitals/diatomic.h>
 
 using namespace arma;
 using namespace std;

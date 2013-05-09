@@ -1,5 +1,5 @@
-#ifndef MOLECULAR_H
-#define MOLECULAR_H
+#ifndef DIATOMIC_H
+#define DIATOMIC_H
 #include<src/Orbitals/orbitals.h>
 
 class Molecular : public Orbitals
@@ -21,4 +21,4 @@ private:
     double dVariational;
 };
 
-#endif // MOLECULAR_H
+#endif // DIATOMIC_H

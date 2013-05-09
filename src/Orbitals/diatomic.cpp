@@ -1,4 +1,4 @@
-#include "molecular.h"
+#include "diatomic.h"
 #include <src/Orbitals/hydrogenic.h>
 
 Molecular::Molecular(const double& R, const double& k):
