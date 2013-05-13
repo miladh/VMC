@@ -2,17 +2,16 @@
 #include <src/Hamiltonian/atomichamiltonian.h>
 #include <src/Hamiltonian/diatomichamiltonian.h>
 
-Observables::Observables(Hamiltonian *hamiltonian, Wavefunction *wavefunction):
+Observables::Observables(Config* cfg,Hamiltonian *hamiltonian, Wavefunction *wavefunction):
+    cfg(cfg),
     hamiltonian(hamiltonian),
     wavefunction(wavefunction)
 {
+    loadConfiguration();
 }
 
 
-/************************************************************
-Name:
-Description:
-*/
+//************************************************************
 void Observables::calculateObservables()
 {
 
@@ -22,26 +21,36 @@ void Observables::calculateObservables()
     }
     else{
         calculateEnergy();
-        if(blockingIsEnable ){
+        calculateAverageDistance();
+
+        if(blockingIsEnable){
             addEnergyToEnergyVector();
         }
     }
 
 }
 
-/************************************************************
-Name:
-Description:
-*/
+//************************************************************
+void Observables::initializeObservables(const int& nCycles){
+    this->nCycles = nCycles;
+    cycle  = 0;
+    energy = 0;
+    energySquared = 0;
+    averageDistance = 0;
+    deltaVariationalDerivateRatio = zeros<vec>(2);
+    variationalDerivateRatio  = zeros<vec>(2);
+    energyVariationalDerivate = zeros<vec>(2);
+    energyVector = zeros(nCycles-1);
+}
+
+//************************************************************
 void Observables::currentConfiguration(const mat& positions)
 {
     r = positions;
 }
 
-/************************************************************
-Name:
-Description:
-*/
+
+//************************************************************
 void Observables::calculateEnergy()
 {
     deltaE  = hamiltonian->getEnergy(r);
@@ -49,28 +58,16 @@ void Observables::calculateEnergy()
     energySquared += deltaE*deltaE;
 }
 
-/************************************************************
-Name:
-Description:
-*/
-double Observables::getEnergy()
+//************************************************************
+void Observables::calculateAverageDistance()
 {
-    return energy/(nCycles-1);
+    for (uint i=0; i<r.n_rows; i++) {
+        for (uint j=i+1; j<r.n_rows; j++) {
+            averageDistance+= norm( r.row(i)-r.row(j) ,2);
+        }
+    }
 }
-
-/************************************************************
-Name:
-Description:
-*/
-double Observables::getEnergySquared()
-{
-    return energySquared/(nCycles-1);
-}
-
-/************************************************************
-Name:
-Description:
-*/
+//************************************************************
 void Observables::calculateVariationalDerivateRatio()
 {
     deltaVariationalDerivateRatio = wavefunction->getVariationalDerivate(r);
@@ -80,40 +77,45 @@ void Observables::calculateVariationalDerivateRatio()
     }
 }
 
-/************************************************************
-Name:
-Description:
-*/
+//************************************************************
+double Observables::getEnergy()
+{
+    return energy/(nCycles-1);
+}
+
+//************************************************************
+double Observables::getEnergySquared()
+{
+    return energySquared/(nCycles-1);
+}
+
+//************************************************************
+double Observables::getAverageDistance()
+{
+    return averageDistance/(nCycles-1);
+}
+//************************************************************
 vec Observables::getVariationalDerivateRatio()
 {
-   return variationalDerivateRatio/(nCycles-1);
+    return variationalDerivateRatio/(nCycles-1);
 }
 
-/************************************************************
-Name:
-Description:
-*/
+//************************************************************
 vec Observables::getEnergyVariationalDerivate()
 {
-   return energyVariationalDerivate/(nCycles-1);
+    return energyVariationalDerivate/(nCycles-1);
 
 }
 
 
-/************************************************************
-Name:
-Description:
-*/
+//************************************************************
 void Observables::addEnergyToEnergyVector()
 {
     energyVector(cycle) = deltaE;
     cycle += 1;
 }
 
-/************************************************************
-Name:
-Description:
-*/
+//************************************************************
 void Observables::writeEnergyVectorToFile(const int& myRank)
 {
     ostringstream filename;
@@ -123,29 +125,11 @@ void Observables::writeEnergyVectorToFile(const int& myRank)
 
 
 
+//************************************************************
+void Observables::loadConfiguration(){
 
-/************************************************************
-Name:
-Description:
-*/
-void Observables::loadConfiguration(Config *cfg){
-    minimize=cfg->lookup("setup.minimization");
+    minimize         = cfg->lookup("setup.minimization");
     blockingIsEnable = cfg->lookup("setup.blocking");
     cfg->lookupValue("setup.BlockingSettings.dataPath", dataPath);
     cfg->lookupValue("setup.BlockingSettings.dataName", dataName);
-}
-
-/************************************************************
-Name:
-Description:
-*/
-void Observables::initializeObservables(const int& nCycles){
-    this->nCycles = nCycles;
-    cycle=0;
-    energy = 0;
-    energySquared = 0;
-    deltaVariationalDerivateRatio = zeros<vec>(2);
-    variationalDerivateRatio = zeros<vec>(2);
-    energyVariationalDerivate= zeros<vec>(2);
-    energyVector=zeros(nCycles-1);
 }

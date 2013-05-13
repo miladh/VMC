@@ -6,6 +6,7 @@ Hydrogenic::Hydrogenic(const double& k):
 }
 
 
+//********************************************************************************
 double Hydrogenic::orbitalEvaluate(const mat &r, int qNum, int Particle){
     rNorm= norm(r.row(Particle),2);
 
@@ -35,7 +36,7 @@ double Hydrogenic::orbitalEvaluate(const mat &r, int qNum, int Particle){
     return phi;
 }
 
-
+//********************************************************************************
 rowvec Hydrogenic::gradientOrbitalEvaluate(const mat &r, int qNum, int Particle){
     rNorm= norm(r.row(Particle),2);
     dphi=zeros(1,r.n_cols);
@@ -82,8 +83,7 @@ rowvec Hydrogenic::gradientOrbitalEvaluate(const mat &r, int qNum, int Particle)
 
     return dphi;
 }
-
-
+//********************************************************************************
 double Hydrogenic::laplaceOrbitalEvaluate(const mat &r, int qNum, int Particle){
     rNorm= norm(r.row(Particle),2);
     if(qNum==0){
@@ -118,7 +118,7 @@ double Hydrogenic::laplaceOrbitalEvaluate(const mat &r, int qNum, int Particle){
 }
 
 
-
+//********************************************************************************
 double Hydrogenic::getVariationalDerivative(const mat &r, int qNum, int Particle){
     rNorm= norm(r.row(Particle),2);
 

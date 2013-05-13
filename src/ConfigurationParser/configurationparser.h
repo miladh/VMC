@@ -30,8 +30,6 @@ private:
     int singleRunIsEnable, minimizationIsEnable, blockingIsEnable;
     int minimizerType;
     double alpha, beta;
-    double nCycles;
-    long idum;
     Config cfg;
 
     VMCApp* vmcapp;

@@ -21,14 +21,9 @@ using namespace libconfig;
 class VMCApp
 {
 public:
-    VMCApp(const int &myRank, const int &nProcess);
+    VMCApp(Config *cfg, const int &myRank, const int &nProcess);
 
-    void loadConfiguration(Config *cfg);
-    void runVMCApp(int nCycles, long idum);
-
-
-
-    void messagePassing();
+    void runVMCApp();
     double getEnergy();
     double getEnergySquared();
     double getVariance();
@@ -40,6 +35,14 @@ public:
 
 
 private:
+    Config* cfg;
+    Orbitals* orbitals;
+    Jastrow* jastrow;
+    Wavefunction* trialWavefunction;
+    Solver* solver;
+    Hamiltonian *hamiltonian;
+    Observables* observables;
+
     int nParticles,nDimensions,charge;
     int nProcess, myRank;
     int systemType, wavefunctionType,solverType,InteractionType;
@@ -48,34 +51,23 @@ private:
     double nCycles;
 
     double R;
-    double totEnergy,totEnergySquared;
+    double totEnergy,totEnergySquared,averageDistance;
     double Variance, Acceptance,Sigma;
     vec totVariationalDerivate,totEnergyVarDerivate;
     double tmp;
     vec tmpVec;
 
-    Config* cfg;
-    Orbitals* orbitals;
-    Jastrow* jastrow;
-    Wavefunction* trialWavefunction;
 
 
-    Solver* solver;
-    Potential *potential;
-    Kinetic *kinetic;
-    ElectronInteraction *electonInteraction;
-    Hamiltonian *hamiltonian;
-    Observables* observables;
 
 
+    void loadAndSetConfiguration();
     void setWavefunction();
-    void setKinetic();
-    void setPotential();
-    void setInteraction();
     void setHamiltonian();
     void setObservables();
-    void setSolverMethod();
-    void initilizeAndRunSolver();
+    void setAndRunSolver();
+    void messagePassing();
+
 
 };
 

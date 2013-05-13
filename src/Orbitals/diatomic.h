@@ -5,7 +5,7 @@
 class Molecular : public Orbitals
 {
 public:
-    Molecular(const double &R, const double &k);
+    Molecular(Config *cfg, const double &k);
     double orbitalEvaluate(const mat &r, int qNum, int Particle);
     double laplaceOrbitalEvaluate(const mat &r, int qNum, int Particle);
     double getVariationalDerivative(const mat &r, int qNum, int Particle);
@@ -13,11 +13,16 @@ public:
 
 
 private:
+    Config* cfg;
     Orbitals* atomicOrbitals;
+    uint nParticles, nDimensions;
     double R;
     double phi,ddphi,dVariational;
     mat Rmatrix;
     rowvec dphi;
+
+
+    void loadAndSetConfiguration();
 };
 
 #endif // DIATOMIC_H

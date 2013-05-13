@@ -5,19 +5,13 @@
 ConfigurationParser::ConfigurationParser(const int& nProcess, const int& myRank):
     nProcess(nProcess),
     myRank(myRank)
-
 {
 }
 
-/************************************************************
-Name:
-Description:
-*/
+//*****************************************************************************
 void ConfigurationParser::setup()
 {
-
     loadConfiguration();
-
     if(singleRunIsEnable){
         singleRun();
     }
@@ -29,47 +23,34 @@ void ConfigurationParser::setup()
     }
 }
 
-/************************************************************
-Name:
-Description:
-*/
+//*****************************************************************************
 void ConfigurationParser::singleRun()
 {
-    vmcapp= new VMCApp(myRank,nProcess);
-    vmcapp->loadConfiguration(&cfg);
-    vmcapp->alpha=alpha;
-    vmcapp->beta=beta;
-    vmcapp->runVMCApp(nCycles,idum);
-    vmcapp->messagePassing();
+    vmcapp = new VMCApp(&cfg,myRank,nProcess);
+    vmcapp->alpha = alpha;
+    vmcapp->beta  = beta;
+    vmcapp->runVMCApp();
 }
 
-/************************************************************
-Name:
-Description:
-*/
+//*****************************************************************************
 void ConfigurationParser::chooseAndRunMinimization()
 {
     minimizerType = cfg.lookup("setup.MinimizerSettings.minimizerType");
 
     switch (minimizerType) {
     case BRUTEFORCE:
-        minimizer= new BFMinimizer(myRank,nProcess);
-        minimizer->loadConfiguration(&cfg);
+        minimizer= new BFMinimizer(&cfg, myRank,nProcess);
         minimizer->runMinimizer();
         break;
 
     case STEEPESTDESCENT:
-        minimizer= new SteepestDescent(myRank,nProcess);
-        minimizer->loadConfiguration(&cfg);
+        minimizer= new SteepestDescent(&cfg, myRank,nProcess);
         minimizer->runMinimizer();
         break;
     }
 }
 
-/************************************************************
-Name:
-Description:
-*/
+//*****************************************************************************
 void ConfigurationParser::runBlocking()
 {
     if (myRank==0){
@@ -78,7 +59,7 @@ void ConfigurationParser::runBlocking()
         block.loadConfiguration(&cfg);
         block.doBlocking();
 
-        string dataPath = "../vmc/results/blocking";
+        string dataPath = "../vmc/DATA/blocking";
         // Plotting result
         string pythonPath = "python " + dataPath
                 + "/plotBlocking.py "
@@ -88,10 +69,7 @@ void ConfigurationParser::runBlocking()
 }
 
 
-/************************************************************
-Name:               loadConfiguration
-Description:        loads different variables
-*/
+//*****************************************************************************
 void ConfigurationParser::loadConfiguration()
 {
     for(int i=0; i<nProcess;i++){
@@ -107,8 +85,6 @@ void ConfigurationParser::loadConfiguration()
 
     alpha =cfg.lookup("setup.singleRunSettings.alpha");
     beta = cfg.lookup("setup.singleRunSettings.beta");
-    nCycles = cfg.lookup("AppSettings.cycles");
-    idum = cfg.lookup("AppSettings.idum");
 
 }
 
@@ -122,7 +98,7 @@ void ConfigurationParser::loadConfiguration()
     onebodyDensity.computeOnebodyDensity();
 
     if (myRank==0){
-        string dataPath = "../vmc/results/onebodyDensity";
+        string dataPath = "../vmc/DATA/onebodyDensity";
         // Plotting result
         string pythonPath = "python " + dataPath
                 + "/OBD.py "

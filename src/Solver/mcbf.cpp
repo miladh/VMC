@@ -1,7 +1,7 @@
 #include "mcbf.h"
 
-MCBF::MCBF(Hamiltonian *hamiltonian, Wavefunction* TrialWavefunction, Observables* observables):
-    Solver(hamiltonian,TrialWavefunction,observables)
+MCBF::MCBF(Config* cfg, Hamiltonian *hamiltonian, Wavefunction* TrialWavefunction, Observables* observables):
+    Solver(cfg,hamiltonian,TrialWavefunction,observables)
 {
 }
 
@@ -11,8 +11,8 @@ Description:        starts a MC-sample
 */
 void MCBF::solve(int nCycles, long idum)
 {
-    this->idum=idum;
-    stepLength=optimalStepLength();
+    this->idum = idum;
+    stepLength = optimalStepLength();
     MetropolisAlgoBF(nCycles,stepLength);
 
 }
@@ -35,7 +35,7 @@ void MCBF::MetropolisAlgoBF(int nCycles, double stepLength){
     rNew = rOld;
 
     // Store the current value of the wave function
-    trialWavefunction->initializewavefunction(rOld);
+    trialWavefunction->initializeWavefunction(rOld);
 
 
 

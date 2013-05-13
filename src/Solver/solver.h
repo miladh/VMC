@@ -25,25 +25,31 @@ using namespace libconfig;
 class Solver
 {
 public:
-    Solver(Hamiltonian *hamiltonian, Wavefunction* trialWavefunction, Observables* observables);
+    Solver(Config* cfg,Hamiltonian *hamiltonian, Wavefunction* trialWavefunction, Observables* observables);
     virtual void solve(int nCycles, long idum) = 0;
-    void loadConfiguration(Config *cfg);
-    void initializeSolver();
 
     double acceptedSteps;
 
+private:
+        void loadAndSetConfiguration();
 
 protected:
     int nParticles,nDimensions;
+
     double thermalization,nPreCycles;
+
     double minStepLength, maxStepLength, tolerance;
+    double timeStep,D;
+
     double R;
     mat rOld, rNew;
+    mat energyVector;
+
+    Config* cfg;
     Hamiltonian* hamiltonian;
     Wavefunction* trialWavefunction;
     Observables* observables;
 
-    mat energyVector;
 
 };
 

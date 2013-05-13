@@ -7,7 +7,7 @@
 class AtomicHamiltonian : public Hamiltonian
 {
 public:
-    AtomicHamiltonian(Kinetic *kinetic, Potential *potential,
+    AtomicHamiltonian(Config *cfg, Kinetic *kinetic, Potential *potential,
                       ElectronInteraction *electronInteraction);
 
     double getEnergy(const mat &r);

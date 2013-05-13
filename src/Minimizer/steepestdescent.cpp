@@ -1,34 +1,29 @@
 #include <src/Minimizer/steepestdescent.h>
 
-SteepestDescent::SteepestDescent(const int &myRank, const int &nProcess):
-    Minimizer(myRank,nProcess),
-    nProcess(nProcess),
-    myRank(myRank),
-    variationalDerivate(zeros<vec>(2))
+SteepestDescent::SteepestDescent(Config *cfg, const int &myRank, const int &nProcess):
+    Minimizer(cfg,myRank,nProcess)
 {
+    loadAndSetConfiguration();
 }
 
-/*****************************************************************************
-Name:               runMinimizer
-Description:        Starts MC-calculation for different variational parameters
-*/
+//*****************************************************************************
 void SteepestDescent::runMinimizer(){
 
-    double step = 0.1;
     vec old = zeros<vec>(2);
-    for(int i=0; i <100; i++){
+
+    myfile.open ("../vmc/DATA/results");
+    myfile << "Alpha   " << "Beta    " << "Energy       " << "Variance    "
+           << "Sigma       "<< "Acceptance    "<< endl;
+
+
+    for(int i=0; i < 100; i++){
+
         vmcapp->alpha = alpha;
         vmcapp->beta  = beta;
-        vmcapp->runVMCApp(nCycles,idum);
-        vmcapp->messagePassing();
+        vmcapp->runVMCApp();
 
         variationalDerivate = vmcapp->getVariationalDerivate();
-        energy = vmcapp->getEnergy();
-        energySquared = vmcapp->getEnergySquared();
-        variance=vmcapp->getVariance();
-        sigma=vmcapp->getSigma();
-        acceptance= vmcapp->getAcceptanceRate();
-
+        getResultsAndWrite();
 
         if(old(0)/variationalDerivate(0) >= 0){
             step *=1.25;
@@ -49,13 +44,10 @@ void SteepestDescent::runMinimizer(){
 
         old = variationalDerivate;
     }
-
+        myfile.close();
 }
 
-/************************************************************
-Name:               loadConfigurations
-Description:        loads different variabels
-*/
+//*****************************************************************************
 int SteepestDescent::signFunc(double varDer){
 
     if(varDer < 0){
@@ -66,16 +58,27 @@ int SteepestDescent::signFunc(double varDer){
 }
 
 
+//*****************************************************************************
+void SteepestDescent::getResultsAndWrite()
+{
+    energy = vmcapp->getEnergy();
+    energySquared = vmcapp->getEnergySquared();
+    variance=vmcapp->getVariance();
+    sigma=vmcapp->getSigma();
+    acceptance= vmcapp->getAcceptanceRate();
 
-/************************************************************
-Name:               loadConfigurations
-Description:        loads different variabels
-*/
-void SteepestDescent::loadConfiguration(Config *cfg){
-    alpha=cfg->lookup("setup.MinimizerSettings.SDMinSettings.InitAlpha");
-    beta=cfg->lookup("setup.MinimizerSettings.SDMinSettings.InitBeta");
-    nCycles=cfg->lookup("AppSettings.cycles");
-    idum = cfg->lookup("AppSettings.idum");
-    vmcapp= new VMCApp(myRank,nProcess);
-    vmcapp->loadConfiguration(cfg);
+    if (myRank == 0) {
+    myfile << alpha <<"     "<<  beta <<"     "<<energy
+           <<"     "<< variance <<"     "<<sigma
+           <<"     "<< acceptance<< endl;
+    }
+}
+
+//*****************************************************************************
+void SteepestDescent::loadAndSetConfiguration()
+{
+    alpha = cfg->lookup("setup.MinimizerSettings.SDMinSettings.InitAlpha");
+    beta  = cfg->lookup("setup.MinimizerSettings.SDMinSettings.InitBeta");
+    step  = cfg->lookup("setup.MinimizerSettings.SDMinSettings.step");
+    variationalDerivate = zeros<vec>(2);
 }

@@ -1,10 +1,12 @@
 #include "solver.h"
 
-Solver::Solver(Hamiltonian *hamiltonian, Wavefunction* trialWavefunction, Observables* observables):
+Solver::Solver(Config* cfg,Hamiltonian* hamiltonian, Wavefunction* trialWavefunction, Observables* observables):
+    cfg(cfg),
     hamiltonian(hamiltonian),
     trialWavefunction(trialWavefunction),
     observables(observables)
 {
+    loadAndSetConfiguration();
 }
 
 
@@ -12,23 +14,20 @@ Solver::Solver(Hamiltonian *hamiltonian, Wavefunction* trialWavefunction, Observ
 Name:               loadConfiguration
 Description:        loads different variables
 */
-void Solver::loadConfiguration(Config *cfg){
-    nParticles = cfg->lookup("SolverSettings.N");
-    nDimensions = cfg->lookup("SolverSettings.dim");
-    thermalization=cfg->lookup("AppSettings.thermalization");
-    nPreCycles=cfg->lookup("OptimalStepSettings.preCycles");
-    minStepLength = cfg->lookup("OptimalStepSettings.minstep");
-    maxStepLength = cfg->lookup("OptimalStepSettings.maxstep");
-    tolerance = cfg->lookup("OptimalStepSettings.tolerance");
-}
+void Solver::loadAndSetConfiguration(){
 
+    nParticles      = cfg->lookup("setup.nParticles");
+    nDimensions     = cfg->lookup("setup.nDimensions");
 
-/************************************************************
-Name:               loadConfiguration
-Description:        loads different variables
-*/
-void Solver::initializeSolver(){
-    rOld=zeros<mat>(nParticles, nDimensions);
-    rNew=zeros<mat>(nParticles, nDimensions);
+    D               = cfg->lookup("solverSettings.IS.D");
+    timeStep        = cfg->lookup("solverSettings.IS.timeStep");
 
+    thermalization  = cfg->lookup("AppSettings.thermalization");
+    nPreCycles      = cfg->lookup("solverSettings.BF.OptimalStepSettings.preCycles");
+    minStepLength   = cfg->lookup("solverSettings.BF.OptimalStepSettings.minstep");
+    maxStepLength   = cfg->lookup("solverSettings.BF.OptimalStepSettings.maxstep");
+    tolerance       = cfg->lookup("solverSettings.BF.OptimalStepSettings.tolerance");
+
+    rOld = zeros<mat>(nParticles, nDimensions);
+    rNew = zeros<mat>(nParticles, nDimensions);
 }

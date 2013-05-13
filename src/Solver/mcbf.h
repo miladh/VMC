@@ -7,7 +7,7 @@
 class MCBF : public Solver
 {
 public:
-    MCBF(Hamiltonian *hamiltonian, Wavefunction *TrialWavefunction, Observables *observables);
+    MCBF(Config* cfg,Hamiltonian *hamiltonian, Wavefunction *TrialWavefunction, Observables *observables);
     void solve(int nCycles, long idum);
 
 

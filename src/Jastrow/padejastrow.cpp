@@ -10,10 +10,7 @@ PadeJastrow::PadeJastrow(const uint nParticles,const double& beta):
     setaValues();
 }
 
-/************************************************************
-Name:               setaValues
-Description:        Initiating a matrix with all the spin dependant a-values.
-*/
+//************************************************************
 void PadeJastrow::setaValues(){
     for (uint i = 0; i < nParticles; i++) {
         for (uint j = i; j < nParticles; j++) {
@@ -30,10 +27,8 @@ void PadeJastrow::setaValues(){
 
 }
 
-/************************************************************
-Name:               evaluateJastrow
-Description:        computes jastrowfactor
-*/
+
+//************************************************************
 double PadeJastrow::evaluateJastrow(const mat &r){
     correlation=0;
     for (uint i=0; i<r.n_rows; i++) {
@@ -46,29 +41,21 @@ double PadeJastrow::evaluateJastrow(const mat &r){
     return correlation;
 
 }
-/************************************************************
-Name:
-Description:
-*/
+
+//************************************************************
 void PadeJastrow::initializeJastrow(const mat &r){
     rOld=r;
 }
 
 
 
-/************************************************************
-Name:
-Description:
-*/
+//************************************************************
 void PadeJastrow::setActiveParticleAndCurrentPosition(const mat &r, const uint &i){
     rNew=r;
     activeParticle= i;
 }
 
-/************************************************************
-Name:               evaluateJastrow
-Description:        computes jastrowfactor
-*/
+//************************************************************
 double PadeJastrow::getJasRatio(){
 
     deltaJastrow = evaluateJastrow(rNew) - evaluateJastrow(rOld);
@@ -77,30 +64,20 @@ double PadeJastrow::getJasRatio(){
 
 
 
-/************************************************************
-Name:               evaluateJastrow
-Description:        computes jastrowfactor
-*/
+//************************************************************
 void PadeJastrow::acceptMove(){
     rOld= rNew;
 }
 
 
 
-/************************************************************
-Name:               evaluateJastrow
-Description:        computes jastrowfactor
-*/
+//************************************************************
 void PadeJastrow::rejectMove(){
     rNew=rOld;
 }
 
 
-/************************************************************
-Name:               gradientJastrowEvaluate
-Description:        Computes the total Jasrow Wavefunction's
-                    gradient in r, component i.
-*/
+//************************************************************
 rowvec PadeJastrow::gradientJastrowEvaluate(const mat &r, uint i) {
     dJastrowFactor = zeros(1,r.n_cols);
 
@@ -121,11 +98,7 @@ rowvec PadeJastrow::gradientJastrowEvaluate(const mat &r, uint i) {
 }
 
 
-/************************************************************
-Name:               laplaceJastrowEvaluate
-Description:
-*/
-
+//************************************************************
 double PadeJastrow::laplaceJastrowEvaluate(const mat &r){
 
     ddJastrowFactor = 0;
@@ -152,10 +125,7 @@ double PadeJastrow::laplaceJastrowEvaluate(const mat &r){
 }
 
 
-/************************************************************
-Name:               evaluateJastrow
-Description:        computes jastrowfactor
-*/
+//************************************************************
 double PadeJastrow::getVariationalDerivative(const mat &r){
 
     correlation=0;
@@ -163,7 +133,7 @@ double PadeJastrow::getVariationalDerivative(const mat &r){
         for (uint j=i+1; j<r.n_rows; j++) {
             rij= norm( r.row(i)-r.row(j) ,2);
 
-            correlation+= -a(i,j)*rij*rij/(1+beta*rij)/(1+beta*rij);
+            correlation += -a(i,j)*rij*rij/(1+beta*rij)/(1+beta*rij);
         }
     }
 

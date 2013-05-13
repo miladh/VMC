@@ -8,12 +8,13 @@
 class Hamiltonian
 {
 public:
-    Hamiltonian(Kinetic* kinetic,Potential* potential,
+    Hamiltonian(Config* cfg, Kinetic* kinetic,Potential* potential,
                 ElectronInteraction* electronInteraction);
 
     virtual double getEnergy(const mat &r)= 0;
 
 protected:
+    Config* cfg;
     Kinetic* kinetic;
     Potential* potential;
     ElectronInteraction* electronInteraction;

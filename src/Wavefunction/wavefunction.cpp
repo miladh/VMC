@@ -14,7 +14,7 @@ Wavefunction::Wavefunction(Config* cfg, Orbitals* orbitals, Jastrow* jastrow):
 Name:
 Description:
 */
-void Wavefunction::initializewavefunction(const mat &r)
+void Wavefunction::initializeWavefunction(const mat &r)
 {
     slater->initializeSD(r);
     jas->initializeJastrow(r);
@@ -207,19 +207,19 @@ Name:               loadConfigurations
 Description:        loads different variabels
 */
 void Wavefunction::loadAndSetConfiguration(){
+    nParticles  = cfg->lookup("setup.nParticles");
+    nDimensions = cfg->lookup("setup.nDimensions");
     useAnalyticLaplace  = cfg->lookup("AppSettings.useAnalyticLaplace");
     useAnalyticGradient = cfg->lookup("AppSettings.useAnalyticGradient");
-    nParticles  = cfg->lookup("SolverSettings.N");
-    nDimensions = cfg->lookup("SolverSettings.dim");
 
-    dSlater  = zeros(nParticles,nDimensions);
-    dJastrow = zeros(nParticles,nDimensions);
-    dwavefunction=zeros<mat>(nParticles,nDimensions);
-    rPlus  = zeros<mat>(nParticles, nDimensions);
-    rMinus = zeros<mat>(nParticles, nDimensions);
-    dvariational = zeros<vec>(2);
+    dSlater       = zeros(nParticles,nDimensions);
+    dJastrow      = zeros(nParticles,nDimensions);
+    dwavefunction = zeros<mat>(nParticles,nDimensions);
+    rPlus         = zeros<mat>(nParticles, nDimensions);
+    rMinus        = zeros<mat>(nParticles, nDimensions);
+    dvariational  = zeros<vec>(2);
 
-    slater= new Slater(nParticles,orbitals);
+    slater  = new Slater(nParticles,orbitals);
 
 }
 

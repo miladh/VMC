@@ -7,11 +7,6 @@
 #define h2 1e10
 
 
-// 0: Blocking off
-// 1: Blocking on
-#define BLOCKING 0
-
-
 // 0: OBD off
 // 1: OBD on
 #define ONEBODYDENSITY 0

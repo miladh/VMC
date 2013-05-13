@@ -6,7 +6,7 @@
 class MCIS : public Solver
 {
 public:
-    MCIS(Hamiltonian *hamiltonian, Wavefunction *TrialWavefunction, Observables *observables);
+    MCIS(Config* cfg,Hamiltonian *hamiltonian, Wavefunction *TrialWavefunction, Observables *observables);
     void solve(int nCycles, long idum);
 
 
@@ -16,9 +16,10 @@ private:
     mat qForce, qForceOld, qForceNew;
 
     long idum;
-    double timeStep,nCycles;
+    double nCycles;
     double deltaE;
-    double D,GreensFunction;
+    double GreensFunction;
+    int myRank;
 };
 
 #endif // MCIP_H

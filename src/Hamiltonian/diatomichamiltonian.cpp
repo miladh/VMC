@@ -1,30 +1,38 @@
 #include <src/Hamiltonian/diatomichamiltonian.h>
 
-DiatomicHamiltonian::DiatomicHamiltonian(Kinetic* kinetic,Potential* potential,
-                                         ElectronInteraction* electronInteraction,
-                                         const double& R):
-    Hamiltonian(kinetic,potential,electronInteraction),
-    R(R),
-    Rmatrix(zeros<mat>(2,3))
-
+DiatomicHamiltonian::DiatomicHamiltonian(Config* cfg, Kinetic* kinetic,Potential* potential,
+                                         ElectronInteraction* electronInteraction):
+    Hamiltonian(cfg, kinetic,potential,electronInteraction)
 {
-    Rmatrix(0,0) = R/2;
-    Rmatrix(1,0) = R/2;
-
+    loadAndSetConfiguration();
 }
 
-/************************************************************
-Name:                   getEnergy
-Description:            Computes the energy
-*/
-
+//*******************************************************************************
 double DiatomicHamiltonian::getEnergy(const mat &r) {
 
     potentialEnergy = potential->evaluate(r-Rmatrix)+potential->evaluate(r+Rmatrix);
     kineticEnergy   = kinetic->evaluate(r);
     interactionEnergy = electronInteraction->evaluate(r);
-    Energy = interactionEnergy+kineticEnergy+potentialEnergy + 1/R;
+    Energy = interactionEnergy + kineticEnergy + potentialEnergy + nucleusEnergy;
 
     return Energy;
+
+}
+
+
+//*****************************************************************************
+void DiatomicHamiltonian::loadAndSetConfiguration()
+{
+    nParticles  = cfg->lookup("setup.nParticles");
+    nDimensions = cfg->lookup("setup.nDimensions");
+    charge      = cfg->lookup("PotentialSettings.charge");
+    R           = cfg->lookup("setup.singleRunSettings.R");
+
+    Rmatrix     = zeros<mat>(nParticles,nDimensions);
+    for(int i=0; i < nParticles; i++){
+        Rmatrix(i,0) = R/2;
+    }
+
+    nucleusEnergy =0; /*charge*charge/R;*/
 
 }

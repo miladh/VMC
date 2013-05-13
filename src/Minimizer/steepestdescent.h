@@ -7,25 +7,19 @@
 class SteepestDescent : public Minimizer
 {
 public:
-    SteepestDescent(const int &myRank, const int &nProcess);
-
-
+    SteepestDescent(Config* cfg, const int &myRank, const int &nProcess);
     void runMinimizer();
-    void loadConfiguration(Config *cfg);
-    int signFunc(double varDer);
+
 
 private:
-    int nProcess, myRank;
-
-    double alpha,beta;
-    double stepAlpha,stepBeta;
-
-    double nCycles;
-    long idum;
-    double energy,energySquared,variance, acceptance,sigma;
-
-    VMCApp* vmcapp;
+    double alpha,beta,step;
     vec variationalDerivate;
+
+    ofstream myfile;
+
+    void loadAndSetConfiguration();
+    void getResultsAndWrite();
+    int signFunc(double varDer);
 
 };
 

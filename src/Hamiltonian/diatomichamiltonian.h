@@ -6,16 +6,18 @@
 class DiatomicHamiltonian : public Hamiltonian
 {
 public:
-    DiatomicHamiltonian(Kinetic* kinetic,Potential* potential,
-                        ElectronInteraction* electronInteraction,
-                        const double &R);
+    DiatomicHamiltonian(Config *cfg, Kinetic* kinetic, Potential* potential,
+                        ElectronInteraction* electronInteraction);
 
     double getEnergy(const mat &r);
 
 private:
     double R;
     mat Rmatrix;
-    double potentialEnergy, kineticEnergy,interactionEnergy, Energy;
+    double potentialEnergy, kineticEnergy,interactionEnergy, nucleusEnergy,Energy;
+    int nParticles,nDimensions,charge;
+
+    void loadAndSetConfiguration();
 };
 
 #endif // DIATOMICHAMILTONIAN_H

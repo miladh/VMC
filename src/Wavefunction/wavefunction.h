@@ -21,7 +21,7 @@ public:
 
     void activeParticle(const mat &r,const uint &i);
     double evaluateWavefunction(const mat &r);
-    void initializewavefunction(const mat &r);
+    void initializeWavefunction(const mat &r);
     void updateWavefunction();
     void acceptMove();
     void rejectMove();

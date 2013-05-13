@@ -2,10 +2,8 @@
 
 
 
-MCIS::MCIS(Hamiltonian *hamiltonian, Wavefunction* TrialWavefunction, Observables* observables):
-    Solver(hamiltonian,TrialWavefunction,observables),
-    timeStep(0.05),
-    D(0.5)
+MCIS::MCIS(Config* cfg,Hamiltonian *hamiltonian, Wavefunction* TrialWavefunction, Observables* observables):
+    Solver(cfg,hamiltonian,TrialWavefunction,observables)
 {
 }
 
@@ -15,8 +13,9 @@ Description:        starts a MC-sample
 */
 void MCIS::solve(int nCycles, long idum)
 {
-    this->idum=idum;
-    this->nCycles=nCycles;
+    MPI_Comm_rank(MPI_COMM_WORLD, &myRank);
+    this->idum = idum;
+    this->nCycles = nCycles;
     MetropolisAlgoIS();
 
 }
@@ -35,7 +34,7 @@ void MCIS::MetropolisAlgoIS(){
 
     rOld = randn(nParticles,nDimensions)*sqrt(timeStep); //std=sqrt(2*D*dt), D=0.5
     rNew = rOld;
-    trialWavefunction->initializewavefunction(rOld);
+    trialWavefunction->initializeWavefunction(rOld);
     qForceOld = getQuantumForce(rOld);
 
     // loop over Monte Carlo cycles
@@ -75,9 +74,9 @@ void MCIS::MetropolisAlgoIS(){
                 if(cycle > thermalization){
                     acceptedSteps++;
 
-//                    if(cycle%25==0){
-//                        positionsMat.push_back(rNew);
-//                    }
+                    if(cycle%25==0){
+                        positionsMat.push_back(rNew);
+                    }
 
                 }
 
@@ -95,13 +94,13 @@ void MCIS::MetropolisAlgoIS(){
         }
     }
 
-    //    if(myRank==0){
-    //        ofstream myfile;
-    //        myfile.open("../vmc/results/onebodyDensity/OBD.mat");
-    //        for(uint i=0; i<positionsMat.size(); i++){
-    //            myfile << positionsMat[i] <<endl;
-    //        }
-    //    }
+//        if(myRank==0){
+//            ofstream myfile;
+//            myfile.open("../vmc/DATA/onebodyDensity/OBD.txt");
+//            for(uint i=0; i<positionsMat.size(); i++){
+//                myfile << positionsMat[i] << endl;
+//            }
+//        }
         acceptedSteps /= ((nCycles-1)*nParticles);
 }
 

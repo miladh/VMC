@@ -135,8 +135,8 @@ Name:
 Description:
 */
 void OnebodyDensity::loadConfiguration(Config *cfg){
-    nDimensions=cfg->lookup("SolverSettings.dim");
-    nParticles=cfg->lookup("SolverSettings.N");
+    nParticles  = cfg->lookup("setup.nParticles");
+    nDimensions = cfg->lookup("setup.nDimensions");
     nCycles=cfg->lookup("OnebodyDensitySettrings.cycles");
     WavefunctionType= cfg->lookup("AppSettings.wavefunction");
     alpha=cfg->lookup("MinimizerSettings.minalpha");

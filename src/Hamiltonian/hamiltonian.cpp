@@ -2,8 +2,9 @@
 #include <src/electronInteraction/coulombinteraction.h>
 #include <src/electronInteraction/nointeraction.h>
 
-Hamiltonian::Hamiltonian(Kinetic* kinetic,Potential* potential,
+Hamiltonian::Hamiltonian(Config *cfg, Kinetic* kinetic, Potential* potential,
                          ElectronInteraction* electronInteraction):
+    cfg(cfg),
     kinetic(kinetic),
     potential(potential),
     electronInteraction(electronInteraction)
