@@ -33,6 +33,6 @@ void DiatomicHamiltonian::loadAndSetConfiguration()
         Rmatrix(i,0) = R/2;
     }
 
-    nucleusEnergy =0; /*charge*charge/R;*/
+    nucleusEnergy = charge*charge/R;
 
 }

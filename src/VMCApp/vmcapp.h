@@ -22,7 +22,7 @@ class VMCApp
 public:
     VMCApp(const int &nProcess, const int &myRank);
 
-    void setup();
+    void options();
     void loadConfiguration();
 
 private:

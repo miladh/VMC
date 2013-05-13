@@ -6,12 +6,12 @@ VMCApp::VMCApp(const int& nProcess, const int& myRank):
     nProcess(nProcess),
     myRank(myRank)
 {
+        loadConfiguration();
 }
 
 //*****************************************************************************
-void VMCApp::setup()
+void VMCApp::options()
 {
-    loadConfiguration();
     if(singleRunIsEnable){
         singleRun();
     }

@@ -21,8 +21,8 @@ int main()
     double timeSpent;
     begin = clock();
 
-    VMCApp parser(nProcess, myRank);
-    parser.setup();
+    VMCApp vmcapp(nProcess, myRank);
+    vmcapp.options();
 
     MPI_Finalize();
 
