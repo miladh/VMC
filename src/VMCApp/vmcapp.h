@@ -1,73 +1,43 @@
 #ifndef VMCAPP_H
 #define VMCAPP_H
 
-#include <armadillo>
-#include <iostream>
 #include <libconfig.h++>
-#include <src/Solver/solver.h>
-#include <src/Wavefunction/wavefunction.h>
-#include <src/Hamiltonian/hamiltonian.h>
-#include <src/electronInteraction/electroninteraction.h>
-#include <src/Observables/observables.h>
+#include <src/Minimizer/minimizer.h>
+#include <src/Blocking/blocking.h>
+#include <src/OnebodyDensity/onebodydensity.h>
 
 #pragma GCC diagnostic ignored "-Wunused-parameter"
 #include <mpi.h>
+// Enable warnings again
 #pragma GCC diagnostic warning "-Wunused-parameter"
 
 using namespace arma;
 using namespace std;
 using namespace libconfig;
 
+
+
 class VMCApp
 {
 public:
-    VMCApp(Config *cfg, const int &myRank, const int &nProcess);
+    VMCApp(const int &nProcess, const int &myRank);
 
-    void runVMCApp();
-    double getEnergy();
-    double getEnergySquared();
-    double getVariance();
-    double getSigma();
-    double getAcceptanceRate();
-    vec getVariationalDerivate();
-
-    double alpha, beta;
-
+    void setup();
+    void loadConfiguration();
 
 private:
-    Config* cfg;
-    Orbitals* orbitals;
-    Jastrow* jastrow;
-    Wavefunction* trialWavefunction;
-    Solver* solver;
-    Hamiltonian *hamiltonian;
-    Observables* observables;
-
-    int nParticles,nDimensions,charge;
     int nProcess, myRank;
-    int systemType, wavefunctionType,solverType,InteractionType;
-    int minimizationIsEnable, blockingIsEnable ;
-    long idum;
-    double nCycles;
+    int singleRunIsEnable, minimizationIsEnable, blockingIsEnable;
+    int minimizerType;
+    double alpha, beta;
+    Config cfg;
 
-    double R;
-    double totEnergy,totEnergySquared,averageDistance;
-    double Variance, Acceptance,Sigma;
-    vec totVariationalDerivate,totEnergyVarDerivate;
-    double tmp;
-    vec tmpVec;
+    ConfigurationParser* parser;
+    Minimizer* minimizer;
 
-
-
-
-
-    void loadAndSetConfiguration();
-    void setWavefunction();
-    void setHamiltonian();
-    void setObservables();
-    void setAndRunSolver();
-    void messagePassing();
-
+    void singleRun();
+    void chooseAndRunMinimization();
+    void runBlocking();
 
 };
 

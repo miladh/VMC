@@ -15,12 +15,12 @@ void BFMinimizer::runMinimizer(){
            << "Sigma       "<< "Acceptance    "<< endl;
 
     for(int i = 0; i < nVarAlpha; i++){
-        vmcapp->alpha = alpha;
+        parser->alpha = alpha;
         beta          = minBeta;
 
         for(int j = 0; j < nVarBeta; j++){
-            vmcapp->beta = beta;
-            vmcapp->runVMCApp();
+            parser->beta = beta;
+            parser->setup();
             getResultsAndWrite();
             beta += stepBeta;
         }
@@ -34,11 +34,11 @@ void BFMinimizer::runMinimizer(){
 void BFMinimizer::getResultsAndWrite()
 {
 
-    energy = vmcapp->getEnergy();
-    energySquared = vmcapp->getEnergySquared();
-    variance = vmcapp->getVariance();
-    sigma = vmcapp->getSigma();
-    acceptance= vmcapp->getAcceptanceRate();
+    energy = parser->getEnergy();
+    energySquared = parser->getEnergySquared();
+    variance = parser->getVariance();
+    sigma = parser->getSigma();
+    acceptance= parser->getAcceptanceRate();
 
     if (myRank == 0) {
     myfile << alpha <<"     "<<  beta <<"     "<<energy

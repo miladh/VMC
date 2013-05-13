@@ -4,7 +4,7 @@
 #include <armadillo>
 #include <iostream>
 #include <libconfig.h++>
-#include <src/VMCApp/vmcapp.h>
+#include <src/ConfigurationParser/configurationparser.h>
 
 using namespace arma;
 using namespace std;
@@ -20,7 +20,7 @@ public:
 protected:
     Config* cfg;
     uint myRank, nProcess;
-    VMCApp* vmcapp;
+    ConfigurationParser* parser;
 
     double energy,energySquared, variance, acceptance,sigma;
 };

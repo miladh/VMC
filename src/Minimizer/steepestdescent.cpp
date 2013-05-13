@@ -18,11 +18,11 @@ void SteepestDescent::runMinimizer(){
 
     for(int i=0; i < 100; i++){
 
-        vmcapp->alpha = alpha;
-        vmcapp->beta  = beta;
-        vmcapp->runVMCApp();
+        parser->alpha = alpha;
+        parser->beta  = beta;
+        parser->setup();
 
-        variationalDerivate = vmcapp->getVariationalDerivate();
+        variationalDerivate = parser->getVariationalDerivate();
         getResultsAndWrite();
 
         if(old(0)/variationalDerivate(0) >= 0){
@@ -61,11 +61,11 @@ int SteepestDescent::signFunc(double varDer){
 //*****************************************************************************
 void SteepestDescent::getResultsAndWrite()
 {
-    energy = vmcapp->getEnergy();
-    energySquared = vmcapp->getEnergySquared();
-    variance=vmcapp->getVariance();
-    sigma=vmcapp->getSigma();
-    acceptance= vmcapp->getAcceptanceRate();
+    energy = parser->getEnergy();
+    energySquared = parser->getEnergySquared();
+    variance=parser->getVariance();
+    sigma=parser->getSigma();
+    acceptance= parser->getAcceptanceRate();
 
     if (myRank == 0) {
     myfile << alpha <<"     "<<  beta <<"     "<<energy

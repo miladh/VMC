@@ -1,5 +1,5 @@
 #include <iostream>
-#include <src/ConfigurationParser/configurationparser.h>
+#include <src/VMCApp/vmcapp.h>
 #pragma GCC diagnostic ignored "-Wunused-parameter"
 #include <mpi.h>
 // Enable warnings again
@@ -21,7 +21,7 @@ int main()
     double timeSpent;
     begin = clock();
 
-    ConfigurationParser parser(nProcess, myRank);
+    VMCApp parser(nProcess, myRank);
     parser.setup();
 
     MPI_Finalize();

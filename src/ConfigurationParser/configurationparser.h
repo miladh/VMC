@@ -1,44 +1,73 @@
 #ifndef CONFIGURATIONPARSER_H
 #define CONFIGURATIONPARSER_H
 
+#include <armadillo>
+#include <iostream>
 #include <libconfig.h++>
-#include <src/Minimizer/minimizer.h>
-#include <src/Blocking/blocking.h>
-#include <src/OnebodyDensity/onebodydensity.h>
-
+#include <src/Solver/solver.h>
+#include <src/Wavefunction/wavefunction.h>
+#include <src/Hamiltonian/hamiltonian.h>
+#include <src/electronInteraction/electroninteraction.h>
+#include <src/Observables/observables.h>
 #pragma GCC diagnostic ignored "-Wunused-parameter"
 #include <mpi.h>
-// Enable warnings again
 #pragma GCC diagnostic warning "-Wunused-parameter"
 
 using namespace arma;
 using namespace std;
 using namespace libconfig;
 
-
-
 class ConfigurationParser
 {
 public:
-    ConfigurationParser(const int &nProcess, const int &myRank);
+    ConfigurationParser(Config *cfg, const int &myRank, const int &nProcess);
 
     void setup();
-    void loadConfiguration();
+    double getEnergy();
+    double getEnergySquared();
+    double getVariance();
+    double getSigma();
+    double getAcceptanceRate();
+    vec getVariationalDerivate();
+
+    double alpha, beta;
+
 
 private:
+    Config* cfg;
+    Orbitals* orbitals;
+    Jastrow* jastrow;
+    Wavefunction* trialWavefunction;
+    Solver* solver;
+    Hamiltonian *hamiltonian;
+    Observables* observables;
+
+    int nParticles,nDimensions,charge;
     int nProcess, myRank;
-    int singleRunIsEnable, minimizationIsEnable, blockingIsEnable;
-    int minimizerType;
-    double alpha, beta;
-    Config cfg;
+    int systemType, wavefunctionType,solverType,InteractionType;
+    int minimizationIsEnable, blockingIsEnable ;
+    long idum;
+    double nCycles;
 
-    VMCApp* vmcapp;
-    Minimizer* minimizer;
+    double R;
+    double totEnergy,totEnergySquared,averageDistance;
+    double Variance, Acceptance,Sigma;
+    vec totVariationalDerivate,totEnergyVarDerivate;
+    double tmp;
+    vec tmpVec;
 
-    void singleRun();
-    void chooseAndRunMinimization();
-    void runBlocking();
+
+
+    void loadAndSetConfiguration();
+    void setWavefunction();
+    void setHamiltonian();
+    void setObservables();
+    void setAndRunSolver();
+    void messagePassing();
+
 
 };
 
 #endif // CONFIGURATIONPARSER_H
+
+
