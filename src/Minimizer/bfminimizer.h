@@ -10,15 +10,16 @@ public:
     void runMinimizer();
 
 private:
-    double alpha,beta;
-    double minAlpha,maxAlpha,minBeta,maxBeta;
-    int nVarAlpha,nVarBeta;
-    double stepAlpha,stepBeta;
+
+    vector<double>alpha,beta,R;
+    vec alphaValues,betaValues,RValues;
 
     ofstream myfile;
 
     void getResultsAndWrite();
     void loadAndSetConfiguration();
+
+
 
 };
 

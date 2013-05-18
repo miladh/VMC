@@ -7,9 +7,9 @@ SteepestDescent::SteepestDescent(Config *cfg, const int &myRank, const int &nPro
 }
 
 //*****************************************************************************
-void SteepestDescent::runMinimizer(){
-
-    vec old = zeros<vec>(2);
+void SteepestDescent::runMinimizer()
+{
+    vec old = zeros<vec>(parameters.size());
 
     myfile.open ("../vmc/DATA/results");
     myfile << "Alpha   " << "Beta    " << "Energy       " << "Variance    "
@@ -18,28 +18,23 @@ void SteepestDescent::runMinimizer(){
 
     for(int i=0; i < 100; i++){
 
-        parser->alpha = alpha;
-        parser->beta  = beta;
-        parser->setup();
+        parser->setVariationalParameters(parameters);
+        parser->runSolver();
 
         variationalDerivate = parser->getVariationalDerivate();
         getResultsAndWrite();
 
-        if(old(0)/variationalDerivate(0) >= 0){
-            step *=1.25;
-            alpha -= step*signFunc(variationalDerivate(0));
-        }else{
-            step*=0.5;
-            alpha -= step*signFunc(variationalDerivate(0));
-        }
 
+        for(uint i = 0; i < parameters.size(); i++){
 
-        if(old(1)/variationalDerivate(1) >= 0){
-            step*=1.25;
-            beta -= step*signFunc(variationalDerivate(1));
-        }else{
-            step*=0.5;
-            beta -= step*signFunc(variationalDerivate(1));
+            if(old(i)/variationalDerivate(i) >= 0){
+                step *=1.25;
+                parameters[i] -= step*signFunc(variationalDerivate(i));
+            }else{
+                step*=0.5;
+                parameters[i] -= step*signFunc(variationalDerivate(i));
+            }
+
         }
 
         old = variationalDerivate;
@@ -47,9 +42,10 @@ void SteepestDescent::runMinimizer(){
         myfile.close();
 }
 
-//*****************************************************************************
-int SteepestDescent::signFunc(double varDer){
 
+//*****************************************************************************
+int SteepestDescent::signFunc(double varDer)
+{
     if(varDer < 0){
         return -1;
     }else{
@@ -68,7 +64,7 @@ void SteepestDescent::getResultsAndWrite()
     acceptance= parser->getAcceptanceRate();
 
     if (myRank == 0) {
-    myfile << alpha <<"     "<<  beta <<"     "<<energy
+    myfile <<  parameters[0] <<"     "<<   parameters[0] <<"     "<<energy
            <<"     "<< variance <<"     "<<sigma
            <<"     "<< acceptance<< endl;
     }
@@ -77,8 +73,20 @@ void SteepestDescent::getResultsAndWrite()
 //*****************************************************************************
 void SteepestDescent::loadAndSetConfiguration()
 {
-    alpha = cfg->lookup("setup.MinimizerSettings.SDMinSettings.InitAlpha");
-    beta  = cfg->lookup("setup.MinimizerSettings.SDMinSettings.InitBeta");
     step  = cfg->lookup("setup.MinimizerSettings.SDMinSettings.step");
-    variationalDerivate = zeros<vec>(2);
+    Setting& variationalParamters = cfg->lookup("setup.MinimizerSettings.SDMinSettings.varParameters");
+
+    for(uint i =0; true; i++){
+        try{
+            double value = 0;
+            value = variationalParamters[i];
+            parameters.push_back(value);
+
+        }catch(exception) {
+            break;
+        }
+    }
+
+    variationalDerivate = zeros<vec>(parameters.size());
+
 }

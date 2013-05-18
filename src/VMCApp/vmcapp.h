@@ -21,20 +21,13 @@ class VMCApp
 {
 public:
     VMCApp(const int &nProcess, const int &myRank);
-
     void options();
-    void loadConfiguration();
 
 private:
     int nProcess, myRank;
-    int singleRunIsEnable, minimizationIsEnable, blockingIsEnable;
-    int minimizerType;
-    double alpha, beta;
     Config cfg;
 
-    ConfigurationParser* parser;
-    Minimizer* minimizer;
-
+    void loadConfiguration();
     void singleRun();
     void chooseAndRunMinimization();
     void runBlocking();

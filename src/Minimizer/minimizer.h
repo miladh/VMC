@@ -15,12 +15,14 @@ class Minimizer
 {
 public:
     Minimizer(Config* cfg,const int &myRank, const int &nProcess);
-    virtual void runMinimizer()=0;
+    virtual void runMinimizer()= 0;
 
 protected:
     Config* cfg;
     uint myRank, nProcess;
     ConfigurationParser* parser;
+    vector<double>parameters;
+
 
     double energy,energySquared, variance, acceptance,sigma;
 };

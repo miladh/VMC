@@ -18,29 +18,52 @@ ConfigurationParser::ConfigurationParser(Config* cfg,const int &myRank, const in
     nProcess(nProcess),
     myRank(myRank)
 {
-    loadAndSetConfiguration();
+    setup();
 }
 
 //****************************************************************************
 void ConfigurationParser::setup()
 {
+    loadAndSetConfiguration();
     setWavefunction();
     setHamiltonian();
     setObservables();
-    setAndRunSolver();
-    messagePassing();
+    setSolver();
 }
+
+//****************************************************************************
+void ConfigurationParser::setVariationalParameters(vector<double> paramters)
+{
+    uint i = 0;
+    if(i < paramters.size()){
+        alpha = paramters.at(i);
+        i++;
+    }
+
+    if(i < paramters.size()){
+        beta  = paramters.at(i);
+        i++;
+    }
+
+    if(i < paramters.size()){
+        R     = paramters.at(i);
+        i++;
+    }
+
+}
+
 
 //****************************************************************************
 void ConfigurationParser::setWavefunction(){
 
     switch (systemType) {
     case ATOMS:
-        orbitals = new Hydrogenic(alpha);
+        orbitals = new Hydrogenic(&alpha);
         break;
 
     case MOLECULES:
-        orbitals = new Molecular(cfg, alpha);
+        Orbitals* atomicOrbitals = new Hydrogenic(&alpha);
+        orbitals = new Diatomic(cfg, atomicOrbitals,&R);
         break;
     }
 
@@ -50,7 +73,7 @@ void ConfigurationParser::setWavefunction(){
         break;
 
     case JASTROW:
-        jastrow = new PadeJastrow(nParticles, beta);
+        jastrow = new PadeJastrow(nParticles, &beta);
         break;
     }
 
@@ -82,7 +105,7 @@ void ConfigurationParser::setHamiltonian(){
         break;
 
     case MOLECULES:
-        hamiltonian = new DiatomicHamiltonian(cfg,kinetic,potential,electonInteraction);
+        hamiltonian = new DiatomicHamiltonian(cfg,kinetic,potential,electonInteraction, &R);
         break;
     }
 }
@@ -96,7 +119,7 @@ void ConfigurationParser::setObservables(){
 
 
 //****************************************************************************
-void ConfigurationParser::setAndRunSolver(){
+void ConfigurationParser::setSolver(){
 
     switch (solverType) {
     case BF:
@@ -106,8 +129,6 @@ void ConfigurationParser::setAndRunSolver(){
         solver = new MCIS(cfg, hamiltonian,trialWavefunction,observables);
         break;
     }
-
-    solver->solve(nCycles,idum);
 }
 
 
@@ -117,12 +138,16 @@ void ConfigurationParser::loadAndSetConfiguration(){
     nParticles  = cfg->lookup("setup.nParticles");
     nDimensions = cfg->lookup("setup.nDimensions");
     charge      = cfg->lookup("PotentialSettings.charge");
-    R           = cfg->lookup("setup.singleRunSettings.R");
+
 
     minimizationIsEnable = cfg->lookup("setup.minimization");
     blockingIsEnable     = cfg->lookup("setup.blocking");
     InteractionType      = cfg->lookup("AppSettings.interactionType");
     wavefunctionType     = cfg->lookup("AppSettings.wavefunction");
+
+    alpha = cfg->lookup("setup.singleRunSettings.alpha");
+    beta  = cfg->lookup("setup.singleRunSettings.beta");
+    R     = cfg->lookup("setup.singleRunSettings.R");
 
     systemType = cfg->lookup("setup.system");
     solverType = cfg->lookup("AppSettings.solverType");
@@ -177,8 +202,9 @@ vec ConfigurationParser::getVariationalDerivate(){
 
 
 //****************************************************************************
-void ConfigurationParser::messagePassing()
+void ConfigurationParser::runSolver()
 {
+    solver->solve(nCycles,idum);
 
     tmp = observables->getEnergy();
     MPI_Allreduce(&tmp, &totEnergy, 1, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD);
@@ -211,11 +237,12 @@ void ConfigurationParser::messagePassing()
     }
 
     if(myRank==0){
-        cout << alpha << ", " << beta << " Energy = " << totEnergy
-             << ", Variance = " << getVariance()
-             << ", Accepted = " << Acceptance
-             << ", Average dist = " << averageDistance
-             << "\n";
+        cout << alpha << ", " << beta << ", " << R << ", "
+             <<" Energy = " << totEnergy
+            << ", Variance = " << getVariance()
+            << ", Accepted = " << Acceptance
+            << ", Average dist = " << averageDistance
+            << "\n";
     }
 
 }

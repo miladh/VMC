@@ -1,15 +1,16 @@
 #include "diatomic.h"
 #include <src/Orbitals/hydrogenic.h>
 
-Molecular::Molecular(Config* cfg, const double& k):
+Diatomic::Diatomic(Config* cfg, Orbitals* orbital, double* R):
     cfg(cfg),
-    atomicOrbitals(new Hydrogenic(k))
+    atomicOrbitals(orbital),
+    R(R)
 {
     loadAndSetConfiguration();
 }
 
 //********************************************************************************
-double Molecular::orbitalEvaluate(const mat &r, int qNum, int Particle)
+double Diatomic::orbitalEvaluate(const mat &r, int qNum, int Particle)
 {
     phi  = atomicOrbitals->orbitalEvaluate(r-Rmatrix ,qNum, Particle)
             + atomicOrbitals->orbitalEvaluate(r+Rmatrix ,qNum, Particle);
@@ -17,7 +18,7 @@ double Molecular::orbitalEvaluate(const mat &r, int qNum, int Particle)
 
 }
 //********************************************************************************
-double Molecular::laplaceOrbitalEvaluate(const mat &r, int qNum, int Particle)
+double Diatomic::laplaceOrbitalEvaluate(const mat &r, int qNum, int Particle)
 {
     ddphi  = atomicOrbitals->laplaceOrbitalEvaluate(r-Rmatrix  ,qNum, Particle)
             + atomicOrbitals->laplaceOrbitalEvaluate(r+Rmatrix  ,qNum, Particle);
@@ -26,7 +27,7 @@ double Molecular::laplaceOrbitalEvaluate(const mat &r, int qNum, int Particle)
 
 }
 //********************************************************************************
-rowvec Molecular::gradientOrbitalEvaluate(const mat &r, int qNum, int Particle)
+rowvec Diatomic::gradientOrbitalEvaluate(const mat &r, int qNum, int Particle)
 {
     dphi  = atomicOrbitals->gradientOrbitalEvaluate(r-Rmatrix ,qNum, Particle)
             + atomicOrbitals->gradientOrbitalEvaluate(r+Rmatrix ,qNum, Particle);
@@ -36,7 +37,7 @@ rowvec Molecular::gradientOrbitalEvaluate(const mat &r, int qNum, int Particle)
 
 
 //********************************************************************************
-double Molecular::getVariationalDerivative(const mat &r, int qNum, int Particle)
+double Diatomic::getVariationalDerivative(const mat &r, int qNum, int Particle)
 {
     dVariational  = atomicOrbitals->getVariationalDerivative(r-Rmatrix  ,qNum, Particle)
             + atomicOrbitals->getVariationalDerivative(r+Rmatrix  ,qNum, Particle);
@@ -46,16 +47,15 @@ double Molecular::getVariationalDerivative(const mat &r, int qNum, int Particle)
 
 
 //*****************************************************************************
-void  Molecular::loadAndSetConfiguration()
+void  Diatomic::loadAndSetConfiguration()
 {
     nParticles  = cfg->lookup("setup.nParticles");
     nDimensions = cfg->lookup("setup.nDimensions");
-    R           = cfg->lookup("setup.singleRunSettings.R");
 
     dphi = zeros<rowvec>(1,nDimensions);
     Rmatrix     = zeros<mat>(nParticles,nDimensions);
     for(uint i=0; i < nParticles; i++){
-        Rmatrix(i,0) = R/2;
+        Rmatrix(i,0) = *R/2;
     }
 
 

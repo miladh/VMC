@@ -1,6 +1,6 @@
 #include "padejastrow.h"
 
-PadeJastrow::PadeJastrow(const uint nParticles,const double& beta):
+PadeJastrow::PadeJastrow(const uint nParticles,double* beta):
     nParticles(nParticles),
     beta(beta),
     a(zeros(nParticles,nParticles)),
@@ -35,7 +35,7 @@ double PadeJastrow::evaluateJastrow(const mat &r){
         for (uint j=i+1; j<r.n_rows; j++) {
             rij= norm( r.row(i)-r.row(j) ,2);
 
-            correlation+=a(i,j)*rij/(1+beta*rij);
+            correlation+=a(i,j)*rij/(1+(*beta)*rij);
         }
     }
     return correlation;
@@ -84,14 +84,14 @@ rowvec PadeJastrow::gradientJastrowEvaluate(const mat &r, uint i) {
     // Before i
     for (uint k = 0; k < i; k++) {
         r_ki = norm(r.row(k) - r.row(i), 2);
-        b_ij=(1 + beta * r_ki);
+        b_ij=(1 + (*beta) * r_ki);
         dJastrowFactor += (a(k, i) / (b_ij*b_ij))*((r.row(i) - r.row(k))/r_ki);
     }
 
     // After i
     for (uint k = i + 1; k < r.n_rows; k++) {
         r_ki = norm(r.row(k) - r.row(i), 2);
-        b_ij=(1 + beta * r_ki);
+        b_ij=(1 + (*beta) * r_ki);
         dJastrowFactor += (a(k, i) / (b_ij*b_ij))*((r.row(i) - r.row(k))/r_ki);
     }
     return dJastrowFactor;
@@ -107,14 +107,14 @@ double PadeJastrow::laplaceJastrowEvaluate(const mat &r){
         // Before i
         for (uint k = 0; k < i; k++) {
             r_ki = norm(r.row(k) - r.row(i), 2);
-            b_ij=(1 + beta * r_ki);
+            b_ij=(1 + (*beta) * r_ki);
             ddJastrowFactor  += 2*a(k, i)/(b_ij*b_ij*b_ij*r_ki);
 
         }
         // After i
         for (uint k = i + 1; k < r.n_rows; k++) {
             r_ki = norm(r.row(k) - r.row(i), 2);
-            b_ij=(1 + beta * r_ki);
+            b_ij=(1 + (*beta) * r_ki);
             ddJastrowFactor  += 2*a(k, i)/(b_ij*b_ij*b_ij*r_ki);
         }
 
@@ -133,10 +133,9 @@ double PadeJastrow::getVariationalDerivative(const mat &r){
         for (uint j=i+1; j<r.n_rows; j++) {
             rij= norm( r.row(i)-r.row(j) ,2);
 
-            correlation += -a(i,j)*rij*rij/(1+beta*rij)/(1+beta*rij);
+            correlation += -a(i,j)*rij*rij/(1+(*beta)*rij)/(1+(*beta)*rij);
         }
     }
-
     return correlation;
 
 }

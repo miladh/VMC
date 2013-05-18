@@ -22,7 +22,7 @@ class ConfigurationParser
 public:
     ConfigurationParser(Config *cfg, const int &myRank, const int &nProcess);
 
-    void setup();
+    void runSolver();
     double getEnergy();
     double getEnergySquared();
     double getVariance();
@@ -31,6 +31,8 @@ public:
     vec getVariationalDerivate();
 
     double alpha, beta;
+
+    void setVariationalParameters(vector<double> paramters);
 
 
 private:
@@ -59,11 +61,11 @@ private:
 
 
     void loadAndSetConfiguration();
+    void setup();
     void setWavefunction();
     void setHamiltonian();
     void setObservables();
-    void setAndRunSolver();
-    void messagePassing();
+    void setSolver();
 
 
 };

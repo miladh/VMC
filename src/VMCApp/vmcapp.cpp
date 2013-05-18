@@ -12,13 +12,18 @@ VMCApp::VMCApp(const int& nProcess, const int& myRank):
 //*****************************************************************************
 void VMCApp::options()
 {
+
+    int singleRunIsEnable    = cfg.lookup("setup.singleRun");
+    int minimizationIsEnable = cfg.lookup("setup.minimization");
+    int blockingIsEnable     = cfg.lookup("setup.blocking");
+
     if(singleRunIsEnable){
         singleRun();
     }
-    if(minimizationIsEnable){
+    else if(minimizationIsEnable){
         chooseAndRunMinimization();
     }
-    if(blockingIsEnable){
+    else if(blockingIsEnable){
         runBlocking();
     }
 }
@@ -26,16 +31,24 @@ void VMCApp::options()
 //*****************************************************************************
 void VMCApp::singleRun()
 {
-    parser = new ConfigurationParser(&cfg,myRank,nProcess);
-    parser->alpha = alpha;
-    parser->beta  = beta;
-    parser->setup();
+
+    if (myRank==0){
+        cout << "--------Starting single VMC run-----------" << endl;
+    }
+    ConfigurationParser* parser = new ConfigurationParser(&cfg,myRank,nProcess);
+    parser->runSolver();
 }
 
 //*****************************************************************************
 void VMCApp::chooseAndRunMinimization()
 {
-    minimizerType = cfg.lookup("setup.MinimizerSettings.minimizerType");
+
+    if (myRank==0){
+        cout << "----------Starting Minimizer----------" << endl;
+    }
+
+    int minimizerType = cfg.lookup("setup.MinimizerSettings.minimizerType");
+    Minimizer* minimizer;
 
     switch (minimizerType) {
     case BRUTEFORCE:
@@ -54,7 +67,7 @@ void VMCApp::chooseAndRunMinimization()
 void VMCApp::runBlocking()
 {
     if (myRank==0){
-        cout << "Starting blocking analysis." << endl;
+        cout << "----------Starting blocking analysis----------" << endl;
         Blocking block(nProcess);
         block.loadConfiguration(&cfg);
         block.doBlocking();
@@ -78,31 +91,51 @@ void VMCApp::loadConfiguration()
         }
         MPI_Barrier(MPI_COMM_WORLD);
     }
-
-    singleRunIsEnable = cfg.lookup("setup.singleRun");
-    minimizationIsEnable =cfg.lookup("setup.minimization");
-    blockingIsEnable = cfg.lookup("setup.blocking");
-
-    alpha =cfg.lookup("setup.singleRunSettings.alpha");
-    beta = cfg.lookup("setup.singleRunSettings.beta");
-
 }
 
 
-#if ONEBODYDENSITY
-    if (myRank==0){
-        cout << "Onebody Density" << endl;
-    }
-    OnebodyDensity onebodyDensity(nProcess, myRank);
-    onebodyDensity.loadConfiguration(&cfg);
-    onebodyDensity.computeOnebodyDensity();
 
-    if (myRank==0){
-        string dataPath = "../vmc/DATA/onebodyDensity";
-        // Plotting result
-        string pythonPath = "python " + dataPath
-                + "/OBD.py "
-                + dataPath + "/OBD.mat";
-        system(pythonPath.c_str());
-    }
-#endif
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//#if ONEBODYDENSITY
+//    if (myRank==0){
+//        cout << "Onebody Density" << endl;
+//    }
+//    OnebodyDensity onebodyDensity(nProcess, myRank);
+//    onebodyDensity.loadConfiguration(&cfg);
+//    onebodyDensity.computeOnebodyDensity();
+
+//    if (myRank==0){
+//        string dataPath = "../vmc/DATA/onebodyDensity";
+//        // Plotting result
+//        string pythonPath = "python " + dataPath
+//                + "/OBD.py "
+//                + dataPath + "/OBD.mat";
+//        system(pythonPath.c_str());
+//    }
+//#endif

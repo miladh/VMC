@@ -14,17 +14,20 @@ void BFMinimizer::runMinimizer(){
     myfile << "Alpha   " << "Beta    " << "Energy       " << "Variance    "
            << "Sigma       "<< "Acceptance    "<< endl;
 
-    for(int i = 0; i < nVarAlpha; i++){
-        parser->alpha = alpha;
-        beta          = minBeta;
+    for(uint i = 0; i < alphaValues.n_elem; i++){
+        parameters[0] = alphaValues[i];
 
-        for(int j = 0; j < nVarBeta; j++){
-            parser->beta = beta;
-            parser->setup();
-            getResultsAndWrite();
-            beta += stepBeta;
+        for(uint j = 0; j < betaValues.n_elem; j++){
+            parameters[1] = betaValues[j];
+
+            for(uint k = 0; k < RValues.n_elem; k++){
+                parameters[2] = RValues[k];
+
+                parser->setVariationalParameters(parameters);
+                parser->runSolver();
+                getResultsAndWrite();
+            }
         }
-        alpha += stepAlpha;
     }
 
     myfile.close();
@@ -40,28 +43,42 @@ void BFMinimizer::getResultsAndWrite()
     sigma = parser->getSigma();
     acceptance= parser->getAcceptanceRate();
 
-    if (myRank == 0) {
-    myfile << alpha <<"     "<<  beta <<"     "<<energy
-           <<"     "<< variance <<"     "<<sigma
-           <<"     "<< acceptance<< endl;
-    }
+        if (myRank == 0) {
+            myfile << parameters[0] <<"     "<<   parameters[0] <<"     "<<energy
+               <<"     "<< variance <<"     "<<sigma
+               <<"     "<< acceptance<< endl;
+        }
 }
 
 //*****************************************************************************
 void BFMinimizer::loadAndSetConfiguration()
 {
-    minAlpha  = cfg->lookup("setup.MinimizerSettings.BFMinSettings.minalpha");
-    maxAlpha  = cfg->lookup("setup.MinimizerSettings.BFMinSettings.maxalpha");
-    minBeta   = cfg->lookup("setup.MinimizerSettings.BFMinSettings.minbeta");
-    maxBeta   = cfg->lookup("setup.MinimizerSettings.BFMinSettings.maxbeta");
-    nVarAlpha = cfg->lookup("setup.MinimizerSettings.BFMinSettings.nVarAlpha");
-    nVarBeta  = cfg->lookup("setup.MinimizerSettings.BFMinSettings.nVarBeta");
+    Setting& intervalPar1 = cfg->lookup("setup.MinimizerSettings.BFMinSettings.alpha");
+    Setting& intervalPar2 = cfg->lookup("setup.MinimizerSettings.BFMinSettings.beta");
+    Setting& intervalPar3 = cfg->lookup("setup.MinimizerSettings.BFMinSettings.R");
 
-    alpha     = minAlpha;
-    beta      = minBeta;
-    stepAlpha = (maxAlpha-minAlpha)/nVarAlpha;
-    stepBeta  = (maxBeta-minBeta)/nVarBeta;
+    for(uint i =0; true; i++){
+        try{
+            double value = 0;
+            value = intervalPar1[i];
+            alpha.push_back(value);
+
+            value = intervalPar2[i];
+            beta.push_back(value);
+
+            value = intervalPar3[i];
+            R.push_back(value);
+
+        }catch(exception) {
+            break;
+        }
+    }
+    parameters.resize(3);
+    alphaValues = linspace<vec>(alpha[0],alpha[1],alpha[2]);
+    betaValues  = linspace<vec>(beta[0],beta[1], beta[2]);
+    RValues     = linspace<vec>(R[0],R[1],R[2]);
 
 }
+
 
 

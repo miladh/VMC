@@ -12,8 +12,10 @@ public:
 
 
 private:
-    double alpha,beta,step;
-    vec variationalDerivate;
+    double step;
+    int diatomicSystem;
+    vec variationalDerivate, RValues;
+
 
     ofstream myfile;
 

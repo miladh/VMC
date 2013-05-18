@@ -5,14 +5,14 @@
 class Hydrogenic : public Orbitals
 {
 public:
-    Hydrogenic(const double& k);
+    Hydrogenic(double *k);
     double orbitalEvaluate(const mat &r, int qNum, int Particle);
     double laplaceOrbitalEvaluate(const mat &r, int qNum, int Particle);
     double getVariationalDerivative(const mat &r, int qNum, int Particle);
     rowvec gradientOrbitalEvaluate(const mat &r, int qNum, int Particle);
 
 private:
-    double k;
+    double* k;
     double rNorm;
     double phi,ddphi;
     rowvec dphi;

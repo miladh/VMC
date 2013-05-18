@@ -2,10 +2,10 @@
 #define DIATOMIC_H
 #include<src/Orbitals/orbitals.h>
 
-class Molecular : public Orbitals
+class Diatomic : public Orbitals
 {
 public:
-    Molecular(Config *cfg, const double &k);
+    Diatomic(Config *cfg, Orbitals *orbital, double *R);
     double orbitalEvaluate(const mat &r, int qNum, int Particle);
     double laplaceOrbitalEvaluate(const mat &r, int qNum, int Particle);
     double getVariationalDerivative(const mat &r, int qNum, int Particle);
@@ -16,7 +16,7 @@ private:
     Config* cfg;
     Orbitals* atomicOrbitals;
     uint nParticles, nDimensions;
-    double R;
+    double* R;
     double phi,ddphi,dVariational;
     mat Rmatrix;
     rowvec dphi;

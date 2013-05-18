@@ -7,12 +7,12 @@ class DiatomicHamiltonian : public Hamiltonian
 {
 public:
     DiatomicHamiltonian(Config *cfg, Kinetic* kinetic, Potential* potential,
-                        ElectronInteraction* electronInteraction);
+                        ElectronInteraction* electronInteraction,double* R);
 
     double getEnergy(const mat &r);
 
 private:
-    double R;
+    double* R;
     mat Rmatrix;
     double potentialEnergy, kineticEnergy,interactionEnergy, nucleusEnergy,Energy;
     int nParticles,nDimensions,charge;
