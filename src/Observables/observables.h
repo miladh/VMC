@@ -26,7 +26,9 @@ public:
 
 
     void addEnergyToEnergyVector();
+    void addPositionsToPositionMatrix();
     void writeEnergyVectorToFile(const int &myRank);
+    void writePositionMatrixToFile(const int& myRank);
 
 private:
     Config* cfg;
@@ -40,6 +42,7 @@ private:
     vec energyVector;
     mat r;
     string dataPath, dataName;
+    vector <mat> positionsMat;
 
 
     void loadConfiguration();

@@ -36,7 +36,6 @@ void ConfigurationParser::setVariationalParameters(vector<double> paramters)
 {
 
     uint i = 0;
-
     if(i < paramters.size()){
         alpha = paramters.at(i);
         i++;
@@ -210,7 +209,8 @@ void ConfigurationParser::runSolver()
 {
     solver->solve(nCycles,idum);
 
-    tmp = observables->getEnergy();
+
+    double tmp = observables->getEnergy();
     MPI_Allreduce(&tmp, &totEnergy, 1, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD);
     totEnergy/= nProcess;
 
@@ -226,8 +226,11 @@ void ConfigurationParser::runSolver()
     MPI_Allreduce(&tmp, &averageDistance, 1, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD);
     averageDistance /= nProcess;
 
+    observables->writePositionMatrixToFile(myRank);
+
+
     if(minimizationIsEnable){
-        tmpVec = observables->getVariationalDerivateRatio();
+        vec tmpVec = observables->getVariationalDerivateRatio();
         MPI_Allreduce(&tmpVec[0], &totVariationalDerivate[0], tmpVec.n_rows, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD);
         totVariationalDerivate /= nProcess;
 

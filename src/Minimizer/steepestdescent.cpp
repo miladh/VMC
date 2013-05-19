@@ -108,9 +108,8 @@ void SteepestDescent::getResultsAndWrite()
 
     if (myRank == 0) {
         myfile <<  parameters[0] <<"     " << parameters[1]  << "     "
-               <<  parameters[2] <<"     "  << energy <<"     "<< variance
-                                 <<"     " << sigma   <<"     "<< acceptance
-                                 << endl;
+               << energy <<"     "<< variance <<"     " << sigma   <<"     "<< acceptance
+               <<  parameters[2] << endl;
     }
 }
 

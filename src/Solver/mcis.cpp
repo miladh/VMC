@@ -25,7 +25,7 @@ Name:               MetropolisAlgoIS
 Description:        MetropolisAlgo important sampling
 */
 void MCIS::MetropolisAlgoIS(){
-    vector <mat> positionsMat;
+
     observables->initializeObservables(nCycles);
     qForceOld = zeros<mat>(nParticles, nDimensions);
     qForceNew = zeros<mat>(nParticles, nDimensions);
@@ -73,11 +73,6 @@ void MCIS::MetropolisAlgoIS(){
 
                 if(cycle > thermalization){
                     acceptedSteps++;
-
-                    if(cycle%25==0){
-                        positionsMat.push_back(rNew);
-                    }
-
                 }
 
             } else {
@@ -94,13 +89,6 @@ void MCIS::MetropolisAlgoIS(){
         }
     }
 
-//        if(myRank==0){
-//            ofstream myfile;
-//            myfile.open("../vmc/DATA/onebodyDensity/OBD.txt");
-//            for(uint i=0; i<positionsMat.size(); i++){
-//                myfile << positionsMat[i] << endl;
-//            }
-//        }
         acceptedSteps /= ((nCycles-1)*nParticles);
 }
 

@@ -22,6 +22,7 @@ void Observables::calculateObservables()
     else{
         calculateEnergy();
         calculateAverageDistance();
+        addPositionsToPositionMatrix();
 
         if(blockingIsEnable){
             addEnergyToEnergyVector();
@@ -77,7 +78,7 @@ void Observables::calculateVariationalDerivateRatio()
     }
 }
 
-//************************************************************
+//************************************************************6
 double Observables::getEnergy()
 {
     return energy/(nCycles-1);
@@ -100,6 +101,7 @@ vec Observables::getVariationalDerivateRatio()
     return variationalDerivateRatio/(nCycles-1);
 }
 
+
 //************************************************************
 vec Observables::getEnergyVariationalDerivate()
 {
@@ -107,12 +109,30 @@ vec Observables::getEnergyVariationalDerivate()
 
 }
 
+//************************************************************
+void Observables::addPositionsToPositionMatrix()
+{
+    positionsMat.push_back(r);
+}
 
 //************************************************************
 void Observables::addEnergyToEnergyVector()
 {
     energyVector(cycle) = deltaE;
     cycle += 1;
+}
+
+
+//************************************************************
+void Observables::writePositionMatrixToFile(const int& myRank)
+{
+    ofstream myfile;
+    ostringstream filename;
+    filename << "../vmc/DATA/onebodyDensity/OBD"<< myRank << ".mat";
+    myfile.open(filename.str().c_str());
+    for(uint i=0; i<positionsMat.size(); i++){
+        myfile << positionsMat[i] << endl;
+    }
 }
 
 //************************************************************

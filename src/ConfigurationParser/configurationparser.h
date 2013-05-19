@@ -53,8 +53,7 @@ private:
     double totEnergy,totEnergySquared,averageDistance;
     double Variance, Acceptance,Sigma;
     vec totVariationalDerivate,totEnergyVarDerivate;
-    double tmp;
-    vec tmpVec;
+
 
 
 
