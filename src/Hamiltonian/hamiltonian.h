@@ -12,6 +12,7 @@ public:
                 ElectronInteraction* electronInteraction);
 
     virtual double getEnergy(const mat &r)= 0;
+    virtual void  setNucleusDistance()=0;
 
 protected:
     Config* cfg;

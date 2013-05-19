@@ -10,14 +10,13 @@ public:
     void runMinimizer();
 
 private:
-
-    vector<double>alpha,beta,R;
     vec alphaValues,betaValues,RValues;
-
+    int diatomicSystem;
     ofstream myfile;
 
     void getResultsAndWrite();
     void loadAndSetConfiguration();
+    void minimize();
 
 
 

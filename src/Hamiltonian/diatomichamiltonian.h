@@ -10,6 +10,7 @@ public:
                         ElectronInteraction* electronInteraction,double* R);
 
     double getEnergy(const mat &r);
+    void  setNucleusDistance();
 
 private:
     double* R;

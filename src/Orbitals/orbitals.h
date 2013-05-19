@@ -18,7 +18,7 @@ public:
     virtual double getVariationalDerivative(const mat &r, int qNum, int Particle) = 0;
     virtual rowvec gradientOrbitalEvaluate(const mat &r, int qNum, int Particle) = 0;
 
-
+    virtual void  setNucleusDistance()=0;
 };
 
 #endif // ORBITALS_H

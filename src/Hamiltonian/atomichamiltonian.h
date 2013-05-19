@@ -12,6 +12,8 @@ public:
 
     double getEnergy(const mat &r);
 
+    void setNucleusDistance(){}
+
 private:
     double potentialEnergy, kineticEnergy,interactionEnergy, Energy;
 

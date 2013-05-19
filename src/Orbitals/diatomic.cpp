@@ -15,7 +15,6 @@ double Diatomic::orbitalEvaluate(const mat &r, int qNum, int Particle)
     phi  = atomicOrbitals->orbitalEvaluate(r-Rmatrix ,qNum, Particle)
             + atomicOrbitals->orbitalEvaluate(r+Rmatrix ,qNum, Particle);
     return phi;
-
 }
 //********************************************************************************
 double Diatomic::laplaceOrbitalEvaluate(const mat &r, int qNum, int Particle)
@@ -47,6 +46,15 @@ double Diatomic::getVariationalDerivative(const mat &r, int qNum, int Particle)
 
 
 //*****************************************************************************
+void  Diatomic::setNucleusDistance()
+{
+    for(uint i=0; i < nParticles; i++){
+        Rmatrix(i,0) = *R/2;
+    }
+}
+
+
+//*****************************************************************************
 void  Diatomic::loadAndSetConfiguration()
 {
     nParticles  = cfg->lookup("setup.nParticles");
@@ -54,9 +62,6 @@ void  Diatomic::loadAndSetConfiguration()
 
     dphi = zeros<rowvec>(1,nDimensions);
     Rmatrix     = zeros<mat>(nParticles,nDimensions);
-    for(uint i=0; i < nParticles; i++){
-        Rmatrix(i,0) = *R/2;
-    }
 
-
+    setNucleusDistance();
 }

@@ -9,25 +9,57 @@ SteepestDescent::SteepestDescent(Config *cfg, const int &myRank, const int &nPro
 //*****************************************************************************
 void SteepestDescent::runMinimizer()
 {
-    vec old = zeros<vec>(parameters.size());
 
     myfile.open ("../vmc/DATA/results");
     myfile << "Alpha   " << "Beta    " << "Energy       " << "Variance    "
            << "Sigma       "<< "Acceptance    "<< endl;
 
 
-    for(int i=0; i < 100; i++){
+    if(diatomicSystem){
+        Setting& RVector = cfg->lookup("setup.MinimizerSettings.BFMinSettings.R");
+        vec RInterval = zeros(3);
+
+        for(int i =0; i < RVector.getLength(); i++){
+            RInterval[i] = RVector[i];
+        }
+
+        vec RValues = linspace<vec>(RInterval[0],RInterval[1],RInterval[2]);
+        parameters.resize(nVariationalParameters+1);
+
+
+        for(uint i = 0; i < RValues.n_elem; i++){
+            parameters[nVariationalParameters] = RValues[i];
+            minimize();
+        }
+
+    }else{
+        minimize();
+    }
+
+    myfile.close();
+}
+
+
+//*****************************************************************************
+void SteepestDescent::minimize()
+{
+    vec variationalDerivate    = zeros<vec>(nVariationalParameters);
+    vec variationalDerivateOld = zeros<vec>(nVariationalParameters);
+    vec parametersOld          = zeros<vec>(nVariationalParameters);
+
+    for(int j = 0; j < maxIteration; j++){
 
         parser->setVariationalParameters(parameters);
         parser->runSolver();
 
         variationalDerivate = parser->getVariationalDerivate();
-        getResultsAndWrite();
 
 
-        for(uint i = 0; i < parameters.size(); i++){
+        for(int i = 0; i < nVariationalParameters; i++){
 
-            if(old(i)/variationalDerivate(i) >= 0){
+            parametersOld[i] = parameters[i];
+
+            if(variationalDerivateOld(i)/variationalDerivate(i) >= 0){
                 step *=1.25;
                 parameters[i] -= step*signFunc(variationalDerivate(i));
             }else{
@@ -37,11 +69,22 @@ void SteepestDescent::runMinimizer()
 
         }
 
-        old = variationalDerivate;
-    }
-        myfile.close();
-}
+        if( fabs(parametersOld[0] - parameters[0]) < epsilon &&
+                fabs(parametersOld[1] - parameters[1]) < epsilon){
 
+            if(myRank == 0){
+                getResultsAndWrite();
+                cout << "Optimal parameters: "<< parametersOld[0]
+                     << "  " << parametersOld[1] << endl;
+            }
+
+            break;
+        }
+
+        variationalDerivateOld = variationalDerivate;
+    }
+
+}
 
 //*****************************************************************************
 int SteepestDescent::signFunc(double varDer)
@@ -57,36 +100,33 @@ int SteepestDescent::signFunc(double varDer)
 //*****************************************************************************
 void SteepestDescent::getResultsAndWrite()
 {
-    energy = parser->getEnergy();
+    energy        = parser->getEnergy();
     energySquared = parser->getEnergySquared();
-    variance=parser->getVariance();
-    sigma=parser->getSigma();
-    acceptance= parser->getAcceptanceRate();
+    variance      = parser->getVariance();
+    sigma         = parser->getSigma();
+    acceptance    = parser->getAcceptanceRate();
 
     if (myRank == 0) {
-    myfile <<  parameters[0] <<"     "<<   parameters[0] <<"     "<<energy
-           <<"     "<< variance <<"     "<<sigma
-           <<"     "<< acceptance<< endl;
+        myfile <<  parameters[0] <<"     " << parameters[1]  << "     "
+               <<  parameters[2] <<"     "  << energy <<"     "<< variance
+                                 <<"     " << sigma   <<"     "<< acceptance
+                                 << endl;
     }
 }
 
 //*****************************************************************************
 void SteepestDescent::loadAndSetConfiguration()
 {
+    diatomicSystem = cfg->lookup("setup.system");
     step  = cfg->lookup("setup.MinimizerSettings.SDMinSettings.step");
+    maxIteration =cfg->lookup("setup.MinimizerSettings.SDMinSettings.maxIteration");
+    epsilon = cfg->lookup("setup.MinimizerSettings.SDMinSettings.epsilon");
     Setting& variationalParamters = cfg->lookup("setup.MinimizerSettings.SDMinSettings.varParameters");
+    nVariationalParameters = variationalParamters.getLength();
 
-    for(uint i =0; true; i++){
-        try{
-            double value = 0;
-            value = variationalParamters[i];
-            parameters.push_back(value);
-
-        }catch(exception) {
-            break;
-        }
+    for(int i = 0; i < nVariationalParameters ; i++){
+        parameters.push_back(variationalParamters[i]);
     }
 
-    variationalDerivate = zeros<vec>(parameters.size());
 
 }

@@ -11,6 +11,7 @@ public:
     double getVariationalDerivative(const mat &r, int qNum, int Particle);
     rowvec gradientOrbitalEvaluate(const mat &r, int qNum, int Particle);
 
+    void  setNucleusDistance();
 
 private:
     Config* cfg;

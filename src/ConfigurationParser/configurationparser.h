@@ -30,8 +30,6 @@ public:
     double getAcceptanceRate();
     vec getVariationalDerivate();
 
-    double alpha, beta;
-
     void setVariationalParameters(vector<double> paramters);
 
 
@@ -51,7 +49,7 @@ private:
     long idum;
     double nCycles;
 
-    double R;
+    double alpha, beta, R;
     double totEnergy,totEnergySquared,averageDistance;
     double Variance, Acceptance,Sigma;
     vec totVariationalDerivate,totEnergyVarDerivate;

@@ -34,7 +34,9 @@ void ConfigurationParser::setup()
 //****************************************************************************
 void ConfigurationParser::setVariationalParameters(vector<double> paramters)
 {
+
     uint i = 0;
+
     if(i < paramters.size()){
         alpha = paramters.at(i);
         i++;
@@ -47,6 +49,8 @@ void ConfigurationParser::setVariationalParameters(vector<double> paramters)
 
     if(i < paramters.size()){
         R     = paramters.at(i);
+        orbitals->setNucleusDistance();
+        hamiltonian->setNucleusDistance();
         i++;
     }
 

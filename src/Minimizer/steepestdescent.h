@@ -12,14 +12,14 @@ public:
 
 
 private:
-    double step;
+    double step, epsilon;
+    int nVariationalParameters, maxIteration;
     int diatomicSystem;
-    vec variationalDerivate, RValues;
-
 
     ofstream myfile;
 
     void loadAndSetConfiguration();
+    void  minimize();
     void getResultsAndWrite();
     int signFunc(double varDer);
 

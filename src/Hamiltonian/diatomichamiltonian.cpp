@@ -29,11 +29,15 @@ void DiatomicHamiltonian::loadAndSetConfiguration()
     charge      = cfg->lookup("PotentialSettings.charge");
 
     Rmatrix     = zeros<mat>(nParticles,nDimensions);
+    setNucleusDistance();
+}
+
+//*****************************************************************************
+void DiatomicHamiltonian::setNucleusDistance()
+{
     for(int i=0; i < nParticles; i++){
         Rmatrix(i,0) = *R/2;
     }
 
     nucleusEnergy = charge*charge/(*R);
-
-
 }
