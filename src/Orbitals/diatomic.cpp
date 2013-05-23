@@ -12,15 +12,15 @@ Diatomic::Diatomic(Config* cfg, Orbitals* orbital, double* R):
 //********************************************************************************
 double Diatomic::orbitalEvaluate(const mat &r, int qNum, int Particle)
 {
-    phi  = atomicOrbitals->orbitalEvaluate(r-Rmatrix ,qNum, Particle)
-            + atomicOrbitals->orbitalEvaluate(r+Rmatrix ,qNum, Particle);
+    phi  = atomicOrbitals->orbitalEvaluate(r+Rmatrix ,qNum/2, Particle)
+            -atomicOrbitals->orbitalEvaluate(r-Rmatrix ,qNum/2, Particle);
     return phi;
 }
 //********************************************************************************
 double Diatomic::laplaceOrbitalEvaluate(const mat &r, int qNum, int Particle)
 {
-    ddphi  = atomicOrbitals->laplaceOrbitalEvaluate(r-Rmatrix  ,qNum, Particle)
-            + atomicOrbitals->laplaceOrbitalEvaluate(r+Rmatrix  ,qNum, Particle);
+    ddphi  = atomicOrbitals->laplaceOrbitalEvaluate(r+Rmatrix  ,qNum/2, Particle)
+            - atomicOrbitals->laplaceOrbitalEvaluate(r-Rmatrix  ,qNum/2, Particle);
 
     return ddphi;
 
@@ -28,8 +28,8 @@ double Diatomic::laplaceOrbitalEvaluate(const mat &r, int qNum, int Particle)
 //********************************************************************************
 rowvec Diatomic::gradientOrbitalEvaluate(const mat &r, int qNum, int Particle)
 {
-    dphi  = atomicOrbitals->gradientOrbitalEvaluate(r-Rmatrix ,qNum, Particle)
-            + atomicOrbitals->gradientOrbitalEvaluate(r+Rmatrix ,qNum, Particle);
+    dphi  = atomicOrbitals->gradientOrbitalEvaluate(r+Rmatrix ,qNum/2, Particle)
+            - atomicOrbitals->gradientOrbitalEvaluate(r-Rmatrix ,qNum/2, Particle);
 
     return dphi;
 }
@@ -38,8 +38,8 @@ rowvec Diatomic::gradientOrbitalEvaluate(const mat &r, int qNum, int Particle)
 //********************************************************************************
 double Diatomic::getVariationalDerivative(const mat &r, int qNum, int Particle)
 {
-    dVariational  = atomicOrbitals->getVariationalDerivative(r-Rmatrix  ,qNum, Particle)
-            + atomicOrbitals->getVariationalDerivative(r+Rmatrix  ,qNum, Particle);
+    dVariational  = atomicOrbitals->getVariationalDerivative(r+Rmatrix  ,qNum/2, Particle)
+            - atomicOrbitals->getVariationalDerivative(r-Rmatrix  ,qNum/2, Particle);
 
     return dVariational;
 }
@@ -65,3 +65,5 @@ void  Diatomic::loadAndSetConfiguration()
 
     setNucleusDistance();
 }
+
+

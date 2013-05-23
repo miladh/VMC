@@ -24,6 +24,8 @@ private:
 
 
     void loadAndSetConfiguration();
+    int signFunc(const int &qNum){
+        return -2*(qNum%2) + 1;}
 };
 
 #endif // DIATOMIC_H
