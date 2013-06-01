@@ -7,17 +7,14 @@ AtomicHamiltonian::AtomicHamiltonian(Config* cfg, Kinetic* kinetic,Potential* po
 {
 }
 
-/************************************************************
-Name:                   getEnergy
-Description:            Computes the energy
-*/
-double AtomicHamiltonian::getEnergy(const mat &r) {
+//***********************************************************************************
+vec4 AtomicHamiltonian::getEnergy(const mat &r) {
 
-    potentialEnergy = potential->evaluate(r);
-    kineticEnergy = kinetic->evaluate(r);
-    interactionEnergy = electronInteraction->evaluate(r);
-    Energy = interactionEnergy+kineticEnergy+potentialEnergy;
+    energyVector(1) = potential->evaluate(r);
+    energyVector(2) = kinetic->evaluate(r);
+    energyVector(3) = electronInteraction->evaluate(r);
+    energyVector(0) = energyVector(1)+energyVector(2)+energyVector(3);
 
-    return Energy;
+    return energyVector;
 
 }

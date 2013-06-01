@@ -11,7 +11,7 @@ public:
     Hamiltonian(Config* cfg, Kinetic* kinetic,Potential* potential,
                 ElectronInteraction* electronInteraction);
 
-    virtual double getEnergy(const mat &r)= 0;
+    virtual vec4 getEnergy(const mat &r)= 0;
     virtual void  setNucleusDistance()=0;
 
 protected:
@@ -19,6 +19,8 @@ protected:
     Kinetic* kinetic;
     Potential* potential;
     ElectronInteraction* electronInteraction;
+
+    vec4 energyVector;
 
 };
 

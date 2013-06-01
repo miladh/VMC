@@ -22,10 +22,12 @@ void Observables::calculateObservables()
     else{
         calculateEnergy();
         calculateAverageDistance();
-        addPositionsToPositionMatrix();
+        if(cycle %5==0){
+            addPositionsToPositionMatrix();
+        }
 
         if(blockingIsEnable){
-            addEnergyToEnergyVector();
+            addEnergyTototEnergyVector();
         }
     }
 
@@ -35,13 +37,13 @@ void Observables::calculateObservables()
 void Observables::initializeObservables(const int& nCycles){
     this->nCycles = nCycles;
     cycle  = 0;
-    energy = 0;
     energySquared = 0;
     averageDistance = 0;
     deltaVariationalDerivateRatio = zeros<vec>(2);
     variationalDerivateRatio  = zeros<vec>(2);
     energyVariationalDerivate = zeros<vec>(2);
-    energyVector = zeros(nCycles-1);
+    totEnergyVector = zeros(nCycles-1);
+    energyVector = zeros(4);
 }
 
 //************************************************************
@@ -55,8 +57,8 @@ void Observables::currentConfiguration(const mat& positions)
 void Observables::calculateEnergy()
 {
     deltaE  = hamiltonian->getEnergy(r);
-    energy += deltaE;
-    energySquared += deltaE*deltaE;
+    energyVector += deltaE;
+    energySquared += deltaE(0)*deltaE(0);
 }
 
 //************************************************************
@@ -74,14 +76,14 @@ void Observables::calculateVariationalDerivateRatio()
     deltaVariationalDerivateRatio = wavefunction->getVariationalDerivate(r);
     for(uint p = 0; p <deltaVariationalDerivateRatio.n_rows; p++ ){
         variationalDerivateRatio(p)  += deltaVariationalDerivateRatio(p);
-        energyVariationalDerivate(p) += deltaE*deltaVariationalDerivateRatio(p);
+        energyVariationalDerivate(p) += deltaE(0)*deltaVariationalDerivateRatio(p);
     }
 }
 
 //************************************************************6
-double Observables::getEnergy()
+vec4 Observables::getEnergy()
 {
-    return energy/(nCycles-1);
+    return energyVector/(nCycles-1);
 }
 
 //************************************************************
@@ -116,9 +118,9 @@ void Observables::addPositionsToPositionMatrix()
 }
 
 //************************************************************
-void Observables::addEnergyToEnergyVector()
+void Observables::addEnergyTototEnergyVector()
 {
-    energyVector(cycle) = deltaE;
+    totEnergyVector(cycle) = deltaE(0);
     cycle += 1;
 }
 
@@ -126,21 +128,27 @@ void Observables::addEnergyToEnergyVector()
 //************************************************************
 void Observables::writePositionMatrixToFile(const int& myRank)
 {
-    ofstream myfile;
     ostringstream filename;
-    filename << "../vmc/DATA/onebodyDensity/OBD"<< myRank << ".mat";
-    myfile.open(filename.str().c_str());
+    filename << "../vmc/DATA/onebodyDensity/OBD"<< myRank <<".bin";
+
+    ofstream myfile (filename.str().c_str(), ios::out | ios::binary);
+
     for(uint i=0; i<positionsMat.size(); i++){
-        myfile << positionsMat[i] << endl;
+        for(uint j=0; j < positionsMat[i].n_rows; j++){
+            for(uint k=0; k<positionsMat[i].n_cols; k++){
+
+                myfile.write((char*)&positionsMat[i](j,k), sizeof(double));
+            }
+        }
     }
 }
 
 //************************************************************
-void Observables::writeEnergyVectorToFile(const int& myRank)
+void Observables::writetotEnergyVectorToFile(const int& myRank)
 {
     ostringstream filename;
     filename << dataPath << dataName << myRank << ".mat";
-    energyVector.save(filename.str());
+    totEnergyVector.save(filename.str());
 }
 
 

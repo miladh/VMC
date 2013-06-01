@@ -50,9 +50,10 @@ private:
     double nCycles;
 
     double alpha, beta, R;
-    double totEnergy,totEnergySquared,averageDistance;
+    double totEnergySquared,averageDistance;
     double Variance, Acceptance,Sigma;
     vec totVariationalDerivate,totEnergyVarDerivate;
+    vec4 energyVector;
 
 
 

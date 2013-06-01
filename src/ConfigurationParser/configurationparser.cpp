@@ -168,7 +168,7 @@ void ConfigurationParser::loadAndSetConfiguration(){
 //****************************************************************************
 double ConfigurationParser::getEnergy(){
 
-    return totEnergy;
+    return energyVector(0);
 }
 
 //****************************************************************************
@@ -181,7 +181,7 @@ double ConfigurationParser::getEnergySquared(){
 //****************************************************************************
 double ConfigurationParser::getVariance(){
 
-    Variance = totEnergySquared - totEnergy * totEnergy;
+    Variance = totEnergySquared - energyVector(0) * energyVector(0);
     return Variance;
 }
 
@@ -200,7 +200,7 @@ double ConfigurationParser::getAcceptanceRate(){
 
 //****************************************************************************
 vec ConfigurationParser::getVariationalDerivate(){
-    return 2*totEnergyVarDerivate - 2*totVariationalDerivate*totEnergy;
+    return 2*totEnergyVarDerivate - 2*totVariationalDerivate*energyVector(0);
 }
 
 
@@ -210,11 +210,11 @@ void ConfigurationParser::runSolver()
     solver->solve(nCycles,idum);
 
 
-    double tmp = observables->getEnergy();
-    MPI_Allreduce(&tmp, &totEnergy, 1, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD);
-    totEnergy/= nProcess;
+    vec4 tmpEnergyVector = observables->getEnergy();
+    MPI_Allreduce(&tmpEnergyVector[0], &energyVector[0], 4, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD);
+    energyVector/= nProcess;
 
-    tmp = observables->getEnergySquared();
+    double tmp = observables->getEnergySquared();
     MPI_Allreduce(&tmp, &totEnergySquared, 1, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD);
     totEnergySquared /= nProcess;
 
@@ -240,16 +240,19 @@ void ConfigurationParser::runSolver()
     }
 
     if(blockingIsEnable ){
-        observables->writeEnergyVectorToFile(myRank);
+        observables->writetotEnergyVectorToFile(myRank);
     }
-
+    std::cout.precision(10);
     if(myRank==0){
         cout << alpha << ", " << beta << ", " << R << ", "
-             <<" Energy = " << totEnergy
-            << ", Variance = " << getVariance()
-            << ", Accepted = " << Acceptance
-            << ", Average dist = " << averageDistance
-            << "\n";
+             <<"  E = " << energyVector(0)
+             <<", Pot = "<<energyVector(1)
+             <<", Kin = "<<energyVector(2)
+             <<", Int = "<<energyVector(3)
+             <<", Variance = " << getVariance()
+             <<", Accepted = " << Acceptance
+             <<", Average dist = " << averageDistance
+             <<"\n";
     }
 
 }

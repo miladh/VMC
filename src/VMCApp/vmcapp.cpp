@@ -72,12 +72,12 @@ void VMCApp::runBlocking()
         block.loadConfiguration(&cfg);
         block.doBlocking();
 
-        string dataPath = "../vmc/DATA/blocking";
-        // Plotting result
-        string pythonPath = "python " + dataPath
-                + "/plotBlocking.py "
-                + dataPath + "/blocking.mat";
-        system(pythonPath.c_str());
+//        string dataPath = "../vmc/DATA/blocking";
+//        // Plotting result
+//        string pythonPath = "python " + dataPath
+//                + "/plotBlocking.py "
+//                + dataPath + "/blocking.mat";
+//        system(pythonPath.c_str());
     }
 }
 
@@ -92,50 +92,3 @@ void VMCApp::loadConfiguration()
         MPI_Barrier(MPI_COMM_WORLD);
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//#if ONEBODYDENSITY
-//    if (myRank==0){
-//        cout << "Onebody Density" << endl;
-//    }
-//    OnebodyDensity onebodyDensity(nProcess, myRank);
-//    onebodyDensity.loadConfiguration(&cfg);
-//    onebodyDensity.computeOnebodyDensity();
-
-//    if (myRank==0){
-//        string dataPath = "../vmc/DATA/onebodyDensity";
-//        // Plotting result
-//        string pythonPath = "python " + dataPath
-//                + "/OBD.py "
-//                + dataPath + "/OBD.mat";
-//        system(pythonPath.c_str());
-//    }
-//#endif

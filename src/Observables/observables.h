@@ -18,16 +18,16 @@ public:
     void calculateVariationalDerivateRatio();
     void calculateAverageDistance();
 
-    double getEnergy();
+    vec4 getEnergy();
     double getEnergySquared();
     double getAverageDistance();
     vec getVariationalDerivateRatio();
     vec getEnergyVariationalDerivate();
 
 
-    void addEnergyToEnergyVector();
+    void addEnergyTototEnergyVector();
     void addPositionsToPositionMatrix();
-    void writeEnergyVectorToFile(const int &myRank);
+    void writetotEnergyVectorToFile(const int &myRank);
     void writePositionMatrixToFile(const int& myRank);
 
 private:
@@ -36,10 +36,11 @@ private:
     Wavefunction* wavefunction;
     int nCycles, cycle;
     int minimize, blockingIsEnable ;
-    double deltaE, energy, energySquared;
+    vec4 deltaE, energyVector;
+    double energySquared;
     double averageDistance;
     vec deltaVariationalDerivateRatio,variationalDerivateRatio,energyVariationalDerivate;
-    vec energyVector;
+    vec totEnergyVector;
     mat r;
     string dataPath, dataName;
     vector <mat> positionsMat;

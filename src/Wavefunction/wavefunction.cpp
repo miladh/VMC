@@ -9,21 +9,14 @@ Wavefunction::Wavefunction(Config* cfg, Orbitals* orbitals, Jastrow* jastrow):
         loadAndSetConfiguration();
 }
 
-
-/************************************************************
-Name:
-Description:
-*/
+//************************************************************
 void Wavefunction::initializeWavefunction(const mat &r)
 {
     slater->initializeSD(r);
     jas->initializeJastrow(r);
 }
 
-/************************************************************
-Name:
-Description:
-*/
+//************************************************************
 double Wavefunction::evaluateWavefunction(const mat &r)
 {
     trialWavefunction  = slater->evaluateSD(r);
@@ -33,53 +26,35 @@ double Wavefunction::evaluateWavefunction(const mat &r)
 }
 
 
-/************************************************************
-Name:
-Description:
-*/
+//************************************************************
 void Wavefunction::activeParticle(const mat &r,const uint &i)
 {
     slater->setActiveParticleAndCurrentPosition(r,i);
     jas->setActiveParticleAndCurrentPosition(r,i);
 }
 
-
-/************************************************************
-Name:
-Description:
-*/
+//************************************************************
 void Wavefunction::updateWavefunction()
 {
     slater->updateSlater();
 
 }
 
-
-/************************************************************
-Name:
-Description:
-*/
+//************************************************************
 double Wavefunction::getRatio()
 {
 
     return slater->getSDRatio()*jas->getJasRatio();
 }
 
-
-/************************************************************
-Name:
-Description:
-*/
+//************************************************************
 void Wavefunction::rejectMove()
 {
     slater->rejectMove();
     jas->rejectMove();
 }
 
-/************************************************************
-Name:
-Description:
-*/
+//************************************************************
 void Wavefunction::acceptMove()
 {
     slater->acceptMove();
@@ -88,10 +63,7 @@ void Wavefunction::acceptMove()
 
 
 
-/************************************************************
-Name:          Gradient
-Description:
-*/
+//************************************************************
 mat Wavefunction::gradient(const mat &r){
 
     if(useAnalyticGradient){
@@ -109,11 +81,7 @@ mat Wavefunction::gradient(const mat &r){
 
 }
 
-
-/************************************************************
-Name:          laplace
-Description:
-*/
+//************************************************************
 double Wavefunction::laplace(const mat &r){
 
     if(useAnalyticLaplace){
@@ -135,10 +103,7 @@ double Wavefunction::laplace(const mat &r){
 
 }
 
-/************************************************************
-Name:          laplace
-Description:
-*/
+//************************************************************
 vec Wavefunction::getVariationalDerivate(const mat &r)
 {
     dvariational(0) = slater->getVariationalDerivate(r);
@@ -147,11 +112,7 @@ vec Wavefunction::getVariationalDerivate(const mat &r)
 }
 
 
-
-/************************************************************
-Name:               laplaceNumerical
-Description:
-*/
+//************************************************************
 double Wavefunction::laplaceNumerical(const mat &r){
 
     rPlus = rMinus = r;
@@ -177,10 +138,7 @@ double Wavefunction::laplaceNumerical(const mat &r){
 
 
 
-/************************************************************
-Name:               gradientNumerical
-Description:
-*/
+//************************************************************
 mat Wavefunction::gradientNumerical(const mat &r){
 
     rPlus = rMinus = r;
@@ -202,10 +160,7 @@ mat Wavefunction::gradientNumerical(const mat &r){
 }
 
 
-/************************************************************
-Name:               loadConfigurations
-Description:        loads different variabels
-*/
+//************************************************************
 void Wavefunction::loadAndSetConfiguration(){
     nParticles  = cfg->lookup("setup.nParticles");
     nDimensions = cfg->lookup("setup.nDimensions");

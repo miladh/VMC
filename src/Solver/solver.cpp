@@ -10,10 +10,7 @@ Solver::Solver(Config* cfg,Hamiltonian* hamiltonian, Wavefunction* trialWavefunc
 }
 
 
-/************************************************************
-Name:               loadConfiguration
-Description:        loads different variables
-*/
+//************************************************************
 void Solver::loadAndSetConfiguration(){
 
     nParticles      = cfg->lookup("setup.nParticles");

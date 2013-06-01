@@ -4,12 +4,7 @@ CoulombInteraction::CoulombInteraction()
 {
 }
 
-
-/*********************************************************************************
-Name:               electron_electron_pot
-Description:        Computes potential energy due to electron-electron interactions
-*/
-
+//*********************************************************************************
 double CoulombInteraction::evaluate(const mat& r){
     rij = 0;
     interactionEnergy = 0;

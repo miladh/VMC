@@ -9,14 +9,14 @@ DiatomicHamiltonian::DiatomicHamiltonian(Config* cfg, Kinetic* kinetic,Potential
 }
 
 //*******************************************************************************
-double DiatomicHamiltonian::getEnergy(const mat &r) {
+vec4 DiatomicHamiltonian::getEnergy(const mat &r) {
 
-    potentialEnergy = potential->evaluate(r-Rmatrix)+potential->evaluate(r+Rmatrix);
-    kineticEnergy   = kinetic->evaluate(r);
-    interactionEnergy = electronInteraction->evaluate(r);
-    Energy = interactionEnergy + kineticEnergy + potentialEnergy + nucleusEnergy;
+    energyVector(1) = potential->evaluate(r-Rmatrix)+potential->evaluate(r+Rmatrix);
+    energyVector(2) = kinetic->evaluate(r);
+    energyVector(3) = electronInteraction->evaluate(r);
+    energyVector(0) = energyVector(1)+energyVector(2)+energyVector(3) + nucleusEnergy;
 
-    return Energy;
+    return energyVector;
 
 }
 

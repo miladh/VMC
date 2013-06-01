@@ -17,10 +17,7 @@ Slater::Slater(const uint &nParticles, Orbitals* orbitals):
 }
 
 
-/************************************************************
-Name:
-Description:
-*/
+//************************************************************
 void Slater::initializeSD(const mat &r){
 
     evaluateSD(r);
@@ -36,10 +33,7 @@ void Slater::initializeSD(const mat &r){
 }
 
 
-/************************************************************
-Name:
-Description:
-*/
+//************************************************************
 double Slater::evaluateSD(const mat &r){
     for (uint p = 0; p < N; p++) {
         for (uint qNum = 0; qNum < N; qNum++) {
@@ -52,19 +46,13 @@ double Slater::evaluateSD(const mat &r){
 
 }
 
-/************************************************************
-Name:
-Description:
-*/
+//************************************************************
 void Slater::setActiveParticleAndCurrentPosition(const mat &r, uint i ){
     activeParticle=i;
     rNew=r;
 }
 
-/************************************************************
-Name:
-Description:
-*/
+//************************************************************
 void Slater::updateSlater(){
 
     if (activeParticle < N) {
@@ -81,10 +69,7 @@ void Slater::updateSlater(){
     //            DDownInvNew=inv(DDownNew);
 }
 
-/************************************************************
-Name:
-Description:
-*/
+//************************************************************
 void Slater::updateSlaterInverse() {
 
     R = getSDRatio();
@@ -134,10 +119,7 @@ void Slater::updateSlaterInverse() {
 }
 
 
-/************************************************************
-Name:
-Description:
-*/
+//************************************************************
 double Slater::getSDRatio(){
     double R = 0;
     uint i = activeParticle;
@@ -156,10 +138,7 @@ double Slater::getSDRatio(){
 
 
 
-/************************************************************
-Name:
-Description:
-*/
+//************************************************************
 void Slater::acceptMove(){
 
     if (activeParticle < N) {
@@ -177,10 +156,7 @@ void Slater::acceptMove(){
 }
 
 
-/************************************************************
-Name:
-Description:
-*/
+//************************************************************
 void Slater::rejectMove(){
 
     if (activeParticle < N) {
@@ -200,11 +176,7 @@ void Slater::rejectMove(){
 
 
 
-/************************************************************
-Name:               gradientSlater
-Description:
-*/
-
+//************************************************************
 rowvec Slater::gradientSDEvaluate(const mat &r, uint &i) {
     dSD = zeros(1, r.n_cols);
 
@@ -221,11 +193,7 @@ rowvec Slater::gradientSDEvaluate(const mat &r, uint &i) {
 }
 
 
-/************************************************************
-Name:               laplaceSlater
-Description:
-*/
-
+//************************************************************
 double Slater::laplaceSDEvaluate(const mat &r,const uint &i) {
     ddSD = 0;
     if (i < N) {
@@ -243,27 +211,9 @@ double Slater::laplaceSDEvaluate(const mat &r,const uint &i) {
 
 
 
-/************************************************************
-Name:          laplace
-Description:
-*/
+//************************************************************
 double Slater::getVariationalDerivate(const mat &r)
 {
-    //    dVSD = 0;
-    //    for (uint i = 0; i < r.n_rows; i++){
-    //        if (i < N) {
-    //            for (uint j = 0; j < N; j++) {
-    //                dVSD += orbitals->getVariationalDerivative(r,j,i)*DUpInv(j, i);
-    //            }
-    //        } else {
-    //            for (uint j = 0; j < N; j++) {
-    //                dVSD += orbitals->getVariationalDerivative(r,j,i)*DDownInv(j, i-N);
-    //            }
-    //        }
-    //    }
-    //    return dVSD;
-
-
     dVSD = 0;
     for (uint i = 0; i < N; i++){
         for (uint j = 0; j < N; j++) {

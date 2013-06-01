@@ -1,16 +1,11 @@
 #include "mcis.h"
 
-
-
 MCIS::MCIS(Config* cfg,Hamiltonian *hamiltonian, Wavefunction* TrialWavefunction, Observables* observables):
     Solver(cfg,hamiltonian,TrialWavefunction,observables)
 {
 }
 
-/************************************************************
-Name:               solve
-Description:        starts a MC-sample
-*/
+//************************************************************
 void MCIS::solve(int nCycles, long idum)
 {
     MPI_Comm_rank(MPI_COMM_WORLD, &myRank);
@@ -20,10 +15,7 @@ void MCIS::solve(int nCycles, long idum)
 
 }
 
-/************************************************************
-Name:               MetropolisAlgoIS
-Description:        MetropolisAlgo important sampling
-*/
+//************************************************************
 void MCIS::MetropolisAlgoIS(){
 
     observables->initializeObservables(nCycles);
@@ -93,10 +85,7 @@ void MCIS::MetropolisAlgoIS(){
 }
 
 
-/************************************************************
-Name:               QuantumForce
-Description:
-*/
+//************************************************************
 mat MCIS::getQuantumForce(const mat &r){
 
     return 2*trialWavefunction->gradient(r);

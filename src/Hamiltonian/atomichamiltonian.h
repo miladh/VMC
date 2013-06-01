@@ -10,12 +10,8 @@ public:
     AtomicHamiltonian(Config *cfg, Kinetic *kinetic, Potential *potential,
                       ElectronInteraction *electronInteraction);
 
-    double getEnergy(const mat &r);
-
+    vec4 getEnergy(const mat &r);
     void setNucleusDistance(){}
-
-private:
-    double potentialEnergy, kineticEnergy,interactionEnergy, Energy;
 
 };
 

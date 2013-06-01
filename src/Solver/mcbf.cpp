@@ -5,10 +5,7 @@ MCBF::MCBF(Config* cfg, Hamiltonian *hamiltonian, Wavefunction* TrialWavefunctio
 {
 }
 
-/************************************************************
-Name:               solve
-Description:        starts a MC-sample
-*/
+//************************************************************
 void MCBF::solve(int nCycles, long idum)
 {
     this->idum = idum;
@@ -18,10 +15,7 @@ void MCBF::solve(int nCycles, long idum)
 }
 
 
-/************************************************************
-Name:               MetropolisAlgoBF
-Description:
-*/
+//************************************************************
 void MCBF::MetropolisAlgoBF(int nCycles, double stepLength){
     observables->initializeObservables(nCycles);
     acceptedSteps=0;
@@ -81,11 +75,7 @@ void MCBF::MetropolisAlgoBF(int nCycles, double stepLength){
     acceptedSteps /= ((nCycles-1)*nParticles);
 }
 
-/************************************************************
-Name:               optimalStepLength
-Description:        Finds the optimal steplength using intersection method
-*/
-
+//************************************************************
 double MCBF::optimalStepLength() {
     while ((maxStepLength - minStepLength) > tolerance) {
         MetropolisAlgoBF(nPreCycles,minStepLength);

@@ -6,11 +6,6 @@
 #define h 1e-5
 #define h2 1e10
 
-
-// 0: OBD off
-// 1: OBD on
-#define ONEBODYDENSITY 0
-
 enum SYSTEM{
    ATOMS, MOLECULES
 };

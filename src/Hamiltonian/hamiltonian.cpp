@@ -8,6 +8,7 @@ Hamiltonian::Hamiltonian(Config *cfg, Kinetic* kinetic, Potential* potential,
     kinetic(kinetic),
     potential(potential),
     electronInteraction(electronInteraction)
+
 {
 }
 

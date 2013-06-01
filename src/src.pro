@@ -24,7 +24,6 @@ SOURCES += main.cpp \
     Jastrow/padejastrow.cpp \
     Jastrow/jastrow.cpp \
     Jastrow/nojastrow.cpp \
-    OnebodyDensity/onebodydensity.cpp \
     Blocking/blocking.cpp \
     electronInteraction/electroninteraction.cpp \
     electronInteraction/coulombinteraction.cpp \
@@ -55,7 +54,6 @@ HEADERS += \
     Jastrow/padejastrow.h \
     Jastrow/jastrow.h \
     Jastrow/nojastrow.h \
-    OnebodyDensity/onebodydensity.h \
     Blocking/blocking.h \
     electronInteraction/electroninteraction.h \
     electronInteraction/coulombinteraction.h \

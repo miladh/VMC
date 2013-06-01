@@ -12,7 +12,7 @@ void SteepestDescent::runMinimizer()
 
     myfile.open ("../vmc/DATA/results");
     myfile << "Alpha   " << "Beta    " << "Energy       " << "Variance    "
-           << "Sigma       "<< "Acceptance    "<< endl;
+           << "Sigma       "<< "Acceptance    "<< "R    "<< endl;
 
 
     if(diatomicSystem){
@@ -43,7 +43,6 @@ void SteepestDescent::runMinimizer()
 //*****************************************************************************
 void SteepestDescent::minimize()
 {
-    vec variationalDerivate    = zeros<vec>(nVariationalParameters);
     vec variationalDerivateOld = zeros<vec>(nVariationalParameters);
     vec parametersOld          = zeros<vec>(nVariationalParameters);
 
@@ -53,21 +52,31 @@ void SteepestDescent::minimize()
         parser->runSolver();
 
         variationalDerivate = parser->getVariationalDerivate();
-
-
         for(int i = 0; i < nVariationalParameters; i++){
 
             parametersOld[i] = parameters[i];
 
             if(variationalDerivateOld(i)/variationalDerivate(i) >= 0){
-                step *=1.25;
-                parameters[i] -= step*signFunc(variationalDerivate(i));
-            }else{
-                step*=0.5;
-                parameters[i] -= step*signFunc(variationalDerivate(i));
+                step *=1.05;
+                if(parameters[i] - step*signFunc(variationalDerivate(i))< 0.0){
+                    continue;
+                }else{
+                    parameters[i] -= step*signFunc(variationalDerivate(i));
+                }
             }
 
+            else{
+                step*=0.95;
+                if(parameters[i] - step*signFunc(variationalDerivate(i))< 0.0){
+                    continue;
+                }else{
+                    parameters[i] -= step*signFunc(variationalDerivate(i));
+                }
+            }
+
+
         }
+
 
         if( fabs(parametersOld[0] - parameters[0]) < epsilon &&
                 fabs(parametersOld[1] - parameters[1]) < epsilon){
@@ -108,8 +117,9 @@ void SteepestDescent::getResultsAndWrite()
 
     if (myRank == 0) {
         myfile <<  parameters[0] <<"     " << parameters[1]  << "     "
-               << energy <<"     "<< variance <<"     " << sigma   <<"     "<< acceptance
-               <<  parameters[2] << endl;
+               << energy <<"     "<< variance <<"     " << sigma   <<"     "
+               << acceptance << "      " <<parameters[2] <<"       "
+               <<  variationalDerivate[0] <<"     " << variationalDerivate[1]  << "     "<< endl;
     }
 }
 
@@ -122,7 +132,7 @@ void SteepestDescent::loadAndSetConfiguration()
     epsilon = cfg->lookup("setup.MinimizerSettings.SDMinSettings.epsilon");
     Setting& variationalParamters = cfg->lookup("setup.MinimizerSettings.SDMinSettings.varParameters");
     nVariationalParameters = variationalParamters.getLength();
-
+    variationalDerivate    = zeros<vec>(nVariationalParameters);
     for(int i = 0; i < nVariationalParameters ; i++){
         parameters.push_back(variationalParamters[i]);
     }

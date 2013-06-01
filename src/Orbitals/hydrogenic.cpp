@@ -26,7 +26,7 @@ double Hydrogenic::orbitalEvaluate(const mat &r, int qNum, int Particle){
         phi =  r(Particle,1)*exp(-0.5*(*k)*rNorm);
     }
     else if(qNum==5){
-        phi= (1 - 2*(*k)*rNorm/3 + 2*(*k)*(*k)*rNorm*rNorm/27)*
+        phi= (27 - 18*(*k)*rNorm + 2*(*k)*(*k)*rNorm*rNorm)*
              exp(-(*k)*rNorm/3);
     }
     else{
@@ -73,8 +73,9 @@ rowvec Hydrogenic::gradientOrbitalEvaluate(const mat &r, int qNum, int Particle)
 
     // 3s orbital
     else if(qNum==5){
-        dphi=r.row(Particle)*(-1 + 10*(*k)*rNorm/27 - 2*(*k)*(*k)*rNorm*rNorm/81)
-                *(*k)*exp(-(*k)*rNorm/3);
+        dphi = -(*k)*r.row(Particle)/(3*rNorm)*
+               (2*(*k)*(*k)*rNorm*rNorm-30*(*k)*rNorm+81)*
+               exp(-(*k)*rNorm/3);
     }
     else{
         cerr << "Orbital doesn't exist!"<<endl;
@@ -105,9 +106,8 @@ double Hydrogenic::laplaceOrbitalEvaluate(const mat &r, int qNum, int Particle){
                 r(Particle,1)*exp(-0.5*(*k)*rNorm);
     }
     else if(qNum==5){
-        ddphi= (-2 + 13*(*k)*rNorm/9 - 2*(*k)*(*k)*rNorm*rNorm/9
-               +2*(*k)*(*k)*(*k)*rNorm*rNorm*rNorm/243)*(*k)/rNorm
-              *exp(-(*k)*rNorm/3);
+        ddphi= (*k)*((*k)*rNorm-18)*(2*(*k)*(*k)*rNorm*rNorm
+                -18*(*k)*rNorm+27)/(9*rNorm)*exp(-(*k)*rNorm/3);
     }
     else{
         cerr << "Orbital doesn't exist!"<<endl;
@@ -138,7 +138,7 @@ double Hydrogenic::getVariationalDerivative(const mat &r, int qNum, int Particle
         dVariational = (-0.5*rNorm)*r(Particle,1)*exp(-0.5*(*k)*rNorm);
     }
     else if(qNum==5){
-        dVariational= rNorm*(-1 + 10*rNorm*(*k)/27 - 2* rNorm*rNorm*(*k)*(*k)/81)*
+        dVariational= rNorm*(-27 + 10*rNorm*(*k) - 2* rNorm*rNorm*(*k)*(*k)/3)*
              exp(-(*k)*rNorm/3);
     }
     else{

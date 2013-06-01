@@ -4,7 +4,6 @@
 #include <libconfig.h++>
 #include <src/Minimizer/minimizer.h>
 #include <src/Blocking/blocking.h>
-#include <src/OnebodyDensity/onebodydensity.h>
 
 #pragma GCC diagnostic ignored "-Wunused-parameter"
 #include <mpi.h>

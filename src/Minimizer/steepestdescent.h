@@ -17,6 +17,7 @@ private:
     int diatomicSystem;
 
     ofstream myfile;
+    vec variationalDerivate;
 
     void loadAndSetConfiguration();
     void  minimize();
